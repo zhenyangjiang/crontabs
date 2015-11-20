@@ -1,0 +1,24 @@
+{
+    "name": "landers2014/landers",
+    "description": "Landers Web Application Platform",
+    "keywords": [
+        "Landers",
+        "LWAP"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "authors": [
+        {
+            "name": "Landers",
+            "email": "luhaixing@qq.com"
+        }
+    ],
+    "minimum-stability" : "dev",
+    "autoload": {
+        "psr-4": {
+            "Landers\\": "Landers/"
+        }
+    }
+}

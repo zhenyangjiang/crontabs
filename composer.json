@@ -1,0 +1,19 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "~5.2",
+        "pda/pheanstalk": "^3.1"
+    },
+    "autoload":{
+        "classmap": [
+            "vendor/ULan"
+        ],
+        "psr-4": {
+            "Landers\\": "vendor/Landers/",
+            "Classes\\": "vendor/Classes"
+        },
+        "files": [
+            "vendor\\Landers\\Helpers.php",
+            "vendor\\Landers\\Framework\\Adapters\\Helpers\\LcliHelpers.php"
+        ]
+    }
+}

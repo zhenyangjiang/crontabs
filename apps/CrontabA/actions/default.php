@@ -3,8 +3,9 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Log;
 use Landers\Utils\Datetime;
 
-require_once('randomxml.php'); usleep(100000);
-Log::note(['#blank', '#blank', '#blank']);
+
+// require_once('randomxml.php'); usleep(100000);
+// Log::note(['#blank', '#blank', '#blank']);
 
 Log::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
@@ -20,19 +21,11 @@ Log::note('正在对牵引过期的IP作解除牵引：');
 BlackHole::unblock(); //解除牵引
 Log::note('#line');
 
-//确定防火墙数据文件
-$fw_dat = System::param('fwdat') or $fw_dat = 'random.xml';
-$fw_dat = dirname(__DIR__).'/data/'.$fw_dat;
-if (!is_file($fw_dat)) {
-    $msg = '防火墙数据文件错误！';
-    Log::error($msg);
-    Notify::developer($msg);
-    System::halt();
-}
+//读取防火墙数据
+$pack_attack = Fw::get_attack();
 
-//解析防火墙攻击xml数据、并存入数据库
-Log::note('读取防火墙xml：%s', $fw_dat);
-$pack_attack = DDoSInfo::save_attack($fw_dat);
+//保存攻击数据
+$pack_attack = DDoSInfo::save_attack($pack_attack);
 if ( $all_ips = array_keys($pack_attack) ) {
     foreach ($all_ips as $ip) Log::note("#tab$ip");
     Log::note('#tab成功导入%s条数据', colorize(count($all_ips), 'green', 1));
@@ -41,12 +34,12 @@ Log::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
 Log::note('正在查询被攻击中、且本次未被攻击的IP作攻击结束：');
-$attaching_ips_history = History::get_attacking_ips();
+$attaching_ips = History::get_attacking_ips();
 
-if ($attaching_ips_history) {
-    foreach ($attaching_ips_history as $ip) Log::note('#tab%s', $ip);
-    Log::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips_history), 'yellow', 1));
-    $diff_ips = array_diff($attaching_ips_history, $all_ips);
+if ($attaching_ips) {
+    foreach ($attaching_ips as $ip) Log::note('#tab%s', $ip);
+    Log::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
+    $diff_ips = array_diff($attaching_ips, $all_ips);
 
     Log::note('#blank');
 
@@ -65,6 +58,7 @@ if ($attaching_ips_history) {
             Log::user_detail($user);
 
             //由IP确定攻击历史记录
+            History::debug();
             $history = History::find_ip_attacking($ip);
             if ($history) {
                 $history_id = $history['id'];
@@ -98,16 +92,16 @@ Log::note(['#blank', '#blank', '#blank', '开始逐一对所有被攻击IP操作
 foreach ($pack_attack as $item) {
     Log::note('#line');
     $item['mbps'] = &$item['bps'];//bps改名为mbps
-    $ip = $item['ip'];
+    $dest_ip = $item['dest_ip'];
 
     //读取云盾表中该ip的云盾配置
-    $mitigation = Mitigation::find_ip($ip);
+    $mitigation = Mitigation::find_ip($dest_ip);
     if (!$mitigation) {
         //找不到记录，属：默认免费版
-        Log::note('IP：%s，计费方案：默认免费版', $ip);
+        Log::note('IP：%s，计费方案：默认免费版', $dest_ip);
 
         //由ip确定实例记录
-        $instance = Instance::find_ip($ip);
+        $instance = Instance::find_ip($dest_ip);
 
         //由实例确定数据中心
         $datacenter = Instance::datacenter($instance);
@@ -121,17 +115,17 @@ foreach ($pack_attack as $item) {
 
         if (!$free_mbps && !$free_pps) {
             Log::note('系统不提供免费防护规格，正在牵引...');
-            BlackHole::block($ip); continue;
+            BlackHole::block($dest_ip); continue;
         }
 
         Log::note('系统提供免费防护规格为：%sMbps/%spps', $free_mbps, $free_pps);
 
         if ($item['mbps'] > $free_mbps) {
             Log::note('当前攻击值：%sMbps，超过免费防护值，正在牵引...', $item['mbps']);
-            BlackHole::block($ip); continue;
+            BlackHole::block($dest_ip); continue;
         } elseif ($item['pps'] > $free_pps) {
             Log::note('当前攻击值：%spps，超过免费防护值，正在牵引...', $item['pps']);
-            BlackHole::block($ip); continue;
+            BlackHole::block($dest_ip); continue;
         } else {
             Log::note('当前攻击值：%sMbps/%spps，在免费防护范围内，继续清洗...', $item['mbps'], $item['pps']);
         }
@@ -139,25 +133,25 @@ foreach ($pack_attack as $item) {
         //根据所购买的云盾的支付方式进行相关操作
         switch ($mitigation['billing']) {
             case 'month' : //按月计费：仅防护，由另一CrontabB进行计费
-                Log::note('IP：%s，计费方案：按月计费', $ip);
+                Log::note('IP：%s，计费方案：按月计费', $dest_ip);
                 Log::note('当前购买防护值：%sMbps / %spps', $mitigation['ability_mbps'], $mitigation['ability_pps']);
 
                 if ($item['mbps'] >= $mitigation['ability_mbps']) {
                     Log::note('当前攻击速率%sMbps到达所购买防护值，正在牵引...', $item['mbps']);
-                    BlackHole::block($ip); continue;
+                    BlackHole::block($dest_ip); continue;
                 } else if ($item['pps'] >= $mitigation['ability_pps']) {
                     Log::note('当前攻击包数%spps到达所购买防护值，正在牵引...', $item['pps']);
-                    BlackHole::block($ip); continue;
+                    BlackHole::block($dest_ip); continue;
                 } else {
                     Log::note('当前攻击值：%sMbps/%spps 未达到购买防护值，继续清洗...', $item['mbps'], $item['pps']);
                 }
                 break;
 
             case 'hour' : //按需计费：先防护后计前1小时的费用
-                Log::note('IP：%s，计费方案：按需计费', $ip);
+                Log::note('IP：%s，计费方案：按需计费', $dest_ip);
 
                 //由ip确定实例记录
-                $instance = Instance::find_ip($ip);
+                $instance = Instance::find_ip($dest_ip);
                 Log::instance_detail($instance);
 
                 //由实例确定所在数据中心：（中心最高防护能力、中心的价格规则）
@@ -179,7 +173,7 @@ foreach ($pack_attack as $item) {
 
                 //由IP确定攻击历史记录
                 Log::note('由IP确定攻击历史记录：');
-                $history = History::find_ip_attacking($ip);
+                $history = History::find_ip_attacking($dest_ip);
                 if (!$history) {
                     $msg = sprintf('未找到该IP正在被攻击中的历史记录');
                     Notify::developer($msg);
@@ -206,8 +200,8 @@ foreach ($pack_attack as $item) {
                     }
 
                     //强制牵引
-                    Log::note('需要对IP：%s作强制牵引处理', $ip);
-                    BlackHole::block($ip);
+                    Log::note('需要对IP：%s作强制牵引处理', $dest_ip);
+                    BlackHole::block($dest_ip);
 
                     //先小计
                     Log::note('写入此段不足1小时的小计记录：');
@@ -220,7 +214,7 @@ foreach ($pack_attack as $item) {
                         Log::note('#tab总计结算成功');
                     } else {
                         Log::warn('#tab总计结算失败');
-                        Notify::developer('IP:%s 总计结算失败', $ip);
+                        Notify::developer('IP:%s 总计结算失败', $dest_ip);
                     }
                 } else {
                     //超过?否
@@ -243,7 +237,7 @@ foreach ($pack_attack as $item) {
                             Log::note('模拟总计费用：%s，已超出用户余额：%s，需立即处理：', $total_fee, $user['money']);
 
                             //产生的总费用超过用户余额，强制牵引
-                            BlackHole::block($ip);
+                            BlackHole::block($dest_ip);
 
                             //先小计
                             Log::note('#tab写入此段不足1小时的小计记录');

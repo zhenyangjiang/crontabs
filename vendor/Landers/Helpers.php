@@ -16,4 +16,13 @@ Class CallTo extends CallIndieFunction {
          self::$path = __DIR__.'/Functions';
     }
 }; \CallTo::init();
+
+function auto_parse_args($args) {
+    $ret = [];
+    foreach ($args as $arg) {
+        $type = gettype($arg);
+        $ret[$type] = $arg;
+    };
+    return $ret;
+}
 ?>

@@ -35,6 +35,7 @@ Class ApiResult {
         $this->pack = [
             'status' => $status,
             'data'   => $data,
+            'csrf'   => function_exists('csrf_token') ? csrf_token() : '',
             'message'=> $message
         ];
     }

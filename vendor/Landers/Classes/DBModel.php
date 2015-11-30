@@ -4,7 +4,7 @@ namespace Landers\Classes;
 use Landers\Utils\Arr;
 use Landers\Utils\Str;
 use Landers\Utils\Json;
-use Landers\Utils\PregMatch;
+use Landers\Utils\Verify;
 
 
 
@@ -81,10 +81,13 @@ Class DBModel {
     private function set_errors($key, $sql = NULL, $error = NULL) {
         $errors = &$this->errors;
         if (!array_key_exists($key, $errors)) $errors[$key] = array();
-        $error or $error = $this->db->error();
-        $errno = $this->db->errno();
+        if ($sql) {
+            $error or $error = $this->db->error();
+            $errno = $this->db->errno();
+        } else {
+            $errno = '';
+        }
         $errors[$key][] = array('sql' => $sql, 'error' => $error, 'errno' => $errno);
-
     }
 
     /**
@@ -93,14 +96,17 @@ Class DBModel {
      * @return string
      */
     public function get_errors($key = NULL, $index = NULL) {
-        $errors = $this->errors;
+        $errors = &$this->errors;
         if (!$key) return $errors;
         $errors = $errors[$key];
+        if (!$errors) return $index ? '' : [];
         foreach ($errors as $i => &$item) {
             $item = ($i+1) . '. '. $item['error'];
         }; unset($item);
         if (!$index) return implode("\n", $errors);
-        return $errors[$key][$index];
+        $ret = $errors[$key][$index];
+        unset($errors[$key]);
+        return $ret;
     }
 
     /**
@@ -306,15 +312,15 @@ Class DBModel {
                         $error = sprintf("%s【%s】必须为数字型！", $text, $value);
                     }; break;
                 case 'DATETIME':; case 'TIMESTAMP':
-                    if ( !PregMatch::is_datetime($value) ) {
+                    if ( !Verify::is_datetime($value) ) {
                         $error = sprintf("%s【%s】日期时间格式不对！", $text, $value);
                     }; break;
                 case 'DATE':;
-                    if ( !PregMatch::is_datetime($value) ) {
+                    if ( !Verify::is_datetime($value) ) {
                         $error = sprintf("%s【%s】日期格式不对！", $text, $value);
                     }; break;
                 case 'TIME':;
-                    if ( !PregMatch::is_datetime($value) ) {
+                    if ( !Verify::is_datetime($value) ) {
                         $error = sprintf("【%s】：%s\n时间格式不对！", $text, $value);
                     }; break;
             }
@@ -392,14 +398,14 @@ Class DBModel {
         if ( !$this->check_uniques($data, $uniques)) return NULL;
 
         //检查数据合法性
-        if ( !$this->check_data(__FUNCTION__, $data) ) return NULL;
+        if ( !$this->check_data('create', $data) ) return NULL;
 
         //插入记录
         $sql = $this->SQL->InsertSQL($data);
         $this->show_debug($sql);
         $bool = $this->db->execute($sql);
         if (!$bool) {
-            $this->set_errors(__FUNCTION__,  $sql);
+            $this->set_errors('create',  $sql);
             return NULL;
         }
 
@@ -417,7 +423,7 @@ Class DBModel {
             foreach ($datas as $data){
                 $newid = $this->insert($data);
                 if (!$newid) {
-                    $errors = $this->get_errors('insert');
+                    $errors = $this->get_errors('create');
                     $this->set_errors($method,  $errors[count($errors)-1]['sql']);
                     $ret = array();
                     return false;
@@ -600,7 +606,13 @@ Class DBModel {
         $uniques = Arr::get($opts, 'uniques', []);
         $awhere = $this->build_where_key_id($awhere_key_id);
         $awhere = array_merge($awhere, $extra_where);
-        return $this->update($data, $awhere, compact('uniques'));
+        $bool = $this->update($data, $awhere, compact('uniques'));
+        if (!$bool) {
+            $this->set_errors(__FUNCTION__,  $this->get_errors('update', 0));
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

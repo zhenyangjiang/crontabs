@@ -155,5 +155,29 @@ class Arr {
         $ret[] = array_slice($a, $i * $per);
         return $ret;
     }
+
+    //对两个数组的双层深度合度
+    public static function merge(array &$arr1, array &$arr2) {
+        $ret = [];
+        if ($arr2) {
+            foreach ($arr2 as $key => $dat) {
+                if (!is_array($arr1[$key])) {
+                    $ret[$key] = $dat;
+                } else {
+                    $ret[$key] = array_merge($dat, $arr1[$key]);
+                }
+            }
+        }
+        if ($arr1) {
+            foreach ($arr1 as $field => $info) {
+                if (!is_array($arr2[$field])) {
+                    $ret[$field] = $info;
+                } else {
+                    $ret[$field] = array_merge($info, $arr2[$field]);
+                }
+            }
+        }
+        return $ret;
+    }
 }
 ?>

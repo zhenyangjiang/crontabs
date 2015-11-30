@@ -308,7 +308,11 @@ class Schema {
 			$name = $data['name'];
 			if (!self::$db->field_exists($dt, $name)){
 				$bool = self::field_add($dt, $data);
-				if (!$bool) dp($data);;
+				if (!$bool) {
+					dp($dt, false);
+					dp($name, false);
+					dp($data);
+				}
 				$act = 'add'; $msg = '添加';
 			} else {
 				if (count($data) == 1) { //数组中只有一个元素，即name, 则认为是删除

@@ -2,7 +2,7 @@
 namespace Landers\Classes;
 
 use Landers\Utils\Str;
-use Landers\Utils\PregMatch;
+use Landers\Utils\Verify;
 use Landers\Classes\Schema;
 
 /**
@@ -207,7 +207,7 @@ class SQL {
 		$add = self::$field_addtime; $upd = self::$field_updtime;
 		if ($is_add && array_key_exists($add, $fields)){
 			$data[$add] = @trim($data[$add]) or $data[$add] = NULL;
-			if (!PregMatch::is_datetime($data[$add]) && !PregMatch::is_date($data[$add])){
+			if (!Verify::is_datetime($data[$add]) && !Verify::is_date($data[$add])){
 				$_ = $fields[$add]['sidechar'];
 				if ( !$_ ) $data[$add] = $i_now; else $data[$add] = $s_now;
 			}
@@ -215,7 +215,7 @@ class SQL {
 
 		if ($is_upd && array_key_exists($upd, $fields)){
 			$data[$upd] = @trim($data[$upd]) or $data[$upd] = NULL;
-			if (!PregMatch::is_datetime($data[$upd]) && !PregMatch::is_date($data[$upd])){
+			if (!Verify::is_datetime($data[$upd]) && !Verify::is_date($data[$upd])){
 				$_ = $fields[$upd]['sidechar'];
 				if ( !$_ ) $data[$upd] = $i_now; else $data[$upd] = $s_now;
 			}

@@ -331,7 +331,7 @@ class MySQL{
 		$cachekey = md5($dt.$field);
 		if ($ret = $this->dbd_cache->get($cachekey)) return $ret;
 
-		$sql = "DESCRIBE $dt $field";
+		$sql = "DESCRIBE $dt `$field`";
 		$ret = !!$this->query($sql, 2);
 		$this->dbd_cache->set($cachekey, $ret);
 		return $ret;

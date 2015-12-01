@@ -297,30 +297,34 @@ Class DBModel {
             if (is_array($value)) continue;
             $error = NULL;
             $info = $this->fields[$name];
-            $text = $info['text'];
+            $label = $info['text'] or $label = $info['comment'];
             $length = (int)$info['length'];
+            $default = $info['default'];
+            $isnull = $info['isnull'] === 'NULL';
+            if ($isnull && !$value) continue;
+            if (!$isnull && !$value && $default) continue;
             switch ($info['type']){
                 case 'VARCHAR':; case 'CHAR':;
                     $my_length = strlen($value);
                     if ($my_length > $length) {
-                        $error = sprintf("%s【%s】长度%s字节,已超过%s字节！", $text, $value, $my_length, $length);
+                        $error = sprintf("%s【%s】长度%s字节,已超过%s字节！", $label, $value, $my_length, $length);
                     }; break;
                 case 'TINYINT':; case 'SMALLINT':; case 'MEDIUMINT':;
                 case 'INT':; case 'BIGINT':; case 'FLOAT':; case 'DOUBLE':;
                 case 'DECIMAL':; case 'YEAR':;
                     if (!is_numeric($value) && strpos($value, "'") !== false) {
-                        $error = sprintf("%s【%s】必须为数字型！", $text, $value);
+                        $error = sprintf("%s【%s】必须为数字型！", $label, $value);
                     }; break;
                 case 'DATETIME':; case 'TIMESTAMP':
                     if ( !Verify::is_datetime($value) ) {
-                        $error = sprintf("%s【%s】日期时间格式不对！", $text, $value);
+                        $error = sprintf("%s【%s】日期时间格式不对！", $label, $value);
                     }; break;
                 case 'DATE':;
-                    if ( !Verify::is_datetime($value) ) {
-                        $error = sprintf("%s【%s】日期格式不对！", $text, $value);
+                    if ( !Verify::is_date($value) ) {
+                        $error = sprintf("%s【%s】日期格式不对！", $label, $value);
                     }; break;
                 case 'TIME':;
-                    if ( !Verify::is_datetime($value) ) {
+                    if ( !Verify::is_time($value) ) {
                         $error = sprintf("【%s】：%s\n时间格式不对！", $text, $value);
                     }; break;
             }

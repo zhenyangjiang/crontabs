@@ -233,7 +233,8 @@ class Schema {
 				$type = "ENUM($tmp)"; $length = '';
 				break;
 			default :
-				if (Str::right($type, 3) == 'INT') $default = intval($default);
+				if ( !strlen($default) ) $default = 'NULL';
+				else $default = "'$default'";
 				break;
 		}
 
@@ -259,7 +260,8 @@ class Schema {
 		}
 		$arr[] = "`$name` $type".($length ? "($length)" : '');
 		$arr[] = is_string($isnull) ? $isnull : (is_null($isnull) ? 'NULL' : ($isnull ?  'NULL' : 'NOT NULL'));
-		$arr[] = $default !== '' && !$extra  ? "DEFAULT '$default'" : '';
+
+		$arr[] = ($default && !$extra)  ? "DEFAULT $default" : '';
 		$arr[] = $extra ? $extra : '';
 		$arr[] = "COMMENT '$comment'";
 		return implode(' ' , $arr);

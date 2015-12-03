@@ -95,13 +95,13 @@ Class DBModel {
      * @param  string      $key      键名
      * @return string
      */
-    public function get_errors($key = NULL, $index = NULL) {
+    public function get_errors($key = NULL, $index = NULL, $attach_no = true) {
         $errors = &$this->errors;
         if (!$key) return $errors;
         $errors = $errors[$key];
         if (!$errors) return $index ? '' : [];
         foreach ($errors as $i => &$item) {
-            $item = ($i+1) . '. '. $item['error'];
+            $item = ($attach_no ? ($i+1) . '. ' : ''). $item['error'];
         }; unset($item);
         if (!$index) return implode("\n", $errors);
         $ret = $errors[$key][$index];
@@ -612,7 +612,7 @@ Class DBModel {
         $awhere = array_merge($awhere, $extra_where);
         $bool = $this->update($data, $awhere, compact('uniques'));
         if (!$bool) {
-            $this->set_errors(__FUNCTION__,  $this->get_errors('update', 0));
+            $this->set_errors(__FUNCTION__,  '', $this->get_errors('update', 0, false));
             return false;
         } else {
             return true;

@@ -233,8 +233,13 @@ class Schema {
 				$type = "ENUM($tmp)"; $length = '';
 				break;
 			default :
-				if ( !strlen($default) ) $default = 'NULL';
-				else $default = "'$default'";
+				if ( !strlen($default) ) {
+					if ($isnull !=  'NOT NULL') {
+						$default = 'NULL';
+					}
+				} else {
+					$default = "'$default'";
+				}
 				break;
 		}
 

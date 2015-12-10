@@ -25,4 +25,8 @@ function auto_parse_args($args) {
     };
     return $ret;
 }
+
+function successfaild($bool) {
+    return $bool ? '成功' : '失败';
+}
 ?>

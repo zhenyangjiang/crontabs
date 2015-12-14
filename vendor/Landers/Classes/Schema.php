@@ -48,8 +48,8 @@ class Schema {
 
 	//导出表结构
 	public static function export_structure($dt){
-		$aret = self::$db->query("SHOW CREATE TABLE `$dt`");
-		$str = $aret[0]['Create Table'];
+		$arr = self::$db->query("SHOW CREATE TABLE `$dt`");
+		$str = $arr[0]['Create Table'];
 		$str = preg_replace('/CREATE TABLE/i', 'CREATE TABLE IF NOT EXISTS', $str);
 		$str = preg_replace('/AUTO_INCREMENT=\d+/i', 'AUTO_INCREMENT=1', $str);
 		return $str.";";

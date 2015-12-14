@@ -398,7 +398,9 @@ class dbd_cache {
 		if (!is_string($key) || !$this->is_cache) return;
 		$contain = self::get_contain();
 		$d = &self::$data[$contain];
-		$d or $d = array(); return $d[md5($key)]['value'];
+		$d or $d = [];
+		$ret = Arr::get($d, md5($key), []);
+		return Arr::get($ret, 'value');
 	}
 
 	public function set($key, $value){

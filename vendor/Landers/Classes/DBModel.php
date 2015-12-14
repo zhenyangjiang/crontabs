@@ -101,7 +101,7 @@ Class DBModel {
         $errors = $errors[$key];
         if (!$errors) return $index ? '' : [];
         foreach ($errors as $i => &$item) {
-            $item = ($attach_no ? ($i+1) . '. ' : ''). $item['error'];
+            $item = ($attach_no ? ($i+1) . '. ' : ''). Arr::get($item, 'error');
         }; unset($item);
         if (!$index) return implode("\n", $errors);
         $ret = $errors[$key][$index];
@@ -150,7 +150,8 @@ Class DBModel {
                 'unions'     => Arr::get($args, 4),
             );
         }
-        $opts['awhere'] = $this->build_where_key_id($opts['awhere']);
+        $_awhere = Arr::get($opts, 'awhere');
+        $opts['awhere'] = $this->build_where_key_id($_awhere);
         return $opts;
     }
 
@@ -160,7 +161,7 @@ Class DBModel {
      * @return array           列表 / NULL
      */
     public function lists($opts = array()) {
-        return $opts['is_page'] ?  $this->listpage($opts) : $this->listall($opts);
+        return Arr::get($opts, 'is_page') ?  $this->listpage($opts) : $this->listall($opts);
     }
 
     /**
@@ -169,7 +170,8 @@ Class DBModel {
      * @return array              列表 / NULL
      */
     public function listall($opts = array()) {
-        if (!$this->check_data('lists', $opts['awhere'])) {
+        $_awhere = Arr::get($opts, 'awhere');
+        if (!$this->check_data('lists', $_awhere)) {
             return NULL;
         }
         $sql = $this->SQL->SelectSQL($opts);
@@ -179,7 +181,7 @@ Class DBModel {
             $this->set_errors('lists', $sql);
             return NULL;
         }
-        if ($askey = $opts['askey']) {
+        if ($askey = Arr::get($opts, 'askey')) {
             $ret = Arr::rekey($ret, $askey);
         }
         return  $ret;
@@ -227,7 +229,10 @@ Class DBModel {
         if (is_null($ids)) return NULL;
 
         //据ids找出分页条件
-        $pager = new Pager($opts['pagesize'], $opts['page']);
+        $pagesize = Arr::get($opts, 'pagesize');
+        $page = Arr::get($opts, 'page');
+
+        $pager = new Pager($pagesize, $page);
         $ids = $pager->split($ids);
         $page = $pager->property();
 
@@ -235,7 +240,7 @@ Class DBModel {
             //重置opts
             $keyid = $this->field_id;
             $opts = array(
-                'fields'    => $opts['fields'],
+                'fields'    => Arr::get($opts, 'fields'),
                 'awhere'    => array($keyid => $ids),
                 'order'     => "INSTR(',".implode(',', $ids).",',CONCAT(',',".$keyid.",','))"
             );

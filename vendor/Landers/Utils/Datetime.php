@@ -286,6 +286,18 @@ class Datetime {
 		return $date >= $begin && $date < $end;
 	}
 
+	public static function dates_between($begin, $end = NULL, $format = NULL) {
+		$end or $end = time(); $ret = [];
+		$begin = self::format($begin, 0);
+		$end = self::format($end, 0);
+		for ($i = $begin; $i < $end; $i += self::$day) {
+			$ret[] = $format ? self::format($i, $format) : $i;
+		}
+		$ret[] = $format ? self::format($end, $format) : $end;
+		$ret = array_unique($ret);
+		return $ret;
+	}
+
 	/**
 	 * 是否在指定日期时间之前
 	 * @param  [type]  $date [description]

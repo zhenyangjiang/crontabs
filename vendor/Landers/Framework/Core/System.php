@@ -12,6 +12,11 @@ Class System {
             case 'LCLI' :
                 self::$class = $pre.'LcliSystem';
                 break;
+            case 'LARAVEL' :
+                self::$class = $pre.'LaravelSystem';
+                break;
+            default :
+                exit('未指定系统适配器！');
         }
 
         if (method_exists(self::$class, 'init')) {
@@ -20,7 +25,9 @@ Class System {
     }
 
     public static function __callStatic($method, $args) {
-        $class = self::$class;
+        if (!$class = self::$class) {
+            exit('未执行'.self::class.'初始化！');
+        }
         switch (count($args)) {
             case 0: return $class::$method();
             case 1: return $class::$method($args[0]);

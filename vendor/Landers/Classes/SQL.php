@@ -1,6 +1,7 @@
 <?php
 namespace Landers\Classes;
 
+use Landers\Utils\Arr;
 use Landers\Utils\Str;
 use Landers\Utils\Verify;
 use Landers\Classes\Schema;
@@ -49,8 +50,8 @@ class SQL {
         }
 
         $args = func_get_args();
-        $parter_type = $parter['type'];
-        $parter_mode = $parter['mode'];
+        $parter_type = Arr::get($parter, 'type');
+        $parter_mode = Arr::get($parter, 'mode');
         switch ($parter_type) {
             case 'datetime' :
                 if (!count($unions)) {
@@ -334,21 +335,30 @@ class SQL {
 	}
 
 	public function SelectSQL(Array $opts){ //fields, awhere, owhere, order , limit, group;
-		$fields = MySQL::conv_fields($opts['fields']);
-		if ($opts['extra_fields']) {
+		$fields = Arr::get($opts, 'fields');
+		$fields = MySQL::conv_fields($fields);
+
+		$extra_fields = Arr::get($opts, 'extra_fields');
+		if ($extra_fields) {
 			if ( $fields == '*' ) $fields = '';
-			$fields .= ', '.$opts['extra_fields'];
+			$fields .= ', '.$extra_fields;
 			$fields = ltrim($fields, ', ');
 		}
 
-		$where 	= $this->combine_wheres($opts['awhere'], $opts['owhere'], !!$opts['extra_dt']);
+		$_awhere = Arr::get($opts, 'awhere');
+		$_owhere = Arr::get($opts, 'owhere');
+		$_extra_dt = Arr::get($opts, 'extra_dt');
+		$_order = Arr::get($opts, 'order');
+		$_limit = Arr::get($opts, 'limit');
+		$_group = Arr::get($opts, 'group');
+		$where 	= $this->combine_wheres($_awhere, $_owhere, !!$_extra_dt);
 		$where 	= $where ? " where $where" : '';
-		$order = $opts['order'] ? ' order by '.$opts['order'] : '';
-		$limit = $opts['limit'] ? ' limit 0, '.$opts['limit'] : '';
-		$group = $opts['group'] ? ' group by '.$opts['group'] : '';
+		$order = $_order ? ' order by '.$_order : '';
+		$limit = $_limit ? ' limit 0, '.$_limit : '';
+		$group = $_group ? ' group by '.$_group : '';
 
 		$tpl = 'select %s from %s%s%s%s%s';
-		if ($unions = $opts['unions']) {
+		if ($unions = Arr::get($opts, 'unions')) {
 			//多表联合
 			$union_dts = $this->build_union_dts($unions);
 			if ( preg_match('/^\w{1,}\((\w{1,})\)$/', $fields, $matches) ){
@@ -362,7 +372,7 @@ class SQL {
 				$sql = sprintf($tpl, '*', $dt, '', $group, $order, $limit);
 			}
 		} else {
-			$dt = $opts['extra_dt'] ? $this->dt.', '.$opts['extra_dt'] : $this->dt;
+			$dt = $_extra_dt ? $this->dt.', '.$_extra_dt : $this->dt;
 			$sql = sprintf($tpl, $fields, $dt, $where, $group, $order, $limit);
 		}
 		return $sql;

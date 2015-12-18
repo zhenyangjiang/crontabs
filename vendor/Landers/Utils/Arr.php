@@ -18,6 +18,7 @@ class Arr {
     public static function to_html(&$a) {
         return sprintf('<pre>%s</pre>', var_export($a, true));
     }
+
     public static function once(&$arr, $key) {
         $ret = $arr[$key]; unset($arr[$key]); return $ret;
     }

@@ -1,10 +1,10 @@
 <?php
 namespace Landers\Apps\Tasks;
 
-use Landers\Interfaces\Task;
+use Landers\Interfaces\TaskInterface;
 use PHPMailer;
 
-class SendEmailNotify implements Task {
+class SendEmailNotify implements TaskInterface {
     /**
      * 构造方法
      */

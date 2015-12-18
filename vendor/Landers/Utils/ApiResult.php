@@ -43,15 +43,22 @@ Class ApiResult {
                     }
                 } elseif (func_num_args() == 3) {
                     list($success, $xvar1, $xvar2) = func_get_args();
-                    $parse = auto_parse_args([$xvar1, $xvar2]);
-                    $message = $parse['string'];
-                    if ($success) {
-                        unset($parse['string']);
-                        $data = pos($parse);
-                        $code = 0;
+                    if (gettype($xvar1) !== gettype($xvar2)) {
+                        $parse = auto_parse_args([$xvar1, $xvar2]);
+                        $message = $parse['string'];
+                        if ($success) {
+                            unset($parse['string']);
+                            $data = pos($parse);
+                            $code = 0;
+                        } else {
+                            $data = $no_data;
+                            $code = array_key_exists('integer', $parse) ? $parse['integer'] : $base_code + 1;
+                        }
                     } else {
-                        $data = $no_data;
-                        $code = array_key_exists('integer', $parse) ? $parse['integer'] : $base_code + 1;
+                        $success = true;
+                        $data = $xvar1;
+                        $message = $xvar2;
+                        $code = 0;
                     }
                 } elseif (func_num_args() == 4) {
                     list($success, $data, $message, $code) = func_get_args();
@@ -100,12 +107,7 @@ Class ApiResult {
 
     public static function build(){
         $args = func_get_args();
-        switch (func_num_args()) {
-            case 1 : $o = new static($args[0]); break;
-            case 2 : $o = new static($args[0], $args[1]); break;
-            case 3 : $o = new static($args[0], $args[1], $args[2]); break;
-            case 4 : $o = new static($args[0], $args[1], $args[2], $args[4]); break;
-        }
+        $o = call_user_func_array([static::class, 'make'], $args);
         return $o->get();
     }
 

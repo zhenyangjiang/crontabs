@@ -3,7 +3,7 @@ namespace Landers\Framework\Core;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
-use Landers\Interfaces\Task;
+use Landers\Interfaces\TaskInterface;
 
 class Queue {
     const FAILD_RETRY_COUNT = 5;
@@ -22,7 +22,7 @@ class Queue {
      * 任务入队
      * @return void
      */
-    public function push(Task $task, $is_note = false) {
+    public function push(TaskInterface $task, $is_note = false) {
         $priority = PheanstalkInterface::DEFAULT_PRIORITY;
         $delay = PheanstalkInterface::DEFAULT_DELAY;
         $ttr = $this->config['ttr'] or $ttr = PheanstalkInterface::DEFAULT_TTR;

@@ -5,8 +5,9 @@ use Landers\Classes\MySQL;
 use Landers\Utils\Str;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Log;
+use Landers\Interfaces\SystemClass;
 
-class LcliSystem {
+class LcliSystem extends SystemClass {
     private static $app = [];
     private static $params = [];
 
@@ -108,21 +109,6 @@ class LcliSystem {
     }
     */
 
-    /**
-     * 运行时的缓存读写
-     * @param  String $key 键
-     * @param  Mixed $dat 值 值为空时取值，反之设置值
-     * @return Mixed
-     */
-    private static $cache_data = [];
-    public static function cache($key, $dat = NULL) {
-        $ret = &self::$cache_data;
-        if (func_num_args() == 2) {
-            $ret[$key] = $dat; return $dat;
-        } else {
-            if (array_key_exists($key, $ret)) return $ret[$key]; else return NULL;
-        }
-    }
 
     /**
      * 连接数据库

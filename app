@@ -6,7 +6,7 @@ date_default_timezone_set('PRC');
 $_SERVER['DOCUMENT_ROOT'] = __DIR__;
 define('ENV_DEBUG_console'      , true);
 define('ENV_charset'            , 'utf-8');
-define('ENV_system_name'        , 'ÓÅÀ¶¿Æ¼¼');
+define('ENV_system_name'        , 'ULan Crontabs');
 define('ENV_sleep_time'         , 5);
 ini_set('default_charset', ENV_charset);
 

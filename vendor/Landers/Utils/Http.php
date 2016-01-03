@@ -79,10 +79,42 @@ class Http {
         }
     }
 
-	public static function post($url, $data, $opts = array()) {
+    private static function conv_array_format($data, $str_split = NULL){
+        $a = array(); foreach($data as $k => $v){
+            $a[] = $k.'='.$v;
+        };
+        return $str_split ? implode($str_split, $a) : $a;
+    }
+
+    public static function parse($content) {
+        $ret = ['status' => '', 'body' => '', 'cookie' => []];
+        $arr = explode(PHP_EOL, $content);
+        foreach ($arr as $i => $str) {
+            if ( ord($str) == 13 ) break;
+        }
+        $header = array_slice($arr, 0, $i);
+        $body = array_slice($arr, $i+1);
+        array_pop($body);
+        $ret['body'] = implode(PHP_EOL, $body);
+
+        foreach (self::$statuses as $code => $status) {
+            if (preg_match('/'.$code.'/', $header[0])) {
+                $ret['status'] = $status;
+            }
+        }
+        foreach($header as $line) {
+            if (preg_match('/Set-Cookie: (.*)=(.*)/', $line, $matches)) {
+                $ret['cookie'][$matches[1]] = $matches[2];
+            }
+        }
+        return $ret;
+    }
+
+    public static function post($url, $data, $opts = array()) {
 		$opts = array_merge(array(
 			'build'			=> true,
 			'header'		=> array(),
+            'respone-header'=> 0,
 			'timeout'		=> 30,
 			'referer'		=> '',
             'cookie'        => '',
@@ -112,8 +144,8 @@ class Http {
             $opts['header'] = self::conv_array_format($opts['header']);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $opts['header']);
         }
-        curl_setopt($ch, CURLOPT_HEADER, 0);                // 显示返回的Header区域内容
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);        // 获取的信息以文件流的形式返回
+        curl_setopt($ch, CURLOPT_HEADER, $opts['respone-header']);  // 显示返回的Header区域内容
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);                // 获取的信息以文件流的形式返回
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
         $ret = curl_exec($ch);
         $errno = curl_errno($ch);

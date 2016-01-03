@@ -1,5 +1,5 @@
 <?php
-namespace Classes;
+namespace Landers\Utils;
 class java3des {
 	private static $type = MCRYPT_3DES; //MCRYPT_3DES 或 MCRYPT_TRIPLEDES， 结果一样
 	private static $mode = MCRYPT_MODE_ECB;

@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Interfaces;
 
-interface Task {
+interface TaskInterface {
     /**
      * 执行任务
      * @return void

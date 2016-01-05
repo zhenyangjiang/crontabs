@@ -22,10 +22,11 @@ BlackHole::unblock(); //解除牵引
 Log::note('#line');
 
 //读取防火墙数据
-$pack_attack = Fw::get_attack();
+$pack_attack = Firewall::get_attack();
 
 //保存攻击数据
 $pack_attack = DDoSInfo::save_attack($pack_attack);
+$pack_attack or $pack_attack = [];
 if ( $all_ips = array_keys($pack_attack) ) {
     foreach ($all_ips as $ip) Log::note("#tab$ip");
     Log::note('#tab成功导入%s条数据', colorize(count($all_ips), 'green', 1));
@@ -91,8 +92,10 @@ $ret = History::save_start_attack($all_ips);
 Log::note(['#blank', '#blank', '#blank', '开始逐一对所有被攻击IP操作...']);
 foreach ($pack_attack as $item) {
     Log::note('#line');
-    $item['mbps'] = &$item['bps'];//bps改名为mbps
-    $dest_ip = $item['dest_ip'];
+    $item['mbps'] = &$item['bps0'];//bps0改名为mbps
+    $item['pps'] = &$item['pps0'];//pps0改名为pps
+
+    $dest_ip = $item['dest'];
 
     //读取云盾表中该ip的云盾配置
     $mitigation = Mitigation::find_ip($dest_ip);
@@ -102,6 +105,10 @@ foreach ($pack_attack as $item) {
 
         //由ip确定实例记录
         $instance = Instance::find_ip($dest_ip);
+        if (!$instance) {
+            Log::note('未找到IP：%s的实例', $dest_ip);
+            BlackHole::block($dest_ip); continue;
+        }
 
         //由实例确定数据中心
         $datacenter = Instance::datacenter($instance);
@@ -218,7 +225,7 @@ foreach ($pack_attack as $item) {
                     }
                 } else {
                     //超过?否
-                    Log::note('当前攻击：%sMbps/%spps ', $item['bps'], $item['pps']);
+                    Log::note('当前攻击：%sMbps/%spps ', $item['mbps'], $item['pps']);
                     // Log::note('均未到达数据中心%s最高防护值：%sMbps/%spps ，继续清洗中...', $datacenter['name'], $max_mbps, $max_pps);
                     Log::note('未到达用户最高承受支付能力防护值：%sMbps/%spps', $max_mbps, $max_pps);
 

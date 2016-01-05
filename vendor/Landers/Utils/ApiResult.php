@@ -117,7 +117,7 @@ Class ApiResult {
             case 1 : $o = new static($args[0]); break;
             case 2 : $o = new static($args[0], $args[1]); break;
             case 3 : $o = new static($args[0], $args[1], $args[2]); break;
-            case 4 : $o = new static($args[0], $args[1], $args[2], $args[4]); break;
+            case 4 : $o = new static($args[0], $args[1], $args[2], $args[3]); break;
         }
         return $o;
     }

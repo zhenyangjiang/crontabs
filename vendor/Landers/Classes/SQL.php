@@ -19,7 +19,7 @@ class SQL {
 	public static $field_addtime = 'created_at';
 	public static $field_updtime = 'updated_at';
 
-	public function __construct(&$db = NULL, $dt = NULL, $parter){
+	public function __construct(&$db = NULL, $dt = NULL, $parter = NULL){
 		$this->db = &$db;
 		$this->dt = $dt;
 		$this->parter = $parter ? (is_array($parter) ? $parter : ['type' => $parter]) : NULL;

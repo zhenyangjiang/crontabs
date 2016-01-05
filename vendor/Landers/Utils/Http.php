@@ -80,6 +80,7 @@ class Http {
     }
 
     private static function conv_array_format($data, $str_split = NULL){
+        if (!is_array($data)) return $data;
         $a = array(); foreach($data as $k => $v){
             $a[] = $k.'='.$v;
         };
@@ -158,6 +159,7 @@ class Http {
 	public static function get($url, $opts = array()){
 		$opts = array_merge(array(
 			'header'	=> array(),
+            'respone-header' => 0,
 			'timeout'	=> 30,
 			'referer'	=> '',
             'cookie'    => '',
@@ -180,7 +182,7 @@ class Http {
             $opts['header'] = self::conv_array_format($opts['header']);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $opts['header']);
         }
-        curl_setopt($ch, CURLOPT_HEADER, 0);                // 显示返回的Header区域内容
+        curl_setopt($ch, CURLOPT_HEADER, $opts['respone-header']);                // 显示返回的Header区域内容
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
         $ret = curl_exec($ch);
         $errno = curl_errno($ch);

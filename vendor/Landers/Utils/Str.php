@@ -22,12 +22,22 @@ class Str {
         return mb_substr($s, mb_strlen($s, 'utf-8') - $n, $n, 'utf-8');
     }
 
-    public static function cut_left($s, $n=1){
+    public static function cutLeft($s, $n=1){
         return self::right($s, mb_strlen($s, 'utf-8') - $n);
     }
 
-    public static function cut_right($s, $n=1){
+    public static function cutRight($s, $n=1){
         return self::left($s, mb_strlen($s, 'utf-8') - $n);
+    }
+
+    /**
+     * 将字符串转为驼峰式
+     * @param  [type] $s [description]
+     * @return [type]    [description]
+     */
+    public static function camelCase($s) {
+        $s = ucwords(str_replace(['-', '_'], ' ', $s));
+        return str_replace(' ', '', $s);
     }
 
     public static function random($len = 8, $type = NULL){
@@ -70,7 +80,7 @@ class Str {
     }
 
     //从集合是否存在某数据
-    public static function exists_in_set($char, $str){
+    public static function existsInSet($char, $str){
         if (!strlen($str)) return false;
         $arr = self::split($str, ',');
         $arr = array_flip($arr);
@@ -78,7 +88,7 @@ class Str {
     }
 
     //从集合去删除某项
-    public static function remove_in_set($char, $str){
+    public static function removeInSet($char, $str){
         $arr = self::split($str, ',');
         $arr = array_flip($arr); unset($arr[$char]);
         $arr = array_flip($arr);

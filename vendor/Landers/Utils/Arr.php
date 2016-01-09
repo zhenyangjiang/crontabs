@@ -46,13 +46,30 @@ class Arr {
     }
 
     //取数组中的元素值
-    public static function get(&$a, $key, $defalt = NULL, $is_save = false){
-        if (!is_array($a)) return $defalt;
+    private static function _get(&$a, $key, $default = NULL){
+        if (!is_array($a)) return $default;
         if (!array_key_exists($key, $a)) {
-            if ($is_save && $default) $a[$key] = $defalt;
-            return $defalt;
+            return $default;
         } else {
             return $a[$key];
+        }
+    }
+    public static function get($a, $keys, $default = NULL){
+        if (!is_array($a)) return $default;
+        $keys = explode('.', $keys);
+        $c = count($keys);
+        if ($c > 1) {
+            $arr = [];
+            for ( $i = 0; $i < $c - 1; $i++ ) {
+                $key = $keys[$i];
+                $arr[$key] = self::_get($a, $key, []);
+                $arr = &$arr[$key]; $a = &$a[$key];
+            }
+            $lastkey = $keys[$c-1];
+            return self::_get($arr, $lastkey, $default);
+        } else {
+            $key = implode('', $keys);
+            return self::_get($a, $key, $default);
         }
     }
 

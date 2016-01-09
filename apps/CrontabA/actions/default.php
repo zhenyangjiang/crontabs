@@ -3,15 +3,14 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Log;
 use Landers\Utils\Datetime;
 
-
 // require_once('randomxml.php'); usleep(100000);
 // Log::note(['#blank', '#blank', '#blank']);
 
 Log::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
 // $sqls = [
-//     'TRUNCATE ulan_mitigation.ddoshistory',
-//     'TRUNCATE ulan_mitigation.historyfee',
+//     'TRUNCATE ulan_mitigation.ddosDDoSHistory',
+//     'TRUNCATE ulan_mitigation.DDoSHistoryfee',
 //     'update ulan_main.`ulan_instances` set net_state=0, net_state_updtime'
 // ];
 //System::db('mitigation')->querys($sqls);
@@ -22,7 +21,9 @@ BlackHole::unblock(); //解除牵引
 Log::note('#line');
 
 //读取防火墙数据
-$pack_attack = Firewall::get_attack();
+//$pack_attack = Firewall::get_attack();
+$pack_attack = Firewall::make_attack($pack_attack);
+
 
 //保存攻击数据
 $pack_attack = DDoSInfo::save_attack($pack_attack);
@@ -35,7 +36,7 @@ Log::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
 Log::note('正在查询被攻击中、且本次未被攻击的IP作攻击结束：');
-$attaching_ips = History::get_attacking_ips();
+$attaching_ips = DDoSHistory::get_attacking_ips();
 
 if ($attaching_ips) {
     foreach ($attaching_ips as $ip) Log::note('#tab%s', $ip);
@@ -45,7 +46,7 @@ if ($attaching_ips) {
     Log::note('#blank');
 
     if ($diff_ips) {
-        Log::note(['#blank', '#blank', '逐一对以上攻击结束的IP进行总计结算：']);
+        Log::note(['#blank', '#blank', '逐一对以上攻击自然结束的IP进行总计结算：']);
         foreach ($diff_ips as $ip) {
             Log::note('#line');
 
@@ -59,18 +60,17 @@ if ($attaching_ips) {
             Log::user_detail($user);
 
             //由IP确定攻击历史记录
-            History::debug();
-            $history = History::find_ip_attacking($ip);
-            if ($history) {
-                $history_id = $history['id'];
-                Log::note('此IP归属历史记录ID：%s', $history_id);
+            $DDoSHistory = DDoSHistory::find_ip_attacking($ip);
+            if ($DDoSHistory) {
+                $DDoSHistory_id = $DDoSHistory['id'];
+                Log::note('此IP归属历史记录ID：%s', $DDoSHistory_id);
 
-                HistoryFee::deduction($uid, $history, function($ip){
-                    return History::save_end_attack($ip);
+                DDoSDDoSHistoryFee::deduction($uid, $DDoSHistory, function($ip){
+                    return DDoSHistory::save_end_attack($ip, 'stop');
                 });
             } else {
-                Log::warn('未找到该IP正在被攻击中的历史记录，暂不计费时，直接写入攻击结束');
-                History::save_end_attack($ip);
+                Log::warn('未找到该IP正在被攻击中的历史记录，暂不计费，直接写入攻击结束');
+                DDoSHistory::save_end_attack($ip, 'stop');
             }
         }
     } else {
@@ -86,7 +86,7 @@ if (!$all_ips) System::halt('空数据包时，本次任务提前结束');
 //记录开始攻击
 Log::note('#line');
 Log::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
-$ret = History::save_start_attack($all_ips);
+$ret = DDoSHistory::save_start_attack($all_ips);
 
 //攻击中的数据处理
 Log::note(['#blank', '#blank', '#blank', '开始逐一对所有被攻击IP操作...']);
@@ -180,17 +180,17 @@ foreach ($pack_attack as $item) {
 
                 //由IP确定攻击历史记录
                 Log::note('由IP确定攻击历史记录：');
-                $history = History::find_ip_attacking($dest_ip);
-                if (!$history) {
+                $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
+                if (!$DDoSHistory) {
                     $msg = sprintf('未找到该IP正在被攻击中的历史记录');
                     Notify::developer($msg);
                     continue;
                 }
-                $history_id = $history['id'];
-                Log::note('#tab当前攻击的所属历史记录ID：%s', $history_id);
+                $DDoSHistory_id = $DDoSHistory['id'];
+                Log::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
 
                 //确定[最后节点时间]和[当前时间]
-                $last_break_time = HistoryFee::find_last_time($history_id) or $last_break_time = $history['begin_time'];
+                $last_break_time = DDoSDDoSHistoryFee::find_last_time($DDoSHistory_id) or $last_break_time = $DDoSHistory['begin_time'];
                 $now_time = time();
 
                 //当前攻击是否超过用户设定的最高防护能力
@@ -212,11 +212,11 @@ foreach ($pack_attack as $item) {
 
                     //先小计
                     Log::note('写入此段不足1小时的小计记录：');
-                    HistoryFee::create_fee($history, $price_rules, $last_break_time, $now_time);
+                    DDoSDDoSHistoryFee::create_fee($DDoSHistory, $price_rules, $last_break_time, $now_time);
 
                     //后总计
                     Log::note('结算本次攻击总费用：');
-                    $bool = HistoryFee::deduction($uid, $history);
+                    $bool = DDoSDDoSHistoryFee::deduction($uid, $DDoSHistory);
                     if ($bool) {
                         Log::note('#tab总计结算成功');
                     } else {
@@ -232,14 +232,14 @@ foreach ($pack_attack as $item) {
                     if ( $now_time - $last_break_time >= 3600 ) {
                         //满1小时小计一次
                         Log::note('离上一轮攻击时间：%s，已到达或超过1小时，需进行小计：', date('Y-m-d H:i:s', $last_break_time));
-                        HistoryFee::create_fee($history, $price_rules, $last_break_time, $now_time);
+                        DDoSDDoSHistoryFee::create_fee($DDoSHistory, $price_rules, $last_break_time, $now_time);
                         Log::note('继续清洗中...');
                     } else {
                         //不足1小时，无需小计
                         Log::note('最近攻击发生在%s，本轮暂不足1小时', date('Y-m-d H:i:s', $last_break_time));
 
                         //模拟本次攻击总计，检查余额是否足以支付
-                        $total_fee = HistoryFee::total_fee($history_id);
+                        $total_fee = DDoSDDoSHistoryFee::total_fee($DDoSHistory_id);
                         if ( $total_fee > $user['money'] ) {
                             Log::note('模拟总计费用：%s，已超出用户余额：%s，需立即处理：', $total_fee, $user['money']);
 
@@ -248,11 +248,11 @@ foreach ($pack_attack as $item) {
 
                             //先小计
                             Log::note('#tab写入此段不足1小时的小计记录');
-                            HistoryFee::create_fee($history, $price_rules, $last_break_time, $now_time);
+                            DDoSDDoSHistoryFee::create_fee($DDoSHistory, $price_rules, $last_break_time, $now_time);
 
                             //清算本次攻击 事务处理：扣除用户费用，费用日志
                             Log::note('#tab强制总计结算本次攻击总费用');
-                            HistoryFee::deduction($uid, $history);
+                            DDoSDDoSHistoryFee::deduction($uid, $DDoSHistory);
                         } else {
                             Log::note('当前余额足够，继续清洗中...');
                         }

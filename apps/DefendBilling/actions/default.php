@@ -100,8 +100,9 @@ foreach ($pack_attack as $item) {
     //读取云盾表中该ip的云盾配置
     $mitigation = Mitigation::find_ip($dest_ip);
     if (!$mitigation) {
+        //100M
         //找不到记录，属：默认免费版
-        Log::note('IP：%s，计费方案：默认免费版', $dest_ip);
+        Log::note('IP：%s，为未使用的IP地址', $dest_ip);
 
         //由ip确定实例记录
         $instance = Instance::find_ip($dest_ip);

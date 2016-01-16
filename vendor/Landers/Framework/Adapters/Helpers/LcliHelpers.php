@@ -103,12 +103,12 @@ function during_prev_hours($hours) {
     $begin = strtotime('-1 hours', $end); $end--;
     //$begin = strtotime('2015-09-12 10:00:00');
     //$end = strtotime('2015-09-12 10:59:59');
-    return [
+    return array(
         'begin'         => $begin,
         'end'           => $end,
         'begin_text'    => date('Y-m-d H:i:s', $begin),
         'end_text'      => date('Y-m-d H:i:s', $end)
-    ];
+    );
 }
 
 function generateUUID(){

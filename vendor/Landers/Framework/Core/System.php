@@ -20,13 +20,13 @@ Class System {
         }
 
         if (method_exists(self::$class, 'init')) {
-            call_user_func_array([self::$class, 'init'], $args);
+            call_user_func_array(array(self::$class, 'init'), $args);
         }
     }
 
     public static function __callStatic($method, $args) {
         if (!$class = self::$class) {
-            exit('未执行'.self::class.'初始化！');
+            exit('未执行'.__CLASS__.'初始化！');
         }
         switch (count($args)) {
             case 0: return $class::$method();
@@ -34,7 +34,7 @@ Class System {
             case 2: return $class::$method($args[0], $args[1]);
             case 3: return $class::$method($args[0], $args[1], $args[2]);
             case 4: return $class::$method($args[0], $args[1], $args[2], $args[3]);
-            default: return call_user_func_array([$class, $method], $args);
+            default: return call_user_func_array(array($class, $method), $args);
         }
     }
 }

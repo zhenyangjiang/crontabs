@@ -9,25 +9,27 @@ use Landers\Classes\DBModel;
  */
 abstract class Module {
     public static function init(){
-        if (property_exists(static::class, 'connection')) {
+        $_class_ = get_called_class();
+        if (property_exists($_class_, 'connection')) {
             $connection = static::$connection;
         } else {
             $connection = 'default';
         }
-        $db = System::db($connection);
-        if ( ! property_exists(static::class, 'appkey') && !property_exists(static::class, 'datatable')) {
-            exit(static::class.'的 appkey 和 datatable 参数不能同时为空！');
-        }
-        $dt_parter = property_exists(static::class, 'dt_parter') ? static::$dt_parter : NULL;
 
-        if (property_exists(static::class, 'appkey') && !static::$DAO) {
-            if ( !property_exists(static::class, 'DAO_class') ) {
-                exit(static::class .' 的 DAO_class 未定义！');
+        $db = System::db($connection);
+        if ( ! property_exists($_class_, 'appkey') && !property_exists($_class_, 'datatable')) {
+            exit($_class_.'的 appkey 和 datatable 参数不能同时为空！');
+        }
+        $dt_parter = property_exists($_class_, 'dt_parter') ? static::$dt_parter : NULL;
+
+        if (property_exists($_class_, 'appkey') && !static::$DAO) {
+            if ( !property_exists($_class_, 'DAO_class') ) {
+                exit($_class_ .' 的 DAO_class 未定义！');
             }
-            static::$DAO_class or static::$DAO_class = ArchiveModel::class;
+            static::$DAO_class or static::$DAO_class = 'ArchiveModel';
             static::$DAO = new static::$DAO_class(static::$appkey);
         }
-        if (property_exists(static::class, 'datatable') && !static::$DAO) {
+        if (property_exists($_class_, 'datatable') && !static::$DAO) {
             static::$DAO = new DBModel($db, static::$datatable, '记录', $dt_parter);
         }
     }
@@ -39,7 +41,7 @@ abstract class Module {
             case 2: return static::$DAO->$method($args[0], $args[1]);
             case 3: return static::$DAO->$method($args[0], $args[1], $args[2]);
             case 4: return static::$DAO->$method($args[0], $args[1], $args[2], $args[3]);
-            default: return call_user_func_array([static::$DAO, $method], $args);
+            default: return call_user_func_array(array(static::$DAO, $method), $args);
         }
     }
 }

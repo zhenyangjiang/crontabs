@@ -8,8 +8,8 @@ use Landers\Framework\Core\Log;
 use Landers\Interfaces\SystemClass;
 
 class LcliSystem extends SystemClass {
-    private static $app = [];
-    private static $params = [];
+    private static $app = array();
+    private static $params = array();
 
     private static $argv;
     private static $root;
@@ -115,7 +115,7 @@ class LcliSystem extends SystemClass {
      * @param  String 连接名
      * @return Object 连接对象
      */
-    private static $dbs = [];
+    private static $dbs = array();
     public static function db($connection) {
         $db = &self::$dbs[$connection];
         if (!$db) {
@@ -145,7 +145,7 @@ class LcliSystem extends SystemClass {
      * 任务终止回调
      */
     public static function continues($msg = '本轮任务结束'){
-        Log::note(['#line', '#blank', "$msg\n\n"]); exit();
+        Log::note(array('#line', '#blank', "$msg\n\n")); exit();
         // sleep(ENV_sleep_time);
     }
 }

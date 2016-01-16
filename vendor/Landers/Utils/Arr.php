@@ -59,10 +59,10 @@ class Arr {
         $keys = explode('.', $keys);
         $c = count($keys);
         if ($c > 1) {
-            $arr = [];
+            $arr = array();
             for ( $i = 0; $i < $c - 1; $i++ ) {
                 $key = $keys[$i];
-                $arr[$key] = self::_get($a, $key, []);
+                $arr[$key] = self::_get($a, $key, array());
                 $arr = &$arr[$key]; $a = &$a[$key];
             }
             $lastkey = $keys[$c-1];
@@ -176,7 +176,7 @@ class Arr {
 
     //对两个数组的双层深度合度
     public static function merge(array &$arr1, array &$arr2) {
-        $ret = [];
+        $ret = array();
         if ($arr2) {
             foreach ($arr2 as $key => $dat) {
                 if (!is_array($arr1[$key])) {

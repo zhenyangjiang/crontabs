@@ -1,15 +1,11 @@
 <?php
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Log;
-use Landers\Utils\Datetime;
+// use Landers\Utils\Http;
 
-Log::note(['【CPU，网络流量】（'.System::app('name').'）开始工作','#dbline']);
+Log::note(array('【CPU，网络流量】（'.System::app('name').'）开始工作','#dbline'));
+$data = VirtTop::getData($error);
 
-$str = VirtTop::getData($error);
-
-if ($str) {
-    $data = VirtTop::parseData($str);
-} else {
-
-}
+Monitor::debug();
+Monitor::import($data);
 ?>

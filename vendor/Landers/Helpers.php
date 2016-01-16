@@ -19,7 +19,7 @@ Class CallTo extends CallIndieFunction {
 }; \CallTo::init();
 
 function auto_parse_args($args) {
-    $ret = [];
+    $ret = array();
     foreach ($args as $arg) {
         $type = gettype($arg);
         $ret[$type] = $arg;
@@ -37,7 +37,7 @@ function successfaild($bool) {
  */
 function build_api_result() {
     $args = func_get_args();
-    return call_user_func_array([ApiResult::class, 'make'], $args)->get();
+    return call_user_func_array(array('Landers\Utils\ApiResult', 'make'), $args)->get();
 }
 
 /**
@@ -46,7 +46,7 @@ function build_api_result() {
  */
 function output_api_result(){
     $args = func_get_args();
-    call_user_func_array([ApiResult::class, 'make'], $args)->output();
+    call_user_func_array(array('Landers\Utils\ApiResult', 'make'), $args)->output();
 }
 
 function redis($key, $value) {

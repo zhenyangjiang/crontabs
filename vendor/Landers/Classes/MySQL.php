@@ -24,10 +24,10 @@ class MySQL{
 		if ($path = $this->log_path) {
 			$file = rtrim($path, DIRECTORY_SEPARATOR.'/').'/sqls/'.date('Y-m-d').'.log';
 			$a = debug_backtrace(0); $line_width = 100;
-			$arr = [$sql, str_repeat('=', $line_width), var_export($a, true), str_repeat('-', $line_width)];
-			$arr = array_merge($arr, ['', '', '', '', '']);
+			$arr = array($sql, str_repeat('=', $line_width), var_export($a, true), str_repeat('-', $line_width));
+			$arr = array_merge($arr, array('', '', '', '', ''));
 			$content = implode(PHP_EOL, $arr);
-			$fso = \Landers\Utils\Fso::class;
+			$fso = '\Landers\Utils\Fso';
 			if (class_exists($fso)) {
 				$ret = $fso::write($file, $content, true);
 			} else {
@@ -398,8 +398,8 @@ class dbd_cache {
 		if (!is_string($key) || !$this->is_cache) return;
 		$contain = self::get_contain();
 		$d = &self::$data[$contain];
-		$d or $d = [];
-		$ret = Arr::get($d, md5($key), []);
+		$d or $d = array();
+		$ret = Arr::get($d, md5($key), array());
 		return Arr::get($ret, 'value');
 	}
 

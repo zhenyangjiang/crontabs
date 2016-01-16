@@ -15,7 +15,7 @@ abstract Class SystemClass {
      * @param  Mixed $dat 值 值为空时取值，反之设置值
      * @return Mixed
      */
-    private static $cache_data = [];
+    private static $cache_data = array();
     public static function cache($key, $dat = NULL) {
         $ret = &self::$cache_data;
         if (func_num_args() == 2) {

@@ -2,8 +2,8 @@
 namespace Landers\Framework\Core;
 
 Class Log {
-    private static $data = [];   //带有Linux终端格式，用于屏幕输出
-    private static $text = [];   //不带格式纯文本，用于屏幕输出
+    private static $data = array();   //带有Linux终端格式，用于屏幕输出
+    private static $text = array();   //不带格式纯文本，用于屏幕输出
     private static $savepath = 'logs';
 
     public static function __callStatic($type, $args) {
@@ -32,8 +32,8 @@ Class Log {
      */
     private static function strip_format($val) {
         if (is_string($val)) {
-            $val = str_replace(['[0m', '[37;40m', '[33;40m', '[33;40;1m', '[32;40;1m'], '', $val);
-            $val = str_replace(['#tab'], str_repeat('　', 2), $val);
+            $val = str_replace(array('[0m', '[37;40m', '[33;40m', '[33;40;1m', '[32;40;1m'), '', $val);
+            $val = str_replace(array('#tab'), str_repeat('　', 2), $val);
         } else $val = self::strip_format($val);
         return $val;
     }
@@ -71,7 +71,7 @@ Class Log {
     private static function parse($args){
         $data = &self::$data;
         $args_count = count($args);
-        $ret = [];
+        $ret = array();
         if ( $args_count == 1) {
             $arr = (array)$args[0];
             foreach ($arr as $item) {
@@ -106,7 +106,7 @@ Class Log {
             $item = colorize($item, $color);
         }; unset($item);
         $text = implode('#tab', $a);
-        $rep = ['#tab' => str_repeat(' ', 4)];
+        $rep = array('#tab' => str_repeat(' ', 4));
         return str_replace(array_keys($rep), array_values($rep), $text);
     }
 

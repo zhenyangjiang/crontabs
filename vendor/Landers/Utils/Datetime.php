@@ -7,11 +7,11 @@ namespace Landers\Utils;
  */
 class Datetime {
 	public static $second 	= 1;
-	public static $minute	= 60;
+	public static $minute		= 60;
 	public static $hour		= 3600;
 	public static $day		= 86400;
-	public static $week 	= 604800;
-	public static $month	= 2592000;
+	public static $week 		= 604800;
+	public static $month		= 2592000;
 	public static $year		= 31104000;
 
 	/**

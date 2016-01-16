@@ -656,6 +656,27 @@ Class DBModel {
     }
 
     /**
+     * 拉取最后N条记录
+     * @param $n
+     * @param $fields
+     * @param $LastId
+     */
+    public function pullLast($n, $opts = array(), $ignore = false, $action_key = NULL) {
+        $action_key or $action_key = md5( $this->dt.date('Y-m'));
+        $last_id = $ignore ? 0 : (int)Arr::get($_COOKIE, $action_key);
+        $opts = array_merge($opts, [
+            'awhere'=> ["id>$last_id"],
+            'limit' => $n,
+            'order' => 'id desc',
+        ]);
+        $list = $this->lists($opts);
+        if ($list) {
+            setcookie($action_key, $list[0]['id'], time() + 3600 * 24 * 7, '/');
+        }
+        return $list;
+    }
+
+    /**
      * 同步数据表与$datas，（不可以全删除重建）
      * @param  array      $awhere     基础条件
      * @param  [type]     $datas      数据包

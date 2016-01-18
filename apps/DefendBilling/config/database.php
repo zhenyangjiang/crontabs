@@ -3,7 +3,7 @@ return [
     'mitigation' => [
         'host'      => '172.31.50.5',
         'port'      => '3306',
-        'database'  => 'ulan_mitigation',
+        'dbname'  => 'ulan_mitigation',
         'username'  => 'landers',
         'password'  => 'CpBbVRJqGvsrLc3n',
         'charset'   => 'utf8',
@@ -13,7 +13,7 @@ return [
     'main' => [
         'host'      => '172.31.50.5',
         'port'      => '3306',
-        'database'  => 'ulan_main',
+        'dbname'  => 'ulan_main',
         'username'  => 'landers',
         'password'  => 'CpBbVRJqGvsrLc3n',
         'charset'   => 'utf8',
@@ -23,7 +23,7 @@ return [
     'oauth' => [
         'host'      => '172.31.50.5',
         'port'      => '3306',
-        'database'  => 'ulan_oauth',
+        'dbname'  => 'ulan_oauth',
         'username'  => 'landers',
         'password'  => 'CpBbVRJqGvsrLc3n',
         'charset'   => 'utf8',

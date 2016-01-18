@@ -65,7 +65,7 @@ if ($attaching_ips) {
                 $DDoSHistory_id = $DDoSHistory['id'];
                 Log::note('此IP归属历史记录ID：%s', $DDoSHistory_id);
 
-                DDoSDDoSHistoryFee::deduction($uid, $DDoSHistory, function($ip){
+                DDoSHistoryFee::deduction($uid, $DDoSHistory, function($ip){
                     return DDoSHistory::save_end_attack($ip, 'stop');
                 });
             } else {
@@ -183,7 +183,7 @@ foreach ($pack_attack as $item) {
                 Log::note('由IP确定攻击历史记录：');
                 $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
                 if (!$DDoSHistory) {
-                    $msg = sprintf('未找到该IP正在被攻击中的历史记录');
+                    $msg = '未找到该IP正在被攻击中的历史记录';
                     Notify::developer($msg);
                     continue;
                 }
@@ -191,7 +191,7 @@ foreach ($pack_attack as $item) {
                 Log::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
 
                 //确定[最后节点时间]和[当前时间]
-                $last_break_time = DDoSDDoSHistoryFee::find_last_time($DDoSHistory_id) or $last_break_time = $DDoSHistory['begin_time'];
+                $last_break_time = DDoSHistoryFee::find_last_time($DDoSHistory_id) or $last_break_time = $DDoSHistory['begin_time'];
                 $now_time = time();
 
                 //当前攻击是否超过用户设定的最高防护能力
@@ -213,11 +213,11 @@ foreach ($pack_attack as $item) {
 
                     //先小计
                     Log::note('写入此段不足1小时的小计记录：');
-                    DDoSDDoSHistoryFee::create_fee($DDoSHistory, $price_rules, $last_break_time, $now_time);
+                    DDoSHistoryFee::create($DDoSHistory, $price_rules, $last_break_time, $now_time);
 
                     //后总计
                     Log::note('结算本次攻击总费用：');
-                    $bool = DDoSDDoSHistoryFee::deduction($uid, $DDoSHistory);
+                    $bool = DDoSHistoryFee::deduction($uid, $DDoSHistory);
                     if ($bool) {
                         Log::note('#tab总计结算成功');
                     } else {
@@ -233,14 +233,14 @@ foreach ($pack_attack as $item) {
                     if ( $now_time - $last_break_time >= 3600 ) {
                         //满1小时小计一次
                         Log::note('离上一轮攻击时间：%s，已到达或超过1小时，需进行小计：', date('Y-m-d H:i:s', $last_break_time));
-                        DDoSDDoSHistoryFee::create_fee($DDoSHistory, $price_rules, $last_break_time, $now_time);
+                        DDoSHistoryFee::create($DDoSHistory, $price_rules, $last_break_time, $now_time);
                         Log::note('继续清洗中...');
                     } else {
                         //不足1小时，无需小计
                         Log::note('最近攻击发生在%s，本轮暂不足1小时', date('Y-m-d H:i:s', $last_break_time));
 
                         //模拟本次攻击总计，检查余额是否足以支付
-                        $total_fee = DDoSDDoSHistoryFee::total_fee($DDoSHistory_id);
+                        $total_fee = DDoSHistoryFee::total_fee($DDoSHistory_id);
                         if ( $total_fee > $user['money'] ) {
                             Log::note('模拟总计费用：%s，已超出用户余额：%s，需立即处理：', $total_fee, $user['money']);
 
@@ -249,11 +249,11 @@ foreach ($pack_attack as $item) {
 
                             //先小计
                             Log::note('#tab写入此段不足1小时的小计记录');
-                            DDoSDDoSHistoryFee::create_fee($DDoSHistory, $price_rules, $last_break_time, $now_time);
+                            DDoSHistoryFee::create($DDoSHistory, $price_rules, $last_break_time, $now_time);
 
                             //清算本次攻击 事务处理：扣除用户费用，费用日志
                             Log::note('#tab强制总计结算本次攻击总费用');
-                            DDoSDDoSHistoryFee::deduction($uid, $DDoSHistory);
+                            DDoSHistoryFee::deduction($uid, $DDoSHistory);
                         } else {
                             Log::note('当前余额足够，继续清洗中...');
                         }

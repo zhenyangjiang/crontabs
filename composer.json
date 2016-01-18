@@ -8,11 +8,9 @@
             "vendor/ULan"
         ],
         "psr-4": {
-            "Landers\\": "vendor/Landers/",
-            "Classes\\": "vendor/Classes"
+            "Landers\\": "vendor/Landers/"
         },
         "files": [
-            "vendor\\Landers\\Helpers.php",
             "vendor\\Landers\\Framework\\Adapters\\Helpers\\LcliHelpers.php"
         ]
     }

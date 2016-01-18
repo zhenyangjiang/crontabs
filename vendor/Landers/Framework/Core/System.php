@@ -15,6 +15,9 @@ Class System {
             case 'LARAVEL' :
                 self::$class = $pre.'LaravelSystem';
                 break;
+            case 'SIMPLE' :
+                self::$class = $pre.'SimpleSystem';
+                break;
             default :
                 exit('未指定系统适配器！');
         }

@@ -38,11 +38,15 @@ Class Config {
      * @param  [type] $default 默认配置key
      * @return [type]          [description]
      */
-    public static function get_default($filekey, $default) {
+    public static function get_default($filekey, $default = NULL) {
         $configs = self::get($filekey);
         $def = $configs['default'] or $def = $default;
-        return $configs[$default];
+        return $configs[$def];
     }
+    public static function getDefault($filekey, $default = NULL) {
+        return self::get_default($filekey, $default);
+    }
+
 
     /**
      * 回存数据至文件

@@ -125,7 +125,7 @@ class LcliSystem extends SystemClass {
                 $cfg['host'],
                 $cfg['username'],
                 $cfg['password'],
-                $cfg['database'],
+                $cfg['dbname'],
                 false,
                 $cfg['charset'],
                 $cfg['port']
@@ -144,8 +144,10 @@ class LcliSystem extends SystemClass {
     /**
      * 任务终止回调
      */
-    public static function continues($msg = '本轮任务结束'){
-        Log::note(array('#line', '#blank', "$msg\n\n")); exit();
-        // sleep(ENV_sleep_time);
+    public static function continues($is_exit = true){
+        $sleep = ENV_sleep_time; $msg = '本轮任务结束';
+        if (!$is_exit) $msg .= sprintf('，等待%s秒后继续...', $sleep);
+        Log::note(array('#line', '#blank', "$msg\n\n"));
+        if ($is_exit) exit; else sleep(ENV_sleep_time);
     }
 }

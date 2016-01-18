@@ -238,13 +238,13 @@ class MySQL{
 		$cachekey = md5($dt.($is_only_name ? 1 : 0));
 		if ($ret = $this->dbd_cache->get($cachekey)) return $ret;
 		if ($is_only_name) {
-			$sql = "SHOW COLUMNS FROM $dt";
+			$sql = "SHOW COLUMNS FROM `$dt`";
 			$data = $this->query($sql);
 			if ( $data === false) return array();
 			$data = Arr::rekey($data, 'Field');
 			$data = array_keys($data);
 		} else {
-			$sql = "SHOW FULL COLUMNS FROM $dt";
+			$sql = "SHOW FULL COLUMNS FROM `$dt`";
 			$data = $this->query($sql);
 			if ( $data === false) return array();
 			$data = Arr::rekey($data, 'Field');

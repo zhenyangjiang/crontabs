@@ -46,7 +46,7 @@ class Arr {
     }
 
     //取数组中的元素值
-    private static function _get(&$a, $key, $default = NULL){
+    public static function _get(&$a, $key, $default = NULL){
         if (!is_array($a)) return $default;
         if (!array_key_exists($key, $a)) {
             return $default;
@@ -73,15 +73,18 @@ class Arr {
         }
     }
 
-    //array_clones即名改名 array_clone_inner
+    //clone_inner 即名改名 pick
     //克隆二维数组中每一元素的内部的某些元素
-    public static function clone_inner(&$arr, $keys){
+    public static function pick(&$arr, $keys){
         $r = array(); foreach ($arr as $item){
             $r[] = self::slice($item, $keys);
         }
         if (!$r) return $r;
         if (count($r[0]) == 1) $r = self::flat($r);
         return $r;
+    }
+    public static function clone_inner(&$arr, $keys){
+        return self::pick($arr, $keys);
     }
 
     //数组扁平化成一唯数组

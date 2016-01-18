@@ -287,7 +287,7 @@ class Datetime {
 	}
 
 	public static function dates_between($begin, $end = NULL, $format = NULL) {
-		$end or $end = time(); $ret = [];
+		$end or $end = time(); $ret = array();
 		$begin = self::format($begin, 0);
 		$end = self::format($end, 0);
 		for ($i = $begin; $i < $end; $i += self::$day) {

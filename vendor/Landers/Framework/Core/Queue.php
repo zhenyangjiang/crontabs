@@ -43,9 +43,9 @@ class Queue {
      * 监听队列
      * @return [type] [description]
      */
-    private $tasks_faild_counts = [
+    private $tasks_faild_counts = array(
         //任务id => 失败次数
-    ];
+    );
     public function listen() {
         while(true) {
             $task = $this->pheanstalk->watch($this->config['queue'])->ignore('default')->reserve();

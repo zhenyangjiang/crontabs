@@ -2,7 +2,7 @@
 namespace Landers\Utils;
 
 class Http {
-    private static $statuses = [
+    private static $statuses = array(
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -60,7 +60,7 @@ class Http {
         507 => 'Insufficient Storage',
         508 => 'Loop Detected',
         511 => 'Network Authentication Required',
-    ];
+    );
 
     /**
      * 输出http错误头
@@ -88,7 +88,7 @@ class Http {
     }
 
     public static function parse($content) {
-        $ret = ['status' => '', 'body' => '', 'cookie' => []];
+        $ret = array('status' => '', 'body' => '', 'cookie' => array());
         $arr = explode(PHP_EOL, $content);
         foreach ($arr as $i => $str) {
             if ( ord($str) == 13 ) break;

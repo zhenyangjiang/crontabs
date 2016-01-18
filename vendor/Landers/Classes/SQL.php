@@ -43,7 +43,7 @@ class SQL {
      * 生成分表名称
      * @return [type]           [description]
      */
-    private $exists_union_dts = [];
+    private $exists_union_dts = array();
     private function build_union_dts(array $unions = array()) {
         if (!$parter = $this->parter) {
         	return $this->dt;
@@ -57,7 +57,7 @@ class SQL {
                 if (!count($unions)) {
                     $ret = $this->dt.'_'.date($parter_mode, time());
                 } else {
-                    $ret = [];
+                    $ret = array();
                     foreach ($unions as $item) {
                         if (!is_numeric($item)) $item = strtotime($item);
                         $ret[] = $this->dt.'_'.date($parter_mode, $item);
@@ -68,7 +68,7 @@ class SQL {
                 if (!count($unions)) {
                     $ret = $this->dt.'_'.($parter_mode ?:'');
                 } else {
-                    $ret = [];
+                    $ret = array();
                     foreach ($unions as $arg) {
                         $ret[] = $this->dt.'_'.$arg;
                     }
@@ -290,7 +290,7 @@ class SQL {
 			$where	= $this->combine_wheres($awhere, $owhere);
 			$where = $where ? " where $where" : '';
 
-			$ret = [];
+			$ret = array();
 			foreach ((array)$dts as $dt) {
 				$dt = $this->db->conv_dt($dt);
 				$ret[] = "update $dt set $data$where";
@@ -299,7 +299,7 @@ class SQL {
 	}
 
 	public function CountSQL(array $opts = array()) {
-		$opts['fields'] = ['count(0)'];
+		$opts['fields'] = array('count(0)');
 		return $this->SelectSQL($opts);
 	}
 
@@ -324,7 +324,7 @@ class SQL {
 	}
 
 	public function BuildTableUnionSQL($union_dts, $fields, $where) {
-		$dts = Str::split($union_dts); $sqls = [];
+		$dts = Str::split($union_dts); $sqls = array();
 		$dts = array_unique($dts); sort($dts);
 		$tpl = 'select %s from %s%s';
 		foreach ($dts as $dt) {
@@ -384,7 +384,7 @@ class SQL {
 			$dts = $this->build_union_dts($unions);
 			$where	= $this->combine_wheres($awhere, $owhere);
 			$where	= $where ? " where $where" : '';
-			$ret = [];
+			$ret = array();
 			foreach ((array)$dts as $dt) {
 				$dt = $this->db->conv_dt($dt);
 				$ret[] = "delete from $dt$where";

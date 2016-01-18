@@ -57,7 +57,7 @@ Class DBModel {
         if ( $this->debug) {
             $msg = ''; $sqls = (array)$sql;
             $this->db->transact(function() use ($sqls, &$msg){
-                $msg = [];
+                $msg = array();
                 foreach ($sqls as $sql) {
                     $ret = $this->db->execute($sql);
                     $msg[] = PHP_EOL.( $ret === false ? '【ERROR】' : '【OK】').$sql.PHP_EOL.PHP_EOL;
@@ -99,7 +99,7 @@ Class DBModel {
         $errors = &$this->errors;
         if (!$key) return $errors;
         $errors = $errors[$key];
-        if (!$errors) return $index ? '' : [];
+        if (!$errors) return $index ? '' : array();
         foreach ($errors as $i => &$item) {
             $item = ($attach_no ? ($i+1) . '. ' : ''). Arr::get($item, 'error');
         }; unset($item);
@@ -538,8 +538,8 @@ Class DBModel {
      */
     public function update(array $data, $awhere_key_id = array(), array $opts = array()) {
         $awhere = $this->build_where_key_id($awhere_key_id);
-        $owhere = Arr::get($opts, 'owhere', []);
-        $unions = Arr::get($opts, 'unions', []);
+        $owhere = Arr::get($opts, 'owhere', array());
+        $unions = Arr::get($opts, 'unions', array());
 
         //data项中如果有数组数据，转换成json编码
         foreach($data as &$item) {
@@ -611,8 +611,8 @@ Class DBModel {
      * @return boolean
      */
     public function modify($awhere_key_id, array $data, array $opts = array()) {
-        $extra_where = Arr::get($opts, 'awhere', []);
-        $uniques = Arr::get($opts, 'uniques', []);
+        $extra_where = Arr::get($opts, 'awhere', array());
+        $uniques = Arr::get($opts, 'uniques', array());
         $awhere = $this->build_where_key_id($awhere_key_id);
         $awhere = array_merge($awhere, $extra_where);
         $bool = $this->update($data, $awhere, compact('uniques'));
@@ -632,8 +632,8 @@ Class DBModel {
      */
     public function delete($awhere_key_id, $opts = array()) {
         $awhere = $this->build_where_key_id($awhere_key_id);
-        $owhere = Arr::get($opts, 'owhere', []);
-        $unions = Arr::get($opts, 'unions', []);
+        $owhere = Arr::get($opts, 'owhere', array());
+        $unions = Arr::get($opts, 'unions', array());
         $sql = $this->SQL->DeleteSQL($awhere, $owhere, $unions);
         $this->show_debug($sql);
         $bool = $this->db->querys($sql);
@@ -683,7 +683,7 @@ Class DBModel {
      * @return array
      */
     public function sync($datas, $base_awhere) {
-        $datas or $datas = array(); $ids = []; $keyid = $this->field_id;
+        $datas or $datas = array(); $ids = array(); $keyid = $this->field_id;
         $c_insert = 0; $c_update = 0; $c_delete = 0;
         $this->db->transact(function() use ($base_awhere, $datas, &$c_insert, &$c_update, &$c_delete){
             foreach($datas as $data) {

@@ -5,32 +5,32 @@ namespace Landers\Classes;
  * @author Landers
  */
 class StatusCtrl {
-    // private $statuses = [
-    //     'stat_key1'    => [
+    // private $statuses = array(
+    //     'stat_key1'    => array(
     //         'value' => 'stat_value1',
     //         'text'  => '文本1',
     //         'color' => '颜色1',
-    //         'action'=> [
+    //         'action'=> array(
     //             'action_key1', 'action_key2'
-    //         ]
-    //     ],
-    //     'stat_key2'    => [
+    //         )
+    //     ),
+    //     'stat_key2'    => array(
     //         'value' => 'stat_value2',
     //         'text'  => '文本2',
     //         'color' => '颜色2',
-    //         'action'=> [
+    //         'action'=> array(
     //             'action_key3', 'action_key4'
-    //         ]
-    //     ],
-    // ];
-    // private $actions = [
-    //     'action_key1'    => [
+    //         )
+    //     ),
+    // );
+    // private $actions = array(
+    //     'action_key1'    => array(
     //         'verify'    => 'stat_now_key',
     //         'status'     => 'stat_changeto_key',
     //         'text'      => '文本',
     //     )
-    // ];
-    private $field, $statuses = [], $actions = [];
+    // );
+    private $field, $statuses = array(), $actions = array();
     private $DAO; //数据访问对象，通常是Model类的实例对象
     public function __construct($DAO, $statuses, $actions, $field = 'status') {
         $this->DAO = $DAO;
@@ -72,8 +72,8 @@ class StatusCtrl {
         //正常流程
         $verify_statuses = (array)$action['verify'];
         if ( $is_force || in_array($src_status, $verify_statuses) ) {
-            $data = [$this->field => $dst_status];
-            $awhere = ['id' => $dat_id];
+            $data = array($this->field => $dst_status);
+            $awhere = array('id' => $dat_id);
             if (!$callback) {
                 return $this->update($data, $awhere);
             } else {

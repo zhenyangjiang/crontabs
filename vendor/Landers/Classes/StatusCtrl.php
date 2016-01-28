@@ -58,7 +58,7 @@ class StatusCtrl {
      * @param  boolean      $is_force       是否强制
      * @return boolean
      */
-    public function doaction($dat_id, $action_key, $callback = NULL, $is_force = false) {
+    public function doaction($dat_id, $action_key, $is_force = false, $callback = NULL) {
         $src_status = $this->find($dat_id, $this->field);
         $action = $this->actions[$action_key];
         $dst_status = $action['status'];

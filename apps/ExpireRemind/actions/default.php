@@ -29,10 +29,9 @@ foreach ($instances as $instance) {
     if (Instance::check_is_notified($instance)) continue;
 
     //确定实例及按月计费云盾每月所需费用
-    $price_instance = Instance::price($instance);
     $mitigation_info = Mitigation::find_ip($instance_ip);
     $price_mitigation = $mitigation_info ? $mitigation_info['price'] : 0;
-    $fee_price = $price_instance +  $price_mitigation;
+    $fee_price = $instance['price'] +  $price_mitigation;
 
     //确定过期日期和过期天数
     $expire_date = date('Y-m-d H:i:s', $instance['expire']);

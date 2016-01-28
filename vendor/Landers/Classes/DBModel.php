@@ -421,6 +421,11 @@ Class DBModel {
         return $this->db->newid();
     }
 
+    //insert的别名
+    public function create(Array $data, $uniques = array()) {
+        return $this->insert($data, $uniques);
+    }
+
     /**
      * 批量插入数据
      * @param  array    $datas      二唯数组包

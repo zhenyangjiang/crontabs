@@ -110,6 +110,11 @@ Class Log {
         return str_replace(array_keys($rep), array_values($rep), $text);
     }
 
+    public static function noteSuccessFail($tpl, $bool) {
+        $text = $bool ? '成功' : '失败';
+        return self::note($tpl, $text);
+    }
+
     /**
      * 输出实例详情
      * @param  array  $instance [description]

@@ -100,47 +100,19 @@ foreach ($pack_attack as $item) {
     //读取云盾表中该ip的云盾配置
     $mitigation = Mitigation::find_ip($dest_ip);
     if (!$mitigation) {
-        //100M
-        //找不到记录，属：默认免费版
-        Log::note('IP：%s，为未使用的IP地址', $dest_ip);
+        //找不到记录，属异常，超100Mbps即牵引
+        Log::note('IP：%s，未知的异常IP地址', $dest_ip);
 
-        //由ip确定实例记录
-        $instance = Instance::find_ip($dest_ip);
-        if (!$instance) {
-            Log::note('未找到IP：%s的实例', $dest_ip);
-            BlackHole::block($dest_ip); continue;
-        }
-
-        //由实例确定数据中心
-        $datacenter = Instance::datacenter($instance);
-
-        //确定数据中心的价格规则(按月)的数组
-        $price_rules = DataCenter::price_rules($datacenter, 'month');
-
-        //找出规则中属免费的防护规格
-        $free_mbps = array_search(0, $price_rules, true);
-        $free_pps = Mitigation::Mbps_to_pps($free_mbps);
-
-        if (!$free_mbps && !$free_pps) {
-            Log::note('系统不提供免费防护规格，正在牵引...');
-            BlackHole::block($dest_ip); continue;
-        }
-
-        Log::note('系统提供免费防护规格为：%sMbps/%spps', $free_mbps, $free_pps);
-
-        if ($item['mbps'] > $free_mbps) {
-            Log::note('当前攻击值：%sMbps，超过免费防护值，正在牵引...', $item['mbps']);
-            BlackHole::block($dest_ip); continue;
-        } elseif ($item['pps'] > $free_pps) {
-            Log::note('当前攻击值：%spps，超过免费防护值，正在牵引...', $item['pps']);
+        if ($item['mbps'] >= 100 || $item['pps'] >= 100000) {
+            Log::note('当前攻击值：%sMbps / %spps，正在牵引...', $item['mbps'], $item['pps']);
             BlackHole::block($dest_ip); continue;
         } else {
-            Log::note('当前攻击值：%sMbps/%spps，在免费防护范围内，继续清洗...', $item['mbps'], $item['pps']);
+            Log::note('当前攻击值：%sMbps/%spps，继续清洗...', $item['mbps'], $item['pps']);
         }
     } else {
         //根据所购买的云盾的支付方式进行相关操作
         switch ($mitigation['billing']) {
-            case 'month' : //按月计费：仅防护，由另一CrontabB进行计费
+            case 'month' : //按月计费：仅防护，由ExpireHandler进行到期扣取次月
                 Log::note('IP：%s，计费方案：按月计费', $dest_ip);
                 Log::note('当前购买防护值：%sMbps / %spps', $mitigation['ability_mbps'], $mitigation['ability_pps']);
 

@@ -18,8 +18,8 @@ class SendEmailNotify implements TaskInterface {
      * @return void
      */
     public function execute(&$retmsg) {
-        $retmsg = '虚拟邮件发送成功。';
-        return true;
+        // $retmsg = '虚拟邮件发送成功。';
+        // return true;
 
         if( $this->phpemailer->Send()) {
             $retmsg = '邮件发送成功。';

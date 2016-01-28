@@ -83,6 +83,15 @@ class Datetime {
 	}
 
 	/**
+	 * 天数转月数
+	 * @param  [type] $days [description]
+	 * @return [type]       [description]
+	 */
+	public static function daysToMonths($days) {
+		return (float)($days / 30);
+	}
+
+	/**
 	 * 取得时间位移后的结果
 	 * @param [type] $intv   [description]
 	 * @param [type] $offset [description]

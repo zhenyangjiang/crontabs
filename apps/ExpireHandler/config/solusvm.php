@@ -1,9 +1,8 @@
 <?php
 return [
-    'id'        => 'FC5tzgLq3yrLj6HRdw8GusIVZAmT7mnygIZnjfJx',      // ID 必填
-    'key'       => 'RSsnywKw36PARFqhR0e4nCaVso6yuEWblfpLB18u',      // KEY 必填
-    'host'      => '192.168.4.8',                                   // 服务端地址 必填
+    'id'        => '6tEtHyQmGNWdySA9OaAkNlujvH7chz1dTuwqTdCp',      // ID 必填
+    'key'       => 'Qptf8VeLVFWyQhIbOFeW56ZOpm50qxp7NJcKtglf',      // KEY 必填
+    'host'      => '172.31.50.15',                                   // 服务端地址 必填
     'port'      =>  5656,                                           // 远程api端口
-    'format'    => 'json'
-                          // 返回数据格式
+    'format'    => 'json'                                           // 返回数据格式
 ];

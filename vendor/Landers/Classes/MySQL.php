@@ -168,7 +168,7 @@ class MySQL{
 	 */
 	public function query_count($sql) {
 		$ret = $this->query_one($sql, 2, false);
-		return $ret ? (float)pos($ret) : NULL;
+		return $ret ? (int)pos($ret) : NULL;
 	}
 
 	/**

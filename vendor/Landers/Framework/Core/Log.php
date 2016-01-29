@@ -112,7 +112,11 @@ Class Log {
 
     public static function noteSuccessFail($tpl, $bool) {
         $text = $bool ? '成功' : '失败';
-        return self::note($tpl, $text);
+        if ($bool) {
+            return self::note($tpl, $text);
+        } else {
+            return self::warn($tpl, $text);
+        }
     }
 
     /**

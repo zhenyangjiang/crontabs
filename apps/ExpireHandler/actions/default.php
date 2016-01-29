@@ -30,7 +30,7 @@ foreach ($instances as $instance) {
     //过期天数
     $expire_days = -Instance::expireDays($instance);
     $expire_date = date('Y-m-d H:i:s', $instance['expire']);
-    log::note('此实例的过期日期：%s', $expire_date);
+    log::note('此实例的过期时间：%s', $expire_date);
 
     //系统允许过期天数、剩余天数
     $allow_days = Settings::get('instance_timeout_days');
@@ -42,8 +42,47 @@ foreach ($instances as $instance) {
         'retain' => $retain_days
     ];
 
+    //延长实例有效期
+    $instance_update = [
+        'data' => ['expire' => strtotime("+1 month", $instance['expire'])],
+        'awhere' => ['id' => $instance['id']]
+    ];
+
+    //续费后的有效时间段
+    $valid_times = [
+        'begin' => date('Y-m-d H:i:s', $instance['expire'] + 1),
+        'end'   => date('Y-m-d H:i:s', $instance_update['data']['expire'])
+    ];
+
+    //确定实例每月费用
+    $instance_price = $instance['price'];
+    $fee_renew_insntance = $instance_price;
+
+    //确定实例所绑定的云盾每月费用
+    $mitigation_info = Mitigation::find_ip($instance_ip);
+    if ($mitigation_info) {
+        $mitigation_price = $mitigation_info['price'];
+        $mitigation_ability = $mitigation_info['ability'];
+
+        $fee_renew_mitigation = $mitigation_price;
+    } else {
+        $msg = '实例到期自动续费发现无云盾记录';
+        log::error($msg);
+        Notify::developer($msg);
+        $fee_renew_mitigation = 0;
+    };
+    $fee_renew_total = $fee_renew_insntance + $fee_renew_mitigation;
+
+    log::note(['#blank', '本次所需扣费明细如下：']);
+    if ( is_null($mitigation_info) ) {
+        log::note('#tab主机：%s元/月，未找到云盾记录，共计：%s元', $instance_price, $fee_renew_total);
+    } else {
+        log::note('#tab主机：%s元/月，%sGbps云盾：%s/月，共计：%s元', $instance_price, $mitigation_ability, $mitigation_price, $fee_renew_total);
+    }
+
     $status_text = Instance::status($instance);
     if (!$instance['is_auto_renew']) {  //未设置自动续费
+        Log::note('#tab实例未设置自动续费');
         //过期天数是否超过系统允许
         if ( $retain_days < 0 ) {
             //执行删除操作
@@ -51,7 +90,7 @@ foreach ($instances as $instance) {
         } else {
             //挂起实例、强制降级云盾
             $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
-                Log::note('实例未设置自动续费，将通知客户实例已被挂起，需充值后并手工续费');
+                Log::note('#tab将通知客户实例已被挂起，需充值后并手工续费');
                 if (!Instance::check_is_notified($instance)) {
                     $error = Notify::client('instance_expire_retain_manual', $uid, [
                         'instance_name' => $instance['hostname'],
@@ -64,46 +103,10 @@ foreach ($instances as $instance) {
             });
         }
     } else {    //已设置自动续费
-        //延长实例有效期
-        $instance_update = [
-            'data' => ['expire' => strtotime("+1 month", $instance['expire'])],
-            'awhere' => ['id' => $instance['id']]
-        ];
-
-        //续费后的有效时间段
-        $valid_times = [
-            'begin' => date('Y-m-d H:i:s', $instance['expire'] + 1),
-            'end'   => date('Y-m-d H:i:s', $instance_update['data']['expire'])
-        ];
-
-        //确定实例每月费用
-        $instance_price = $instance['price'];
-        $fee_renew_insntance = $instance_price;
-
-        //确定实例所绑定的云盾每月费用
-        $mitigation_info = Mitigation::find_ip($instance_ip);
-        if ($mitigation_info) {
-            $mitigation_price = $mitigation_info['price'];
-            $mitigation_ability = $mitigation_info['ability'];
-
-            $fee_renew_mitigation = $mitigation_price;
-        } else {
-            $msg = '实例到期自动续费发现无云盾记录';
-            log::error($msg);
-            Notify::developer($msg);
-            $fee_renew_mitigation = 0;
-        };
-        $fee_renew_total = $fee_renew_insntance + $fee_renew_mitigation;
-
-        log::note(['#blank', '实例设置了自动续费，本次所需扣费明细如下：']);
+        Log::note('#tab实例已设置自动续费');
         if ( $user['money'] - $fee_renew_total > 0 ) {
             // 足够续费 云主机 + 云盾
-            if ( is_null($mitigation_info) ) {
-                log::note('#tab主机：%s元/月，未找到云盾记录，共计：%s元', $instance_price, $fee_renew_total);
-            } else {
-                log::note('#tab主机：%s元/月，与之绑定的云盾%sGbps：%s/月，共计：%s元', $instance_price, $mitigation_ability, $mitigation_price, $fee_renew_total);
-            }
-
+            Log::note('#tab当前余额足够自动续费 云主机 + 云盾');
             //扣费日志数据包 改用 云主机+云盾扣费日志数据包
             if ($fee_renew_mitigation) {
                 $feelog_data = [
@@ -111,7 +114,7 @@ foreach ($instances as $instance) {
                     'balance' => $user['money'] - $fee_renew_total,
                     'instance_ip' => $instance_ip,
                     'uid' => $uid,
-                    'amount' => $mitigation_price,
+                    'amount' => $fee_renew_total,
                     'title' => sprintf(
                         '实例：%s, IP：%s + 云盾:%sGbps，自动续费%s',
                         $instance['hostname'], $instance_ip, $mitigation_ability,
@@ -121,10 +124,13 @@ foreach ($instances as $instance) {
             }
 
             $transaction_name = '实例扣费、实例扣费日志、延长实例有效期';
+            Log::note('#blank');
             log::note('执行事务处理：%s：', $transaction_name);
             $bool_transact = deduct_transact($uid, $instance_update, $feelog_data);
         } elseif ( $user['money'] - $fee_renew_insntance > 0 ) {
             // 仅够续费 云主机 ：强制降级云盾
+            Log::note('#tab当前余额仅够自动续费 云主机，云盾将强制降级为免费或最低方案');
+
             // 实例扣费日志数据包
             $feelog_data = [
                 'typekey' => 'renew_instance',
@@ -139,25 +145,27 @@ foreach ($instances as $instance) {
                 ),
             ];
             $transaction_name = '实例扣费、实例扣费日志、延长实例有效期、强制降级云盾';
+            Log::note('#blank');
             log::note('执行事务处理：%s：', $transaction_name);
             $bool_transact = deduct_transact($uid, $instance_update, $feelog_data, [
                 function() use ($instance){//强制降级云盾
-                    $ret = Mitigation::down_grade($instance);
-                    dp($ret);
-                    if (!$ret) return false;
+                    $bool = Mitigation::down_grade($instance);
+                    Log::noteSuccessFail('#tab云盾强制降级%s', $bool);
+                    if ( !$bool) return false;
 
                     return true;
                 }
             ]);
         } else {
             // 余额不足：
+            Log::note('#tab实例所属用用余额不足');
             if ( $retain_days < 0 ) {
                 //删除实例
                 destroy_instance($instance, $some_days);
             } else {
                 //挂起实例、实例改为非自动续费、强制降级云盾
                 $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
-                    Log::note('实例未设置自动续费，将通知客户实例已被挂起，需充值后并手工续费');
+                    Log::note('将通知客户实例已被挂起，需充值后并手工续费');
                     if (!Instance::check_is_notified($instance)) {
                         $error = Notify::client('instance_expire_retain_auto', $uid, [
                             'instance_name' => $instance['hostname'],
@@ -177,9 +185,9 @@ foreach ($instances as $instance) {
             if (!is_null($bool_transact )) {
                 if ($feelog_data) {
                     $email_content = sprintf('扣费日志数据包：<br>%s', Arr::to_html($feelog_data));
-                    Notify::developer(sprintf('事务处理失败：%s', $transaction), $email_content);
+                    Notify::developer(sprintf('事务【%s】处理失败', $transaction_name), $email_content);
                 } else {
-                    Notify::developer(sprintf('事务处理失败：%s', $transaction));
+                    Notify::developer(sprintf('事务【%s】处理失败', $transaction_name));
                 }
             }
         }

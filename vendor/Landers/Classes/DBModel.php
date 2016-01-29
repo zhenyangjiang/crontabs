@@ -53,9 +53,9 @@ Class DBModel {
      * @param  string  $sql      [description]
      * @param  boolean $is_debug [description]
      */
-    private function show_debug($sql) {
+    private function show_debug($sqls) {
         if ( $this->debug) {
-            $msg = ''; $sqls = (array)$sql;
+            $msg = ''; $sqls = (array)$sqls;
             $this->db->transact(function() use ($sqls, &$msg){
                 $msg = array();
                 foreach ($sqls as $sql) {
@@ -557,9 +557,11 @@ Class DBModel {
         }
 
         //更新
-        $sql = $this->SQL->UpdateSQL($data, $awhere, $owhere, $unions);
-        $this->show_debug($sql);
-        $bool = $this->db->querys($sql);
+        $sqls = $this->SQL->UpdateSQL($data, $awhere, $owhere, $unions);
+        $this->show_debug($sqls);
+        $bool = count($sqls) > 1 ?
+                $this->db->querys($sqls) :
+                $this->db->execute( pos($sqls) );
         if (!$bool) {
             $this->set_errors(__FUNCTION__,  $sql);
             return false;
@@ -639,9 +641,12 @@ Class DBModel {
         $awhere = $this->build_where_key_id($awhere_key_id);
         $owhere = Arr::get($opts, 'owhere', array());
         $unions = Arr::get($opts, 'unions', array());
-        $sql = $this->SQL->DeleteSQL($awhere, $owhere, $unions);
-        $this->show_debug($sql);
-        $bool = $this->db->querys($sql);
+        $sqls = $this->SQL->DeleteSQL($awhere, $owhere, $unions);
+        $this->show_debug($sqls);
+        $this->show_debug($sqls);
+        $bool = count($sqls) > 1 ?
+                $this->db->querys($sqls) :
+                $this->db->execute( pos($sqls) );
         if (!$bool) {
             $this->set_errors(__FUNCTION__,  $sql);
             return false;

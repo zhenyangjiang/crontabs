@@ -110,9 +110,9 @@ foreach ($pack_attack as $item) {
             Log::note('当前攻击值：%sMbps/%spps，继续清洗...', $item['mbps'], $item['pps']);
         }
     } else {
-        //根据所购买的云盾的支付方式进行相关操作
         switch ($mitigation['billing']) {
-            case 'month' : //按月计费：仅防护，由ExpireHandler进行到期扣取次月
+            case 'month' :
+                //按月计费：仅防护，由ExpireHandler进行到期扣取次月
                 Log::note('IP：%s，计费方案：按月计费', $dest_ip);
                 Log::note('当前购买防护值：%sMbps / %spps', $mitigation['ability_mbps'], $mitigation['ability_pps']);
 
@@ -127,7 +127,8 @@ foreach ($pack_attack as $item) {
                 }
                 break;
 
-            case 'hour' : //按需计费：先防护后计前1小时的费用
+            case 'hour' :
+                //按需计费：先防护后计前1小时的费用，单价采用所属数据中心中的价格
                 Log::note('IP：%s，计费方案：按需计费', $dest_ip);
 
                 //由ip确定实例记录
@@ -136,8 +137,6 @@ foreach ($pack_attack as $item) {
 
                 //由实例确定所在数据中心：（中心最高防护能力、中心的价格规则）
                 $datacenter = Instance::datacenter($instance);
-                // $max_mbps = $datacenter['hour-max-mbps'];
-                // $max_pps = $datacenter['hour-max-pps'];
 
                 //当前IP的云盾配额
                 $max_mbps = $mitigation['ability_mbps'];

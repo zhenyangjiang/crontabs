@@ -11,12 +11,12 @@ function deduct_transact($uid, $instance_update, $feelog_data, $callbacks = arra
         if (!$bool) return false;
 
         return Instance::transact(function() use ($uid, $instance_update, $feelog_data, $callbacks) {
-            //实例扣费日志
+            // 实例扣费日志
             $bool = Feelog::create($feelog_data);
             log::noteSuccessFail('#tab实例扣费日志写入%s', $bool);
             if ( !$bool ) return false;
 
-            //更新实例
+            // 更新实例
             if (Instance::update($instance_update['data'], $instance_update['awhere'])) {
                 log::note('#tab实例有效期更新为%s', date('Y-m-d H:i:s', $instance_update['data']['expire']));
             } else {

@@ -8,13 +8,6 @@ use Landers\Utils\Datetime;
 
 Log::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
-// $sqls = [
-//     'TRUNCATE ulan_mitigation.ddosDDoSHistory',
-//     'TRUNCATE ulan_mitigation.DDoSHistoryfee',
-//     'update ulan_main.`ulan_instances` set net_state=0, net_state_updtime'
-// ];
-//System::db('mitigation')->querys($sqls);
-
 //解除之前牵引
 Log::note('正在对牵引过期的IP作解除牵引：');
 BlackHole::unblock(); //解除牵引
@@ -23,7 +16,6 @@ Log::note('#line');
 //读取防火墙数据
 //$pack_attack = Firewall::get_attack();
 $pack_attack = Firewall::make_attack($pack_attack);
-
 
 //保存攻击数据
 $pack_attack = DDoSInfo::save_attack($pack_attack);

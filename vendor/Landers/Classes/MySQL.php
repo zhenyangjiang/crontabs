@@ -136,16 +136,16 @@ class MySQL{
 	}
 
 	/**
-	 * 执行查询动作的SQL
-	 * @param  [type]  $sql           [description]
-	 * @param  boolean $is_save_error [description]
-	 * @return [type]                 [description]
+	 * 执行多条SQL语句
+	 * @param  [type] $sqls [description]
+	 * @return [type]       [description]
 	 */
-	public function execute($sql, $is_save_error = true){
-		if (!$sql) return false;
-		$ret = mysqli_query($this->conn, $sql);
-		if (!$ret && $is_save_error) $this->save_log($sql);
-		return $ret;
+	public function querys($sqls){
+		$sqls = (array)$sqls;
+		foreach($sqls as $sql) {
+			if ( !$this->execute($sql) ) return false;
+		}
+		return true;
 	}
 
 	/**
@@ -169,6 +169,19 @@ class MySQL{
 	public function query_count($sql) {
 		$ret = $this->query_one($sql, 2, false);
 		return $ret ? (int)pos($ret) : NULL;
+	}
+
+	/**
+	 * 执行查询动作的SQL
+	 * @param  [type]  $sql           [description]
+	 * @param  boolean $is_save_error [description]
+	 * @return [type]                 [description]
+	 */
+	public function execute($sql, $is_save_error = true){
+		if (!$sql) return false;
+		$ret = mysqli_query($this->conn, $sql);
+		if (!$ret && $is_save_error) $this->save_log($sql);
+		return $ret;
 	}
 
 	/**
@@ -206,16 +219,13 @@ class MySQL{
 
 	/**
 	 * 事务处理一组SQL语句
-	 * @param  [type] $sqls [description]
-	 * @return [type]       [description]
+	 * @param  array  $sqls [description]
+	 * @return boolean
 	 */
-	public function querys($sqls){
+	public function transactSqls($sqls) {
 		$sqls = (array)$sqls;
 		return $this->transact(function() use ($sqls) {
-			foreach($sqls as $sql) {
-				if ( !$this->execute($sql) ) return false;
-			}
-			return true;
+			return $this->querys($sqls);
 		});
 	}
 

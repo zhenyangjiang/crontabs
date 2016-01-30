@@ -84,6 +84,6 @@ function destroy_instance($instance, $some_days) {
     $bool = Instance::destroy($instance);
     Log::noteSuccessFail('#tab实例销毁%s！', $bool);
     if (!$bool) {
-        Notify::developer('实例销毁失败！', Arr::to_html($instance));
+        Notify::developer('实例销毁失败', Arr::to_html($instance));
     }
 }

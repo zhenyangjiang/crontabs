@@ -3,7 +3,7 @@ use Landers\Utils\Datetime;
 use Landers\Utils\Arr;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Log;
-require __DIR__ . '/../include/Helper.php';
+require __DIR__.'/../include/Helper.php';
 
 Log::note(['【实例到期后，实例挂起、待删除、自动续费】（'.System::app('name').'）开始工作','#dbline']);
 
@@ -191,9 +191,7 @@ foreach ($instances as $instance) {
                 }
             }
         }
-
     }
 }
 System::continues(); //continue;
-
 ?>

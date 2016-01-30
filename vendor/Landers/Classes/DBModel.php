@@ -38,8 +38,6 @@ Class DBModel {
         $this->fields       = &$this->SQL->fields;
     }
 
-
-
     /**
      * 开启调试
      */
@@ -559,9 +557,7 @@ Class DBModel {
         //更新
         $sqls = $this->SQL->UpdateSQL($data, $awhere, $owhere, $unions);
         $this->show_debug($sqls);
-        $bool = count($sqls) > 1 ?
-                $this->db->querys($sqls) :
-                $this->db->execute( pos($sqls) );
+        $bool = $this->db->querys($sqls);
         if (!$bool) {
             $this->set_errors(__FUNCTION__,  $sql);
             return false;
@@ -643,10 +639,7 @@ Class DBModel {
         $unions = Arr::get($opts, 'unions', array());
         $sqls = $this->SQL->DeleteSQL($awhere, $owhere, $unions);
         $this->show_debug($sqls);
-        $this->show_debug($sqls);
-        $bool = count($sqls) > 1 ?
-                $this->db->querys($sqls) :
-                $this->db->execute( pos($sqls) );
+        $bool = $this->db->querys($sqls);
         if (!$bool) {
             $this->set_errors(__FUNCTION__,  $sql);
             return false;

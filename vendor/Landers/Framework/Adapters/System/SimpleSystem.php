@@ -1,0 +1,55 @@
+<?php
+namespace Landers\Framework\Adapters\System;
+
+use Landers\Classes\MySQL;
+use Landers\Utils\Str;
+use Landers\Framework\Core\Config;
+use Landers\Interfaces\SystemClass;
+
+class SimpleSystem extends SystemClass{
+    /**
+     * 系统初始化
+     */
+    public static function init(){
+
+    }
+
+    /**
+     * 取得数据库配置
+     * @param  string   连接名
+     * @return array    配置信息
+     */
+    public static function db_config($connection = NULL) {
+        $config = Config::get('database');
+        if ( !$connection || $connection == 'default') {
+            $connection = $config['default'];
+        }
+        return $config[$connection];
+    }
+
+    /**
+     * 连接数据库
+     * @param  string   连接名
+     * @return object   连接对象
+     */
+    private static $dbs = array();
+    public static function db($connection = NULL) {
+        $db = &self::$dbs[$connection];
+        if (!$db) {
+            $cfg = self::db_config($connection);
+            $db = new MySQL(
+                $cfg['host'],
+                $cfg['username'],
+                $cfg['password'],
+                $cfg['dbname'],
+                false,
+                $cfg['charset'],
+                $cfg['port']
+            );
+            if ($cfg['log-path']) {
+                $db->set_log_path($cfg['log-path']);
+            }
+        }
+        return $db;
+    }
+}

@@ -39,12 +39,22 @@ class SQL {
 		'DELETE_PROHIBIT'	=> '为了数据的安全，系统禁止无条件删除！'
 	);
 
+	private function get_all_union_dts() {
+		$tables = $this->db->tables(); $ret = array();
+		foreach ($tables as $table) {
+			if (preg_match('/'.$this->dt.'_\d{6}$/is', $table)) {
+				$ret[] = $table;
+			}
+		}
+		return $ret;
+	}
+
     /**
      * 生成分表名称
      * @return [type]           [description]
      */
     private $exists_union_dts = array();
-    private function build_union_dts(array $unions = array()) {
+    private function build_union_dts($unions, $is_create) {
         if (!$parter = $this->parter) {
         	return $this->dt;
         }
@@ -54,10 +64,13 @@ class SQL {
         $parter_mode = Arr::get($parter, 'mode');
         switch ($parter_type) {
             case 'datetime' :
-                if (!count($unions)) {
+                if ($unions === true) {
                     $ret = $this->dt.'_'.date($parter_mode, time());
+                } elseif ($unions === 'ALL') {
+                	$ret = $this->get_all_union_dts();
                 } else {
                     $ret = array();
+                    $unions or $unions = array();
                     foreach ($unions as $item) {
                         if (!is_numeric($item)) $item = strtotime($item);
                         $ret[] = $this->dt.'_'.date($parter_mode, $item);
@@ -65,10 +78,13 @@ class SQL {
                 }
                 break;
             case 'special':
-                if (!count($unions)) {
+                if ( $unions === true ) {
                     $ret = $this->dt.'_'.($parter_mode ?:'');
+                } elseif ($unions === 'ALL') {
+                	$ret = $this->get_all_union_dts();
                 } else {
                     $ret = array();
+                    $unions or $unions = array();
                     foreach ($unions as $arg) {
                         $ret[] = $this->dt.'_'.$arg;
                     }
@@ -82,12 +98,16 @@ class SQL {
                     continue;
                 }
                 if (!$this->db->dt_exists($item)) {
-                    //导出 dt 表结构
-                    $sql = Schema::export_structure($this->dt);
-                    $sql = str_replace("`$this->dt`", "`$item`", $sql);
-                    $this->db->execute($sql);
+                	if ($is_create) {
+	                    //导出 dt 表结构
+	                    $sql = Schema::export_structure($this->dt);
+	                    $sql = str_replace("`$this->dt`", "`$item`", $sql);
+	                    $this->db->execute($sql);
+	            		$this->exists_union_dts[] = $item;
+	                }
+                } else {
+                	$this->exists_union_dts[] = $item;
                 }
-                $this->exists_union_dts[] = $item;
             }
             $this->union_dts = $ret;
         }
@@ -245,7 +265,7 @@ class SQL {
 			$this->err		= 'INSERT_NO_DATA';
 			$this->err_text = self::get_errmsg($this->err);
 		} else {
-			$dt = $this->build_union_dts();
+			$dt = $this->build_union_dts(true, true);
 			$dt = $this->db->conv_dt($dt);
 			$this->addtimes($data, true, true);
 			$data 		= $this->build_data($data);
@@ -258,7 +278,7 @@ class SQL {
 
 	//导入数据包
 	public function ImportSQL(Array $datas) {
-		$dt = $this->build_union_dts();
+		$dt = $this->build_union_dts(true, true);
 		$dt = $this->db->conv_dt($dt);
 		$data0 = pos($datas); $fields = array_keys($data0);
 		$has_addtime = $this->db->field_exists($dt, self::$field_addtime);
@@ -282,7 +302,7 @@ class SQL {
 			$this->err		= 'UPDATE_NO_DATA';
 			$this->err_text = self::get_errmsg($this->err);
 		} else {
-			$dts = $this->build_union_dts($unions);
+			$dts = $this->build_union_dts($unions, false);
 			$this->addtimes($data, false, true);
 			$data = $this->build_data($data);
 			$a = array(); foreach($data as $k => $v) $a[] = MySQL::conv_fields($k).'='.$v;
@@ -301,6 +321,21 @@ class SQL {
 	public function CountSQL(array $opts = array()) {
 		$opts['fields'] = array('count(0)');
 		return $this->SelectSQL($opts);
+
+		// $opts['fields'] = array('count(0)');
+		// if ($unions = Arr::get($opts, 'unions')) {
+		// 	// return $this->SelectSQL($opts);
+		// 	unset($opts['unions']); $subs = [];
+		// 	$union_dts = $this->build_union_dts($unions, false);
+		// 	foreach ($union_dts as $dt) {
+		// 		$opts['table'] = $dt;
+		// 		$subs[] = $this->SelectSQL($opts);
+		// 	}
+		// 	$subs = '(' . implode(') + (', $subs) . ')';
+		// 	return 'select '.$subs;
+		// } else {
+		// 	return $this->SelectSQL($opts);
+		// }
 	}
 
 	public function SumSQL($field, array $opts = array()) {
@@ -331,7 +366,7 @@ class SQL {
 			$dt = $this->db->conv_dt($dt);
 			$sqls[] = sprintf($tpl, $fields, $dt, $where);
 		}
-		return '(('.implode(') union (', $sqls).')) as union_temp_table_'.uniqid();
+		return '(('.implode(') union all (', $sqls).')) as union_temp_table_'.uniqid();
 	}
 
 	public function SelectSQL(Array $opts){ //fields, awhere, owhere, order , limit, group;
@@ -356,11 +391,13 @@ class SQL {
 		$order = $_order ? ' order by '.$_order : '';
 		$limit = $_limit ? ' limit 0, '.$_limit : '';
 		$group = $_group ? ' group by '.$_group : '';
+		$table = Arr::get($opts, 'table');
 
 		$tpl = 'select %s from %s%s%s%s%s';
 		if ($unions = Arr::get($opts, 'unions')) {
+
 			//多表联合
-			$union_dts = $this->build_union_dts($unions);
+			$union_dts = $this->build_union_dts($unions, false);
 			if ( preg_match('/^\w{1,}\((\w{1,})\)$/', $fields, $matches) ){
 				//select聚合函数
 				$field = $matches[1] or $field = key($this->fields);
@@ -372,7 +409,8 @@ class SQL {
 				$sql = sprintf($tpl, '*', $dt, '', $group, $order, $limit);
 			}
 		} else {
-			$dt = $_extra_dt ? $this->dt.', '.$_extra_dt : $this->dt;
+			$dt = $table or $dt = $this->dt;
+			$dt = $_extra_dt ? $dt.', '.$_extra_dt : $dt;
 			$sql = sprintf($tpl, $fields, $dt, $where, $group, $order, $limit);
 		}
 		return $sql;
@@ -381,7 +419,7 @@ class SQL {
 	public function DeleteSQL($awhere, $owhere = NULL, $unions = array()){
 		$awhere = (array)$awhere;
 		if ($awhere || $owhere) {
-			$dts = $this->build_union_dts($unions);
+			$dts = $this->build_union_dts($unions, false);
 			$where	= $this->combine_wheres($awhere, $owhere);
 			$where	= $where ? " where $where" : '';
 			$ret = array();
@@ -399,7 +437,7 @@ class SQL {
 	}
 
 	public function TruncateSQL(array $unions = array()) {
-		$dts = $this->build_union_dts($unions);
+		$dts = $this->build_union_dts($unions, false);
 		$ret = array();
 		foreach ((array)$dts as $dt) {
 			$dt = $this->db->conv_dt($dt);

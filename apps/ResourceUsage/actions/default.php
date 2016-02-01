@@ -5,6 +5,7 @@ use Landers\Framework\Core\Config;
 use Landers\Utils\Http;
 
 while(true) {
+    Log::reInit();
     Log::note(array('【实例资源(CPU, NET)用量采集器】（'.System::app('name').'）开始工作','#dbline'));
     $data = VirtTop::getData($error);
     if (!$data) {
@@ -20,6 +21,6 @@ while(true) {
     } else {
         Log::error('数据入库成功');
     }
-    System::continues(false);
+    System::continues(5);
 }
 ?>

@@ -193,5 +193,5 @@ foreach ($instances as $instance) {
         }
     }
 }
-System::continues(); //continue;
+System::continues();
 ?>

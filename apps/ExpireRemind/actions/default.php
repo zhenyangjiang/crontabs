@@ -10,7 +10,7 @@ $before_days = Settings::get('instance_timeout_before_days');
 $instances = Instance::be_about_to_expire($before_days);
 if (!$instances) {
     Log::note('暂无%s天内到期在实例', $before_days);
-    System::continues(); //continue;
+    System::continues();
 }
 Log::note(['#blank', '逐一对过期的实例进行相关操作...']);
 foreach ($instances as $instance) {
@@ -62,6 +62,6 @@ foreach ($instances as $instance) {
     }
     if (isset($error) && !$error) Instance::update_notify_time($instance);
 }
-System::continues(); //continue;
+System::continues();
 
 ?>

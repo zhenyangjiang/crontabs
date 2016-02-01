@@ -144,10 +144,10 @@ class LcliSystem extends SystemClass {
     /**
      * 任务终止回调
      */
-    public static function continues($is_exit = true){
-        $sleep = ENV_sleep_time; $msg = '本轮任务结束';
-        if (!$is_exit) $msg .= sprintf('，等待%s秒后继续...', $sleep);
+    public static function continues($sleep = false){
+        $msg = '本轮任务结束';
+        if ($sleep) $msg .= sprintf('，等待%s秒后继续...', $sleep);
         Log::note(array('#line', '#blank', "$msg\n\n"));
-        if ($is_exit) exit; else sleep(ENV_sleep_time);
+        if (!$sleep) exit; else sleep($sleep);
     }
 }

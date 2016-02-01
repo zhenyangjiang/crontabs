@@ -6,6 +6,11 @@ Class Log {
     private static $text = array();   //不带格式纯文本，用于屏幕输出
     private static $savepath = 'logs';
 
+    public static function reInit() {
+        self::$data = array();
+        self::$text = array();
+    }
+
     public static function __callStatic($type, $args) {
         $color = $type == 'error_notify' ? 'error' : $type;
         $items = self::parse($args);

@@ -91,15 +91,12 @@ foreach ($instances as $instance) {
             //挂起实例、强制降级云盾
             $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
                 Log::note('#tab将通知客户实例已被挂起，需充值后并手工续费');
-                if (!Instance::check_is_notified($instance)) {
-                    $error = Notify::client('instance_expire_retain_manual', $uid, [
-                        'instance_name' => $instance['hostname'],
-                        'instance_ip'   => $instance['mainipaddress'],
-                        'expire_days'   => $some_days['expire'],
-                        'retain_days'   => $some_days['retain'],
-                    ]);
-                    if (!$error) Instance::update_notify_time($instance);
-                }
+                Notify::client('instance_expire_retain_manual', $uid, [
+                    'instance_name' => $instance['hostname'],
+                    'instance_ip'   => $instance['mainipaddress'],
+                    'expire_days'   => $some_days['expire'],
+                    'retain_days'   => $some_days['retain'],
+                ]);
             });
         }
     } else {    //已设置自动续费
@@ -167,13 +164,12 @@ foreach ($instances as $instance) {
                 $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
                     Log::note('将通知客户实例已被挂起，需充值后并手工续费');
                     if (!Instance::check_is_notified($instance)) {
-                        $error = Notify::client('instance_expire_retain_auto', $uid, [
+                        Notify::client('instance_expire_retain_auto', $uid, [
                             'instance_name' => $instance['hostname'],
                             'instance_ip'   => $instance['mainipaddress'],
                             'expire_days'   => $some_days['expire'],
                             'retain_days'   => $some_days['retain'],
                         ]);
-                        if (!$error) Instance::update_notify_time($instance);
                     }
                 });
             }

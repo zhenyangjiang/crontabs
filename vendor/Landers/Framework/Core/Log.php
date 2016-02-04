@@ -20,7 +20,8 @@ Class Log {
         foreach ($items as $item) {
             $i = count($datas) + 1;
             $i = substr(str_repeat('0', $L).$i, -$L, $L);
-            $prefix = '【'.$i.' => '.date('Y-m-d H:i:s').'】';
+            $pre = $i.' => '; $pre = '';
+            $prefix = '【'.$pre.date('Y-m-d H:i:s').'】';
             $text = $prefix.$item;
             $data = $prefix.self::colorize($item, $color);
             echo ($data."\n");

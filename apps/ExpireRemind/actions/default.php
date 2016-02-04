@@ -47,17 +47,17 @@ foreach ($instances as $instance) {
     if ($is_auto_renew) { //自动续费
         if ($user_moeny < $fee_price) {
             Log::note('通知用户“云主机即将%s天后%s到期，余额不足以自动续费下个月”', $days, $expire_date);
-            $error = Notify::client('instance_is_about_to_expire_not_enough_balance_for_auto_renew', $uid, $email_content);
+            Notify::client('instance_is_about_to_expire_not_enough_balance_for_auto_renew', $uid, $email_content);
         } else {
             Log::note('余额足矣，无需通知');
         }
     } else { //手工续费
         if ($user_moeny < $fee_price) { //余额不足以支付下个月，需要提醒
-            Log::note('通知用户“云主机即将%s天后%s到期，余额不足须充值，并手工续费下个月”', $days, $expire_date);
-            $error = Notify::client('instance_is_about_to_expire_not_enough_balance_for_manual_renew', $uid, $email_content);
+            Log::note('通知用户“云主机即将%s天后%s到期，余额不足需充值，并手工续费”', $days, $expire_date);
+            Notify::client('instance_is_about_to_expire_not_enough_balance_for_manual_renew', $uid, $email_content);
         } else { //余额足够支付下个月，需要提醒
-            Log::note('通知用户“云主机即将%s天后%s到期，余额足够，需手工（仅）续费下个月”', $days, $expire_date);
-            $error = Notify::client('instance_is_about_to_expire_enough_balance_for_manual_renew', $uid, $email_content);
+            Log::note('通知用户“云主机即将%s天后%s到期，余额足够，需手工续费”', $days, $expire_date);
+            Notify::client('instance_is_about_to_expire_enough_balance_for_manual_renew', $uid, $email_content);
         }
     }
     if (isset($error) && !$error) Instance::update_notify_time($instance);

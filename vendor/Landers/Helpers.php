@@ -57,17 +57,4 @@ function output_api_error($error){
         default : output_api_result(false, NULL, $error);
     }
 }
-
-function redis($key, $value) {
-    $redis_key = 'AuthInfo_'.$access_token;
-    $redis = &self::$redis;
-    $redis or $redis = $redis = Redis::connection();
-    if (func_num_args() == 2) {
-        $redis->set($redis_key, json_encode($data));
-    } else {
-        $ret = $redis->get($redis_key);
-        if (!$ret) return NULL;
-        return json_decode($ret);
-    }
-}
 ?>

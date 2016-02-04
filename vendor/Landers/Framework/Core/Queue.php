@@ -14,7 +14,7 @@ class Queue {
      * 构造方法
      */
     public function __construct() {
-        $this->config = Config::get_default('queue', 'pheanstalk');
+        $this->config = Config::getDefault('queue', 'pheanstalk');
         $this->pheanstalk = new Pheanstalk($this->config['host']);
     }
 

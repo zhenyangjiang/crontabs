@@ -15,7 +15,9 @@ Log::note('#line');
 
 //读取防火墙数据
 //$pack_attack = Firewall::get_attack();
-$pack_attack = Firewall::make_attack($pack_attack);
+$pack_attack =  ENV_deving == true ?
+                Firewall::make_attack($pack_attack) :
+                Firewall::get_attack();
 
 //保存攻击数据
 $pack_attack = DDoSInfo::save_attack($pack_attack);
@@ -56,14 +58,11 @@ if ($attaching_ips) {
             if ($DDoSHistory) {
                 $DDoSHistory_id = $DDoSHistory['id'];
                 Log::note('此IP归属历史记录ID：%s', $DDoSHistory_id);
-
-                DDoSHistoryFee::deduction($uid, $DDoSHistory, function($ip){
-                    return DDoSHistory::save_end_attack($ip, 'stop');
-                });
+                DDoSHistoryFee::deduction($uid, $DDoSHistory);
             } else {
                 Log::warn('未找到该IP正在被攻击中的历史记录，暂不计费，直接写入攻击结束');
-                DDoSHistory::save_end_attack($ip, 'stop');
             }
+            DDoSHistory::save_end_attack($ip, 'stop');
         }
     } else {
         Log::note('#tab攻击历史中的IP全部存在于当前被攻击IP中，没有IP需要作攻击结束');
@@ -97,7 +96,7 @@ foreach ($pack_attack as $item) {
 
         if ($item['mbps'] >= 100 || $item['pps'] >= 100000) {
             Log::note('当前攻击值：%sMbps / %spps，正在牵引...', $item['mbps'], $item['pps']);
-            BlackHole::block($dest_ip); continue;
+            BlackHole::block($dest_ip, $item['mbps']); continue;
         } else {
             Log::note('当前攻击值：%sMbps/%spps，继续清洗...', $item['mbps'], $item['pps']);
         }
@@ -110,10 +109,12 @@ foreach ($pack_attack as $item) {
 
                 if ($item['mbps'] >= $mitigation['ability_mbps']) {
                     Log::note('当前攻击速率%sMbps到达所购买防护值，正在牵引...', $item['mbps']);
-                    BlackHole::block($dest_ip); continue;
+                    BlackHole::block($dest_ip, $item['mbps']);
+                    continue;
                 } else if ($item['pps'] >= $mitigation['ability_pps']) {
                     Log::note('当前攻击包数%spps到达所购买防护值，正在牵引...', $item['pps']);
-                    BlackHole::block($dest_ip); continue;
+                    BlackHole::block($dest_ip, $item['mbps']);
+                    continue;
                 } else {
                     Log::note('当前攻击值：%sMbps/%spps 未达到购买防护值，继续清洗...', $item['mbps'], $item['pps']);
                 }
@@ -157,6 +158,7 @@ foreach ($pack_attack as $item) {
                 $last_break_time = DDoSHistoryFee::find_last_time($DDoSHistory_id) or $last_break_time = $DDoSHistory['begin_time'];
                 $now_time = time();
 
+
                 //当前攻击是否超过用户设定的最高防护能力
                 if ($item['mbps'] > $max_mbps || $item['pps'] > $max_pps) {
                     //超过?是
@@ -171,22 +173,24 @@ foreach ($pack_attack as $item) {
                     }
 
                     //强制牵引
-                    Log::note('需要对IP：%s作强制牵引处理', $dest_ip);
-                    BlackHole::block($dest_ip);
+                    if (BlackHole::exists($ip)) {
+                        Log::note('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
+                        //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
+                        continue;
+                    } else {
+                        Log::note('需要对IP：%s作强制牵引处理', $dest_ip);
+                        BlackHole::block($dest_ip, $item['mbps']);
+                    }
 
                     //先小计
                     Log::note('写入此段不足1小时的小计记录：');
-                    DDoSHistoryFee::create($DDoSHistory, $price_rules, $last_break_time, $now_time);
+                    DDoSHistoryFee::create($uid, $DDoSHistory, $price_rules, $last_break_time, $now_time);
 
                     //后总计
-                    Log::note('结算本次攻击总费用：');
+                    Log::note('写入本次攻击费用总计日志：');
                     $bool = DDoSHistoryFee::deduction($uid, $DDoSHistory);
-                    if ($bool) {
-                        Log::note('#tab总计结算成功');
-                    } else {
-                        Log::warn('#tab总计结算失败');
-                        Notify::developer('IP:%s 总计结算失败', $dest_ip);
-                    }
+                    if (!$bool) Notify::developer('IP:%s 总计结算失败', $dest_ip);
+
                 } else {
                     //超过?否
                     Log::note('当前攻击：%sMbps/%spps ', $item['mbps'], $item['pps']);
@@ -196,7 +200,7 @@ foreach ($pack_attack as $item) {
                     if ( $now_time - $last_break_time >= 3600 ) {
                         //满1小时小计一次
                         Log::note('离上一轮攻击时间：%s，已到达或超过1小时，需进行小计：', date('Y-m-d H:i:s', $last_break_time));
-                        DDoSHistoryFee::create($DDoSHistory, $price_rules, $last_break_time, $now_time);
+                        DDoSHistoryFee::create($uid, $DDoSHistory, $price_rules, $last_break_time, $now_time);
                         Log::note('继续清洗中...');
                     } else {
                         //不足1小时，无需小计
@@ -208,11 +212,11 @@ foreach ($pack_attack as $item) {
                             Log::note('模拟总计费用：%s，已超出用户余额：%s，需立即处理：', $total_fee, $user['money']);
 
                             //产生的总费用超过用户余额，强制牵引
-                            BlackHole::block($dest_ip);
+                            BlackHole::block($dest_ip, $item['mbps']);
 
                             //先小计
                             Log::note('#tab写入此段不足1小时的小计记录');
-                            DDoSHistoryFee::create($DDoSHistory, $price_rules, $last_break_time, $now_time);
+                            DDoSHistoryFee::create($uid, $DDoSHistory, $price_rules, $last_break_time, $now_time);
 
                             //清算本次攻击 事务处理：扣除用户费用，费用日志
                             Log::note('#tab强制总计结算本次攻击总费用');

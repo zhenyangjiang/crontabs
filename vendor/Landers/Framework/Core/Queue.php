@@ -6,7 +6,7 @@ use Pheanstalk\PheanstalkInterface;
 use Landers\Interfaces\TaskInterface;
 
 class Queue {
-    const FAILD_RETRY_COUNT = 5;
+    const FAILD_RETRY_COUNT = 1;
     private $config;
     private $pheanstalk;
 
@@ -70,6 +70,7 @@ class Queue {
                     $count = &$counts[$task_id];
 
                     //到达重试次数，删除该任务
+                    Log::warn($logmsg);
                     if ($count >= self::FAILD_RETRY_COUNT) {
                         Log::warn($logpre.'已重试%s次仍失败，该任务被删除。', self::FAILD_RETRY_COUNT);
                         $this->pheanstalk->delete($task);

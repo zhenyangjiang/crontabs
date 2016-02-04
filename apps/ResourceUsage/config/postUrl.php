@@ -2,5 +2,5 @@
 return array(
     'default'   => 'rucollect',
 
-    'rucollect' => 'http://rucollect.ulan.io/apps/ResourceUsage/web/',
+    'rucollect' => 'http://useage-collect.ulan.io/apps/ResourceUsage/web/',
 );

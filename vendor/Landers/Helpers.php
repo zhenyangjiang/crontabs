@@ -49,6 +49,15 @@ function output_api_result(){
     call_user_func_array(array('Landers\Utils\ApiResult', 'make'), $args)->output();
 }
 
+function output_api_error($error){
+    switch ($error) {
+        case 1 : output_api_result('参数错误！');
+        case 2 : output_api_result('缺少参数！');
+        case 3 : output_api_result('非法参数！');
+        default : output_api_result(false, NULL, $error);
+    }
+}
+
 function redis($key, $value) {
     $redis_key = 'AuthInfo_'.$access_token;
     $redis = &self::$redis;

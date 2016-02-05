@@ -147,7 +147,11 @@ class Http {
         }
         curl_setopt($ch, CURLOPT_HEADER, $opts['respone-header']);  // 显示返回的Header区域内容
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);                // 获取的信息以文件流的形式返回
-        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        if (array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
+            curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        }
+        // curl_setopt($ch, CURLOPT_PORT, 8000);
+        //cur_getinfo();
         $ret = curl_exec($ch);
         $errno = curl_errno($ch);
         $error = curl_error($ch);

@@ -19,6 +19,9 @@ $pack_attack =  ENV_deving == true ?
                 Firewall::make_attack($pack_attack) :
                 Firewall::get_attack();
 
+//TO DO 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
+//如果有存在的话，需要给出异常
+
 //保存攻击数据
 $pack_attack = DDoSInfo::save_attack($pack_attack);
 $pack_attack or $pack_attack = [];
@@ -201,6 +204,10 @@ foreach ($pack_attack as $item) {
                         //满1小时小计一次
                         Log::note('离上一轮攻击时间：%s，已到达或超过1小时，需进行小计：', date('Y-m-d H:i:s', $last_break_time));
                         DDoSHistoryFee::create($uid, $DDoSHistory, $price_rules, $last_break_time, $now_time);
+
+                        //TO DO 满足1小时有返还优惠
+
+
                         Log::note('继续清洗中...');
                     } else {
                         //不足1小时，无需小计

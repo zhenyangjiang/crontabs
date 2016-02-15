@@ -95,7 +95,7 @@ class Fso {
                 if ($sub != '.' && $sub != '..'){
                     $str = $dir.$sub;
                     if (is_file($str)) $ret[] = str_replace(
-                        ['/', str_repeat(self::$_, 2)], self::$_, $path
+                        ['/', str_repeat(self::$_, 2)], self::$_, $str
                     );
                 }
             }; @closedir($dh);
@@ -343,7 +343,10 @@ class Fso {
         if (!is_dir($src)) return false;
         if (!self::dir_make($dst)) return false;
 
-        $files = glob($src.'*.*');
+        $src = self::to_dir($src);
+        $dst = self::to_dir($dst);
+
+        $files = self::file_gets($src, true);
         foreach($files as $file){
             $t = pathinfo($file); $file = $t['basename'];
             $srcfile = $src.$file; $dstfile = $dst.$file;

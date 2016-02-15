@@ -64,7 +64,7 @@ Class ApiResult {
                     list($success, $data, $message, $code) = func_get_args();
                     if (
                         ($success && $code > 0) ||
-                        (!$success && $code == 0)
+                        (!$success && $code === 0)
                     ) throw new \Exception('状态与错误代码有冲突');
                 }
             }

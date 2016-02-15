@@ -15,7 +15,8 @@ class Tpl {
         }
         if ($loop_key) $loop_key = " $loop_key";
         $start  = sprintf('{%sforeach%s}', $str_inner, $loop_key);
-        $end    = sprintf('{%sendfor}', $str_inner); $a = (array)$a;
+        $end    = sprintf('{%sendfor%s}', $str_inner, $loop_key);
+        $a      = (array)$a;
         $tpl_in = Str::between($tpl, $start, $end);
         if (!$tpl_in || $loop_key === false || is_null($loop_key)) { //$a为一维数组
             $k = array_keys($a); $v = array_values($a);
@@ -37,7 +38,7 @@ class Tpl {
     //模板解析 (最多二维数组)
     public static function parse($tmpl, &$data = array()){
         if (!$data) return $tmpl;
-        $reg = '/\{foreach(.*?)\}(.*?)\{endfor\}/si';
+        $reg = '/\{foreach(.*?)\}(.*?)\{endfor(.*?)\}/si';
         preg_match_all($reg, $tmpl, $matchs);
 
         //先替换嵌套子列表
@@ -57,13 +58,13 @@ class Tpl {
                     foreach ($dat as &$item){
                         $sub_dat = &$item[$sub_key] or $sub_dat = array();
                         $sub_dat = array_values($sub_dat);
-                        $sub_dat = Tpl::replace($sub_tpl, $sub_dat, $sub_key, true);
+                        $sub_dat = self::replace($sub_tpl, $sub_dat, $sub_key, true);
                     }; unset($item);
                     $tpl = preg_replace('/\{inner_foreach '.$sub_key.'\}(.*?)\{inner_endfor\}/si', sprintf('{%s}', $sub_key), $tpl, 1);
                 }
             }
 
-            $dst    = Tpl::replace($tpl, $dat, $key);
+            $dst    = self::replace($tpl, $dat, $key);
             $tmpl   = preg_replace('/\{foreach '.$key.'\}(.*?)\{endfor\}/si', $dst, $tmpl, 1);
         };
         //debug($tmpl);

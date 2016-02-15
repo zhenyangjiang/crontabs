@@ -52,6 +52,7 @@ Class DBModel {
      * @param  boolean $is_debug [description]
      */
     private function show_debug($sqls) {
+
         if ( $this->debug) {
             $msg = ''; $sqls = (array)$sqls;
             $this->db->transact(function() use ($sqls, &$msg){
@@ -268,7 +269,7 @@ Class DBModel {
             $this->set_errors(__FUNCTION__,  $sql);
             return NULL;
         }
-        if (!$ret) return NULL;
+        if (!$ret) return array();
         else return count($ret) > 1 ? $ret : pos($ret);
     }
 
@@ -559,7 +560,7 @@ Class DBModel {
         $this->show_debug($sqls);
         $bool = $this->db->querys($sqls);
         if (!$bool) {
-            $this->set_errors(__FUNCTION__,  $sql);
+            $this->set_errors(__FUNCTION__,  $sqls);
             return false;
         } else {
             return true;
@@ -641,7 +642,7 @@ Class DBModel {
         $this->show_debug($sqls);
         $bool = $this->db->querys($sqls);
         if (!$bool) {
-            $this->set_errors(__FUNCTION__,  $sql);
+            $this->set_errors(__FUNCTION__,  $sqls);
             return false;
         } else {
             return true;
@@ -758,6 +759,23 @@ Class DBModel {
      */
     public function transact($callback) {
         return $this->db->transact($callback);
+    }
+
+    /**
+     * 执行查询动作的SQL
+     * @param  string     $sql
+     * @return boolean
+     */
+    public function execute($sql) {
+        return $this->db->execute($sql);
+    }
+
+    /**
+     * 返回由insert产生的最后一条记录ID
+     * @return number
+     */
+    public function newid() {
+        return $this->db->newid();
     }
 }
 ?>

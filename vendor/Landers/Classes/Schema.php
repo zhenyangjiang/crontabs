@@ -103,7 +103,7 @@ class Schema {
 		}
 
 		if ($action == 'update') {
-			$where_update_tpl = $opts['where_update_tpl'] or Output::error('未指定where_update_tpl选项参数！');
+			$where_update_tpl = $opts['where_update_tpl'] or Response::error('未指定where_update_tpl选项参数！');
 			if ($c = $db->query_count("select count(0) from $dt")) { //有数据
 				$p = 0; while ($p <= $c) {
 					$sql = "select * from $dt $where limit $p, $step";
@@ -304,7 +304,7 @@ class Schema {
 	}
 
 	//同步字段
-	public static function field_sync($dt, $data){//$data结构: {oldname, name, type, length, values, isnull, default, comment(text), extra}
+	public static function field_sync($dt, $data, &$error = NULL){//$data结构: {oldname, name, type, length, values, isnull, default, comment(text), extra}
 		$oldname = $data['oldname'];
 		if ($oldname) {
 			if (self::$db->field_exists($dt, $oldname)){
@@ -315,11 +315,6 @@ class Schema {
 			$name = $data['name'];
 			if (!self::$db->field_exists($dt, $name)){
 				$bool = self::field_add($dt, $data);
-				if (!$bool) {
-					dp($dt, false);
-					dp($name, false);
-					dp($data);
-				}
 				$act = 'add'; $msg = '添加';
 			} else {
 				if (count($data) == 1) { //数组中只有一个元素，即name, 则认为是删除
@@ -331,8 +326,15 @@ class Schema {
 				}
 			}
 		}
-		if (!$act) return array(false, '', '没有执行任何操作！');
-		else return array($bool, $act, $msg);
+		if (!$act) {
+			$error = '没有执行任何操作！';
+			return false;
+		}
+		if (!$bool) {
+			$error = $msg.'时出错';
+			return false;
+		}
+		return $act;
 	}
 
 	/**

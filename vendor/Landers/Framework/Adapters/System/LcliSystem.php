@@ -19,6 +19,21 @@ class LcliSystem extends SystemClass {
      * 系统初始化
      */
     public static function init(){
+        //设置异常捕获
+        set_exception_handler(function($e){
+            $class = get_class($e);
+            if (class_exists($class) && method_exists($class, 'handle')) {
+                $class::handle($e);
+            }
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            if ($code < 2000) {
+                Log::note('异常捕获：%s', $message);
+            } else {
+                Log::warn('异常捕获：%s', $message);
+            }
+        });
+
         global $argv; self::$argv = &$argv;
         self::$current_command = 'php '.implode(' ', $argv);
 

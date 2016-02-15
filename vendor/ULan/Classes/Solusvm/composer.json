@@ -1,0 +1,29 @@
+{
+    "name": "ulan/solusvm",
+    "description": "solusvm sdk",
+    "keywords": [
+        "solusvm",
+        "solusvm-sdk",
+        "solus",
+        "vm",
+        "kvm",
+        "ULan"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "~5.1"
+    },
+    "authors": [
+        {
+            "name": "siayau",
+            "email": "siayau@ulan.io"
+        }
+    ],
+    "minimum-stability" : "dev",
+    "autoload": {
+        "psr-4": {
+            "ULan\\SolusVM\\": "src/"
+        }
+    }
+}

@@ -112,6 +112,9 @@ class Arr {
     }
 
     public static function remove_keys(array $a, $keys){
+        return self::removekeys($a, $keys);
+    }
+    public static function removekeys(array $a, $keys){
         $keys = self::split_string($keys);
         foreach ($keys as $key) unset($a[$key]);
         return $a;

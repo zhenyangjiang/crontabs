@@ -15,7 +15,6 @@ class DDoSInfo extends Repository {
     public static function filte_blocked_attack($pack) {
         if (!$pack) return array();
         $ips = array_keys($pack);
-        // $ips = "'".implode("','", $ips)."'";
         $lists = Instance::lists([
             'fields' => 'mainipaddress as ip',
             'awhere' => ['net_state' => 2, 'mainipaddress' => $ips]

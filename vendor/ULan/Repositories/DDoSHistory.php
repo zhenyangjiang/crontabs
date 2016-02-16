@@ -98,43 +98,25 @@ class DDoSHistory extends Repository {
             return true;
         }
 
-        //事务处理：更新攻击信息（结束时间，峰值、on_event)、更新实例网络状态为正常
-        $ret_bool = self::transact(function() use ($history, $net_state_updtime, $on_event){
-            $end_time = time();
-            $peak = DDoSInfo::get_attack_peak($history['ip'], $history['begin_time'], $end_time);
-            $peak or $peak = [];
-
-            //更新历史记录的结束时间为当前时间
-            $data = [
-                'end_time' => time(),
-                'bps_peak' => Arr::get($peak, 'mbps.value'),
-                'pps_peak' => Arr::get($peak, 'pps.value'),
-                'on_event' => $on_event,
-            ];
-            $awhere = ['id' => $history['id']];
-            if (!self::update($data, $awhere)) {
-                Log::note('更新“攻击结束的相关信息”失败');
-                return false;
-            }
-
-            //更新实例网络状态为正常
-            if (!Instance::update_net_status($history['ip'], 0)){
-                Log::note('更新“实例网络状态为正常”失败');
-                return false;
-            }
-
-            return true;
-        });
-
-        //输出事务处理结果
-        if ($ret_bool) {
-            Log::note('#tab%s 攻击结束时间已保存', $ip);
+        //更新历史记录的结束相关信息
+        $end_time = time();
+        $peak = DDoSInfo::get_attack_peak($history['ip'], $history['begin_time'], $end_time);
+        $peak or $peak = [];
+        $data = [
+            'end_time' => time(),
+            'bps_peak' => Arr::get($peak, 'mbps.value'),
+            'pps_peak' => Arr::get($peak, 'pps.value'),
+            'on_event' => $on_event,
+        ];
+        $awhere = ['id' => $history['id']];
+        $bool = self::update($data, $awhere);
+        Log::noteSuccessFail('#tab更新“攻击结束的相关信息”%s', $bool);
+        if (!$bool) {
+            Notify::developer('更新攻击结束信息失败');
+            return false;
         } else {
-            Log::error('#tab%s设置攻击结束时失败', $ip);
-            Notify::developer('事务处理失败：更新攻击结束时间、实列更新为正常状态');
-            System::halt();
+            return true;
         }
-        return $ret_bool;
     }
 
     /**
@@ -242,7 +224,7 @@ class DDoSHistory extends Repository {
 
         //写入总计费用日志
         $bool = !!Feelog::create($feelog_mitigation_data);
-        Log::note('#tab本次攻击共持续：%s', $fee);
+        Log::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
         Log::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
         return $bool;
     }

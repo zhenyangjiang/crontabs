@@ -35,30 +35,29 @@ Class BlackHole extends Repository {
         if (!$return) {
             Log::note('事务处理：插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”');
             $bool = self::transact(function() use ($ip, $bps){
+                return Instance::transact(function() use ($ip, $bps){
+                    $block_duration = DataCenter::block_duration(DataCenter::find_ip($ip));
 
-                $block_duration = DataCenter::block_duration(DataCenter::find_ip($ip));
+                    //插入牵引记录
+                    $hours = $block_duration;
+                    $data = ['ip' => $ip, 'expire' => strtotime("+$hours hours"), 'bps' => $bps];
+                    $bool = self::insert($data);
+                    Log::noteSuccessFail('#tab牵引记录写入%s', $bool);
+                    if (!$bool) return false;
 
-                //插入牵引记录
-                $hours = $block_duration;
-                $data = ['ip' => $ip, 'expire' => strtotime("+$hours hours"), 'bps' => $bps];
-                $bool = self::insert($data);
-                Log::noteSuccessFail('#tab牵引记录写入%s', $bool);
-                if (!$bool) return false;
+                    //更新ip的攻击历史为结束攻击
+                    $bool = DDoSHistory::save_end_attack($ip, 'block');
+                    if (!$bool) return false;
 
-                //更新ip的攻击历史为结束攻击
-                $bool = DDoSHistory::save_end_attack($ip, 'block');
-                Log::noteSuccessFail('#tab攻击结束写入%s', $bool);
-                if (!$bool) return false;
+                    //更新实例的网络状态为2（牵引中）
+                    $bool = Instance::update_net_status($ip, 2, true);
+                    Log::noteSuccessFail('#tab更新实例的网络状态为“牵引中”%s', $bool);
+                    if (!$bool) return false;
 
-                //更新实例的网络状态为2（牵引中）
-                //注：Instance表不与BlackHole表同库，因此，此操作必须置于结尾返回，或另起事务嵌套
-                $bool = Instance::update_net_status($ip, 2, true);
-                Log::noteSuccessFail('#tab更新实例的网络状态为2（牵引中）写入%s', $bool);
-                if (!$bool) return false;
-
-                return true;
+                    return true;
+                });
             });
-            Log::noteSuccessFail('#tab事务处理成功', $bool);
+
             return $bool;
         } else {
             Log::warn('#tab%s 牵引失败', $ip);

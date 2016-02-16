@@ -310,6 +310,8 @@ class Schema {
 			if (self::$db->field_exists($dt, $oldname)){
 				$bool = self::field_change($dt, $oldname, $data);
 				$act = 'modify'; $msg = '修改';
+			} else {
+				pause();
 			}
 		} else {
 			$name = $data['name'];

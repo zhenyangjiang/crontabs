@@ -15,12 +15,13 @@ Log::note('#line');
 
 //读取防火墙数据
 //$pack_attack = Firewall::get_attack();
-$pack_attack =  ENV_deving == true ?
-                Firewall::make_attack($pack_attack) :
+$ori_pack_attack =  ENV_deving == true ?
+                Firewall::make_attack() :
                 Firewall::get_attack();
+Log::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 // 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
-//$pack_attack = DDoSInfo::filte_blocked_attack($pack_attack);
+$pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);
 //如果有存在的话，需要给出异常
 
 //保存攻击数据
@@ -44,7 +45,7 @@ if ($attaching_ips) {
     Log::note('#blank');
 
     if ($diff_ips) {
-        Log::note(['#blank', '#blank', '逐一对以上攻击自然结束的IP进行总计结算：']);
+        Log::note(['#blank', '#blank', '逐一对以上IP作攻击自然结束：']);
         foreach ($diff_ips as $ip) {
             Log::note('#line');
 
@@ -71,6 +72,9 @@ if ($attaching_ips) {
 
             //写入攻击自然结束
             DDoSHistory::save_end_attack($ip, 'stop');
+
+            //更新实例网络状态为正常
+            Instance::update_net_status($ip, 0);
         }
     } else {
         Log::note('#tab攻击历史中的IP全部存在于当前被攻击IP中，没有IP需要作攻击结束');
@@ -80,7 +84,13 @@ if ($attaching_ips) {
 }
 
 //空数据包时，任务提前结束
-if (!$all_ips) System::halt('空数据包时，本次任务提前结束');
+if (!$all_ips) {
+    if (!$ori_pack_attack) {
+        System::halt('空数据包时，本次任务提前结束');
+    } else {
+        System::halt('过滤掉后成为空数据包，本次任务提前结束');
+    }
+}
 
 //记录开始攻击
 Log::note('#line');
@@ -177,7 +187,7 @@ foreach ($pack_attack as $item) {
 
                     //强制牵引
                     if (BlackHole::exists($ip)) {
-                        Log::note('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
+                        Log::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
                         //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
                         continue;
                     } else {

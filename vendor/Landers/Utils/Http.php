@@ -79,10 +79,10 @@ class Http {
         }
     }
 
-    private static function conv_array_format($data, $str_split = NULL){
+    private static function conv_array_format($data, $str_split = NULL, $equal_str = '='){
         if (!is_array($data)) return $data;
         $a = array(); foreach($data as $k => $v){
-            $a[] = $k.'='.$v;
+            $a[] = $k.$equal_str.$v;
         };
         return $str_split ? implode($str_split, $a) : $a;
     }
@@ -95,6 +95,7 @@ class Http {
         }
         $header = array_slice($arr, 0, $i);
         $body = array_slice($arr, $i+1);
+        dp(debug_backtrace(0));
         array_pop($body);
         $ret['body'] = implode(PHP_EOL, $body);
 
@@ -122,8 +123,11 @@ class Http {
 			'cookie_file'	=> '',
 			'nosae'			=> false,
             'scheme'        => 'http',
+            'port'          => 80,
+            'debug'         => 0,
+            'proxy'         => array(),
 		), (array)$opts);
-        if (is_array($data)) $data = http_build_query($data);
+        $postData = is_array($data) ? http_build_query($data) : $data;
 
         $ch = curl_init(); $t = parse_url($url);
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -132,7 +136,7 @@ class Http {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // 使用自动跳转
         curl_setopt($ch, CURLOPT_AUTOREFERER, 1); // 自动设置Referer
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // Post提交的数据包
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData); // Post提交的数据包
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         if ($opts['cookie_file']) curl_setopt($ch, CURLOPT_COOKIEJAR, $opts['cookie_file']);
         if ($opts['cookie']) {
@@ -142,7 +146,7 @@ class Http {
         if ($opts['referer']) curl_setopt($ch, CURLOPT_REFERER, $opts['referer']);
         curl_setopt($ch, CURLOPT_TIMEOUT, $opts['timeout']);
         if ($opts['header']) {
-            $opts['header'] = self::conv_array_format($opts['header']);
+            $opts['header'] = self::conv_array_format($opts['header'], NULL, ':');
             curl_setopt($ch, CURLOPT_HTTPHEADER, $opts['header']);
         }
         curl_setopt($ch, CURLOPT_HEADER, $opts['respone-header']);  // 显示返回的Header区域内容
@@ -150,12 +154,26 @@ class Http {
         if (array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
             curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
         }
-        // curl_setopt($ch, CURLOPT_PORT, 8000);
-        //cur_getinfo();
+        if ($opts['port'] != 80) {
+            curl_setopt($ch, CURLOPT_PORT, $opts['port']);
+        }
+        if ($opts['proxy']) {
+            curl_setopt($ch, CURLOPT_PROXYTYPE, 0);
+            curl_setopt($ch, CURLOPT_PROXY, $opts['proxy']['host']);
+            curl_setopt($ch, CURLOPT_PROXYPORT, $opts['proxy']['port']);
+        }
+
         $ret = curl_exec($ch);
         $errno = curl_errno($ch);
         $error = curl_error($ch);
+
+        if ($opts['debug']) {
+            Debug::show(curl_getinfo($ch), false); echo PHP_EOL;
+            Debug::show($data, false); echo PHP_EOL;
+            echo '<hr/>', PHP_EOL, '*', $ret, '*', PHP_EOL, '<hr/>';
+        }
         curl_close($ch); // 关闭CURL会话
+
 
 		return $ret;
 	}

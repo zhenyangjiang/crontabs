@@ -15,7 +15,7 @@ Class ApiResult {
                 } elseif (is_bool($arg)) {
                     $success = $arg; $message = $data = $code = NULL;
                 } else {
-                    $success = false; $message = '服务器繁忙'; $data = $no_data; $code = $base_code + 101;
+                    $success = false; $message = '服务器繁忙!!!'; $data = $no_data; $code = $base_code + 101;
                 }
             } else {
                 if (func_num_args() == 2) {
@@ -32,7 +32,7 @@ Class ApiResult {
                         } else {
                             $data = $no_data;
                             if (is_numeric($xvar)) {
-                                $code = $xvar; $message = '服务器繁忙';
+                                $code = $xvar; $message = '服务器繁忙!';
                             } else {
                                 $message = $xvar; $code = -1;
                             }

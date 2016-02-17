@@ -12,45 +12,56 @@ use Landers\Apps\Tasks\SendEmailNotify;
 use Landers\Classes\Tpl;
 
 class Notify {
-    public static function developer($title, $content = '', $context = NULL) {
-        $title_bak = $title;
-        $developers = Config::get('developer'); $contents = [];
-        $contents[] = Log::export();
-        if ($content) $contents[] = $content;
-        if ($context) {
-            if ($context === true) $context = debug_backtrace();
-            if (is_array($context)) $context = Arr::to_html($context);
-            if ($context) $contents[] = '上下文数据包：<br/>'.$context;
-        }
-        $contents = implode('<hr/>', $contents);
-        $title = System::app('name').($title ? '：'.$title : '');
-        $bool = self::send_email([
-            'tos'       => $developers,
-            'subject'   => $title,
-            'content'   => $contents
-        ], $retdat);
-
-        if ($bool) {
-            $title = sprintf($title_bak . '，已电邮开发者，队列ID：'.$retdat);
-            $title = colorize($title, 'pink');
-            Log::note("#tab$title");
+    private static function isDoneToday($uid, $content_key) {
+        $key = $content_key . $uid. date('Y-m-d');
+        $md5_key = md5($key);
+        if ( Redis::get($md5_key) ) {
+            return true;
         } else {
-            $title = $title_bak . '，通知开发者失败。错误：'.$retdat;
-            Log::error("#tab$title");
+            Redis::set($md5_key, $key);
+            return false;
         }
+    }
+    public static function developer($title, $content = '', $context = NULL) {
+        $is_sended = self::isDoneToday(md5($title), 'developer');
+        $title_bak = $title;
+        Log::note('#tab'.$title_bak.'，需电邮开发者');
+        if (!$is_sended) {
+            $developers = Config::get('developer'); $contents = [];
+            $contents[] = Log::export();
+            if ($content) $contents[] = $content;
+            if ($context) {
+                if ($context === true) $context = debug_backtrace();
+                if (is_array($context)) $context = Arr::to_html($context);
+                if ($context) $contents[] = '上下文数据包：<br/>'.$context;
+            }
+            $contents = implode('<hr/>', $contents);
+            $title = System::app('name').($title ? '：'.$title : '');
+            $bool = self::send_email([
+                'tos'       => $developers,
+                'subject'   => $title,
+                'content'   => $contents
+            ], $retdat);
+            if ($bool) {
+                $log_content = sprintf('已电邮开发者，队列ID：'.$retdat);
+                $log_content = colorize($log_content, 'pink');
+                Log::note("#tab$log_content");
+            } else {
+                $log_content = '通知开发者失败。错误：'.$retdat;
+                Log::error("#tab$log_content");
+            }
+        } else {
+            Log::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+        }
+
+
         return $bool;
     }
 
     public static function client($content_key, $uid, array $data) {
-        $date = date('Y-m-d');
-        $key = $content_key . $uid. $date;
-        $md5_key = md5($key);
-        if ( Redis::get($md5_key) ) {
-            $error = sprintf('#tab今天（%s）已经发过邮件通知了', $date);
-            Log::note($error);
+        if (self::isDoneToday($content_key, $uid)) {
+            Log::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
             return false;
-        } else {
-            Redis::set($md5_key, $key);
         }
         $uinfo = User::get($uid, 'realname, username, mobile, email');
         $data = array_merge($uinfo, $data);

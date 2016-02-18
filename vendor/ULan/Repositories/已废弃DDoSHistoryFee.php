@@ -208,7 +208,7 @@ Class DDoSHistoryFee extends Repository {
         ];
 
         //写入总计费用日志
-        $bool = !!FeeResponse::create($feelog_mitigation_data);
+        $bool = !!Feelog::create($feelog_mitigation_data);
         Response::note('#tab本次共合计扣费：%s', $total_fee);
         Response::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
 

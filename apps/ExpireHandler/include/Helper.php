@@ -12,7 +12,7 @@ function deduct_transact($uid, $instance_update, $feelog_data, $callbacks = arra
 
         return Instance::transact(function() use ($uid, $instance_update, $feelog_data, $callbacks) {
             // 实例扣费日志
-            $bool = FeeResponse::create($feelog_data);
+            $bool = Feelog::create($feelog_data);
             Response::noteSuccessFail('#tab实例扣费日志写入%s', $bool);
             if ( !$bool ) return false;
 

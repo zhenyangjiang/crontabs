@@ -209,21 +209,23 @@ class DDoSHistory extends Repository {
 
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
 
+        // if (!$fee) return true;
+
         //按需防护扣费日志数据包
         $feelog_mitigation_data = [
-            'typekey' => 'pay_mitigation',
+            'typekey' => 'pay_mitigation_hour',
             'balance' => User::get_money($uid) - $fee,
             'instance_ip' => $ip,
             'uid' => $uid,
             'amount' => $fee,
             'title' => sprintf(
-                'IP：%s 按需防护费用, %s/%s, 持续%s小时',
-                $ip, $peak_info['bps']['value'], $peak_info['pps']['value'], $duration
+                'IP：%s 按需防护费用, 持续%s小时, 峰值：%sMbps/%spps',
+                $ip, $peak_info['mbps']['value'], $peak_info['pps']['value'], $duration
             ),
         ];
 
         //写入总计费用日志
-        $bool = !!FeeResponse::create($feelog_mitigation_data);
+        $bool = !!Feelog::create($feelog_mitigation_data);
         Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
         Response::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
         return $bool;

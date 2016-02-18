@@ -121,6 +121,7 @@ class Arr {
     }
 
     public static function remove($a, $values) {
+        if (!$values) return $a;
         if (!$a) return array();
         if (self::is_keyval($a)) {
             $a = array_flip($a);

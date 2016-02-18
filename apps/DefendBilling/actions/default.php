@@ -6,7 +6,7 @@ use Landers\Utils\Datetime;
 // require_once('randomxml.php'); usleep(100000);
 // Response::note(['#blank', '#blank', '#blank']);
 echo PHP_EOL;
-Response::note(['#blank',【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
+Response::note(['#blank', '【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
 //解除之前牵引
 Response::note('正在对牵引过期的IP作解除牵引：');

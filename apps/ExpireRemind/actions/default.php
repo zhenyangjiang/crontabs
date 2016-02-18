@@ -3,8 +3,8 @@ use Landers\Utils\Datetime;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 
+echo PHP_EOL;
 Response::note(['【实例即将到期提醒】（'.System::app('name').'）开始工作','#dbline']);
-
 
 $before_days = Settings::get('instance_timeout_before_days');
 $instances = Instance::be_about_to_expire($before_days);

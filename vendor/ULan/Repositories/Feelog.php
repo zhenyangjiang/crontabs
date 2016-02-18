@@ -14,9 +14,12 @@ class Feelog extends Repository {
             'occur_way' => '余额',
             'client_ip' => System::app('name'),
             'inout' => 'out',
+            'terminal' => 'crontab',
         ];
+
         $time = &$data['time'];
         if (is_string($time)) $time = strtotime($time);
+        $time or $time = time();
 
         $data = array_merge($default, $data);
         return parent::create($data);
@@ -36,4 +39,4 @@ class Feelog extends Repository {
         ]);
     }
 }
-FeeResponse::init();
+Feelog::init();

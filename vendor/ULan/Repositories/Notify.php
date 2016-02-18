@@ -12,6 +12,8 @@ use Landers\Apps\Tasks\SendEmailNotify;
 use Landers\Classes\Tpl;
 
 class Notify {
+    private static $mail_suffix = '<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>';
+
     private static function isDoneToday($uid, $content_key) {
         $key = $content_key . $uid. date('Y-m-d');
         $md5_key = md5($key);
@@ -22,6 +24,7 @@ class Notify {
             return false;
         }
     }
+
     public static function developer($title, $content = '', $context = NULL) {
         $is_sended = self::isDoneToday(md5($title), 'developer');
         $title_bak = $title;
@@ -40,7 +43,7 @@ class Notify {
             $bool = self::send_email([
                 'tos'       => $developers,
                 'subject'   => $title,
-                'content'   => $contents
+                'content'   => $contents.$mail_suffix
             ], $retdat);
             if ($bool) {
                 $log_content = sprintf('已电邮开发者，队列ID：'.$retdat);
@@ -51,36 +54,43 @@ class Notify {
                 Response::error("#tab$log_content");
             }
         } else {
-            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
         }
-
 
         return $bool;
     }
 
     public static function client($content_key, $uid, array $data) {
         if (self::isDoneToday($content_key, $uid)) {
-            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
-            return false;
+            // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+            // return false;
         }
         $uinfo = User::get($uid, 'realname, username, mobile, email');
         $data = array_merge($uinfo, $data);
         $notify_contents = Config::get('notify-content');
         $notify_contents = Arr::get($notify_contents, $content_key);
-        $tpl = $notify_contents['email'];
-        $title  = $tpl['title'];
-        $content = Tpl::replace($tpl['content'], $data);
+        $message = $notify_contents['message'];
+        $email = $notify_contents['email'];
+
+        // 发送站内消息
+        if ($message && $message['content']) {
+            $message['content'] = Tpl::replace($message['content'], $data);
+            $ret = Message::sendTo($uid, $message['title'], $message['content']);
+        }
+
+        // 发送邮件
+        $email['content'] = Tpl::replace($email['content'], $data);
         $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
         $bool = self::send_email([
             'to'        => $to,
-            'content'   => $content,
-            'subject'   => $title
+            'content'   => $email['content'],
+            'subject'   => $email['title']
         ]);
         if (!$bool) {
             $error = '#tab客户邮件通知失败！';
             Response::warn($error);
         } else {
-            Response::note('通知成功');
+            Response::note('#tab通知成功');
         }
         return $bool;
     }

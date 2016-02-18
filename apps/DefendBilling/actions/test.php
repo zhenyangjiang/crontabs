@@ -1,6 +1,6 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 use Landers\Utils\Datetime;
 
 $begin = time()-86400; $end = time(); $ip = '192.168.1.100';

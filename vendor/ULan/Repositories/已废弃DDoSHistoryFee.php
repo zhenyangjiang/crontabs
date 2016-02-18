@@ -3,7 +3,7 @@
 use Landers\Utils\Arr;
 use Landers\Utils\Datetime;
 use Landers\Framework\Core\Repository;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 
 Class DDoSHistoryFee extends Repository {
     protected static $connection = 'mitigation';
@@ -33,7 +33,7 @@ Class DDoSHistoryFee extends Repository {
      * @return float
      */
     public static function hour_price($ip, $price_rules, $begin_time, $end_time, &$peak_info = NULL) {
-        Log::note('#tab确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
+        Response::note('#tab确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
 
         //确定[begin_time]和[end_time]之间的峰值
         $peak_info = DDoSInfo::get_attack_peak($ip, $begin_time, $end_time);
@@ -52,17 +52,17 @@ Class DDoSHistoryFee extends Repository {
         if ($price_bps == $price_pps) {
             $ret_price = $price_bps;
             if ( $ret_price ) {
-                Log::note('#tab在%s峰值%sMbps/%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
+                Response::note('#tab在%s峰值%sMbps/%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
             } else {
-                Log::note('#tab免费防护规格，无需扣款');
+                Response::note('#tab免费防护规格，无需扣款');
             }
         } else {
             if ( (int)$price_bps > (int)$price_pps ) {
                 $ret_price = $price_bps;
-                Log::note('#tab在%s峰值%sMbps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
+                Response::note('#tab在%s峰值%sMbps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
             } else {
                 $ret_price = $price_pps;
-                Log::note('#tab在%s峰值%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_pps['value'], $price_key_pps, $ret_price);
+                Response::note('#tab在%s峰值%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_pps['value'], $price_key_pps, $ret_price);
             }
         };
 
@@ -121,7 +121,7 @@ Class DDoSHistoryFee extends Repository {
                 foreach ($arr_times as $item) {
                     $hour_price = self::hour_price($history_ip, $price_rules, $item['begin'], $item['end']);
                     if ( !$hour_price ) {
-                        Log::note('#tab时间段%s~%s内无峰值。', date('Y-m-d H:i:s', $item['begin']), date('Y-m-d H:i:s', $item['end']));
+                        Response::note('#tab时间段%s~%s内无峰值。', date('Y-m-d H:i:s', $item['begin']), date('Y-m-d H:i:s', $item['end']));
                         continue;
                     }
                     $duration = ($item['end'] - $item['begin']) / Datetime::$hour;
@@ -138,7 +138,7 @@ Class DDoSHistoryFee extends Repository {
                         Notify::developer($msg, '断点小计费用数据包：'.var_export($fee_data, true));
                         return false;
                     } else {
-                        Log::note('#tab本次小计费用：'.$fee);
+                        Response::note('#tab本次小计费用：'.$fee);
                         $total_fee += $fee;
                         $new_fee_ids[] = $ret;
                     }
@@ -150,8 +150,8 @@ Class DDoSHistoryFee extends Repository {
             if (!$bool) return false;
 
             if (User::pay_money($uid, $total_fee)) {
-                Log::note('#blank');
-                Log::note('#tab以上共计%s次小计费用：%s，扣费成功', count($new_fee_ids), $total_fee);
+                Response::note('#blank');
+                Response::note('#tab以上共计%s次小计费用：%s，扣费成功', count($new_fee_ids), $total_fee);
                 return true;
             } else {
                 $msg = '#tab小计扣费失败';
@@ -162,7 +162,7 @@ Class DDoSHistoryFee extends Repository {
         });
 
         if ($bool && count($new_fee_ids)) {
-            Log::note('#tab增加了%s条的小计费用，时长：%s小时，',  count($new_fee_ids), $duration_hours);
+            Response::note('#tab增加了%s条的小计费用，时长：%s小时，',  count($new_fee_ids), $duration_hours);
         }
 
         return $bool;
@@ -208,9 +208,9 @@ Class DDoSHistoryFee extends Repository {
         ];
 
         //写入总计费用日志
-        $bool = !!Feelog::create($feelog_mitigation_data);
-        Log::note('#tab本次共合计扣费：%s', $total_fee);
-        Log::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
+        $bool = !!FeeResponse::create($feelog_mitigation_data);
+        Response::note('#tab本次共合计扣费：%s', $total_fee);
+        Response::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
 
         //TO DO 清除小计记录
 

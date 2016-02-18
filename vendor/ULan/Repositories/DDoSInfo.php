@@ -3,7 +3,7 @@
 
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 
 class DDoSInfo extends Repository {
     protected static $connection = 'mitigation';
@@ -37,7 +37,7 @@ class DDoSInfo extends Repository {
                 System::halt();
             }
         } else {
-            Log::warn(colorize('空数据包，无需导入', 'yellow'));
+            Response::warn(colorize('空数据包，无需导入', 'yellow'));
         }
 
         return $pack;

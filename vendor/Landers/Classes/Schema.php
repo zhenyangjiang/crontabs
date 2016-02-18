@@ -84,12 +84,14 @@ class Schema {
 						foreach($expects as $field) unset($item[$field]);
 
 						$atmp = array(); foreach( $item as $k => $v) {
-							if ($vv = $repdata[$k]) $v = $vv;
-							$v = str_replace(';', '; ', $v);
-
-							$sidechar = $allfields[$k]['sidechar'];
-							if (is_null($v)) $atmp[] = 'NULL';
-							else $atmp[] = $sidechar.strtr($v, array("'" => "''", '\\' => '\\\\')).$sidechar;
+							if (is_null($v)) {
+								$atmp[] = 'NULL';
+							} else {
+								if ($vv = $repdata[$k]) $v = $vv;
+								$v = str_replace(';', '; ', $v);
+								$sidechar = $allfields[$k]['sidechar'];
+								$atmp[] = $sidechar.strtr($v, array("'" => "''", '\\' => '\\\\')).$sidechar;
+							}
 						}
 						$vals[] = '('.implode(', ', $atmp).')';
 					}
@@ -187,7 +189,7 @@ class Schema {
 			if ($buffer) {$line = $buffer . $line; $buffer = ''; }
 			if ($line = substr($line, 0, -1)) {
 				if (!self::$db->execute($line)) {
-					debug($line);
+					dp($line);
 					return false;
 				}
 			}

@@ -1,43 +1,35 @@
 <?php
 namespace Landers\Framework\Core;
 
+use Landers\Traits\AdapterStatic;
+
 Class System {
-    private static $class;
+    use AdapterStatic;
+
+    private static $adapter;
     public static function init($mode, $args = array()) {
         $pre = '\\Landers\\Framework\\Adapters\\System\\';
         switch (strtoupper($mode)) {
             case 'LWAP' :
-                self::$class = $pre.'LwapSystem';
+                self::$adapter = $pre.'LwapSystem';
                 break;
             case 'LCLI' :
-                self::$class = $pre.'LcliSystem';
+                self::$adapter = $pre.'LcliSystem';
                 break;
             case 'LARAVEL' :
-                self::$class = $pre.'LaravelSystem';
+                self::$adapter = $pre.'LaravelSystem';
                 break;
             case 'SIMPLE' :
-                self::$class = $pre.'SimpleSystem';
+                self::$adapter = $pre.'SimpleSystem';
                 break;
             default :
                 exit('未指定系统适配器！');
         }
 
-        if (method_exists(self::$class, 'init')) {
-            call_user_func_array(array(self::$class, 'init'), $args);
-        }
-    }
+        Response::init($mode);
 
-    public static function __callStatic($method, $args) {
-        if (!$class = self::$class) {
-            exit('未执行'.__CLASS__.'初始化！');
-        }
-        switch (count($args)) {
-            case 0: return $class::$method();
-            case 1: return $class::$method($args[0]);
-            case 2: return $class::$method($args[0], $args[1]);
-            case 3: return $class::$method($args[0], $args[1], $args[2]);
-            case 4: return $class::$method($args[0], $args[1], $args[2], $args[3]);
-            default: return call_user_func_array(array($class, $method), $args);
+        if (method_exists(self::$adapter, 'init')) {
+            call_user_func_array(array(self::$adapter, 'init'), $args);
         }
     }
 }

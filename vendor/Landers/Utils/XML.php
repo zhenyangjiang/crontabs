@@ -6,6 +6,14 @@ namespace Landers\Utils;
  */
 class XML
 {
+    public static function load($url) {
+        $ret = @simplexml_load_file($url, 'SimpleXMLElement' , LIBXML_COMPACT | LIBXML_NOCDATA | LIBXML_NOBLANKS);
+        if ($ret) {
+            $ret = self::arrarval($ret);
+        }
+        return $ret;
+    }
+
     /**
      * XML 转换为数组
      *

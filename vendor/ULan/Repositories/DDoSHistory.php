@@ -4,7 +4,7 @@
 use Landers\Utils\Arr;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 
 class DDoSHistory extends Repository {
     protected static $connection = 'mitigation';
@@ -51,13 +51,13 @@ class DDoSHistory extends Repository {
             //事务处理：写入攻击开始、更新实列表为被攻击中
             $bool = self::transact(function() use ($data) {
                 if (!$bool = self::import($data)) {
-                    Log::note('#tab写入“攻击开始”失败');
+                    Response::note('#tab写入“攻击开始”失败');
                     return false;
                 }
 
                 $ips = Arr::clone_inner($data, 'ip');
                 if ( !Instance::update_net_status($ips, 1, true) ) {
-                    Log::note('更新“实列表为被攻击中”失败');
+                    Response::note('更新“实列表为被攻击中”失败');
                     return false;
                 }
 
@@ -66,16 +66,16 @@ class DDoSHistory extends Repository {
 
             if ($bool) {
                 $ret_ips = Arr::clone_inner($pack, 'ip');
-                foreach ($ret_ips as $ip) Log::note('#tab%s ', $ip);
-                Log::note('#tab共计%sIP正在开始被攻击，开始时间已存入攻击历史', colorize(count($ret_ips), 'yellow', 1));
+                foreach ($ret_ips as $ip) Response::note('#tab%s ', $ip);
+                Response::note('#tab共计%sIP正在开始被攻击，开始时间已存入攻击历史', colorize(count($ret_ips), 'yellow', 1));
             } else {
                 $msg = '事务处理失败: “写入攻击开始、更新实列表状态” ';
-                Log::error('#tab'.$msg);
+                Response::error('#tab'.$msg);
                 Notify::developer($msg);
                 System::halt();
             }
         } else {
-            Log::note('#tab所有IP实例均%s或%s，无需记录攻击开始', colorize('攻击中', 'yellow'), colorize('牵引中', 'yellow'));
+            Response::note('#tab所有IP实例均%s或%s，无需记录攻击开始', colorize('攻击中', 'yellow'), colorize('牵引中', 'yellow'));
         }
 
         return $ret_ips;
@@ -94,7 +94,7 @@ class DDoSHistory extends Repository {
             'order'  => 'id desc',
         ]);
         if (!$history) {
-            Log::note('#tabIP：%s 原本已经攻击结束', $ip);
+            Response::note('#tabIP：%s 原本已经攻击结束', $ip);
             return true;
         }
 
@@ -110,7 +110,7 @@ class DDoSHistory extends Repository {
         ];
         $awhere = ['id' => $history['id']];
         $bool = self::update($data, $awhere);
-        Log::noteSuccessFail('#tab更新“攻击结束的相关信息”%s', $bool);
+        Response::noteSuccessFail('#tab更新“攻击结束的相关信息”%s', $bool);
         if (!$bool) {
             Notify::developer('更新攻击结束信息失败');
             return false;
@@ -141,7 +141,7 @@ class DDoSHistory extends Repository {
      * @return float
      */
     private static function hour_price($ip, $price_rules, $begin_time, $end_time, &$peak_info = array()) {
-        Log::note('#tab确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
+        Response::note('#tab确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
 
         //确定[begin_time]和[end_time]之间的峰值
         $peak_info = DDoSInfo::get_attack_peak($ip, $begin_time, $end_time);
@@ -160,17 +160,17 @@ class DDoSHistory extends Repository {
         if ($price_bps == $price_pps) {
             $ret_price = $price_bps;
             if ( $ret_price ) {
-                Log::note('#tab在%s峰值%sMbps/%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
+                Response::note('#tab在%s峰值%sMbps/%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
             } else {
-                Log::note('#tab免费防护规格，无需扣款');
+                Response::note('#tab免费防护规格，无需扣款');
             }
         } else {
             if ( (int)$price_bps > (int)$price_pps ) {
                 $ret_price = $price_bps;
-                Log::note('#tab在%s峰值%sMbps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
+                Response::note('#tab在%s峰值%sMbps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
             } else {
                 $ret_price = $price_pps;
-                Log::note('#tab在%s峰值%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_pps['value'], $price_key_pps, $ret_price);
+                Response::note('#tab在%s峰值%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_pps['value'], $price_key_pps, $ret_price);
             }
         };
 
@@ -223,9 +223,9 @@ class DDoSHistory extends Repository {
         ];
 
         //写入总计费用日志
-        $bool = !!Feelog::create($feelog_mitigation_data);
-        Log::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
-        Log::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
+        $bool = !!FeeResponse::create($feelog_mitigation_data);
+        Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
+        Response::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
         return $bool;
     }
 }

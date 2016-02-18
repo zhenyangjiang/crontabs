@@ -5,7 +5,7 @@ use Landers\Utils\Arr;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
 use Landers\Framework\Core\Config;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 
 Class BlackHole extends Repository {
     protected static $connection = 'mitigation';
@@ -23,7 +23,7 @@ Class BlackHole extends Repository {
      */
     public static function block($ip, $bps){
         if (self::exists($ip)) {
-            Log::note('#tabIP：%s尚处于牵引中， 无需再次牵引', $ip);
+            Response::note('#tabIP：%s尚处于牵引中， 无需再次牵引', $ip);
             return;
         }
 
@@ -33,7 +33,7 @@ Class BlackHole extends Repository {
             exec($command, $output, $return);
         }
         if (!$return) {
-            Log::note('事务处理：插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”');
+            Response::note('事务处理：插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”');
             $bool = self::transact(function() use ($ip, $bps){
                 return Instance::transact(function() use ($ip, $bps){
                     $block_duration = DataCenter::block_duration(DataCenter::find_ip($ip));
@@ -42,7 +42,7 @@ Class BlackHole extends Repository {
                     $hours = $block_duration;
                     $data = ['ip' => $ip, 'expire' => strtotime("+$hours hours"), 'bps' => $bps];
                     $bool = self::insert($data);
-                    Log::noteSuccessFail('#tab牵引记录写入%s', $bool);
+                    Response::noteSuccessFail('#tab牵引记录写入%s', $bool);
                     if (!$bool) return false;
 
                     //更新ip的攻击历史为结束攻击
@@ -51,7 +51,7 @@ Class BlackHole extends Repository {
 
                     //更新实例的网络状态为2（牵引中）
                     $bool = Instance::update_net_status($ip, 2, true);
-                    Log::noteSuccessFail('#tab更新实例的网络状态为“牵引中”%s', $bool);
+                    Response::noteSuccessFail('#tab更新实例的网络状态为“牵引中”%s', $bool);
                     if (!$bool) return false;
 
                     return true;
@@ -60,7 +60,7 @@ Class BlackHole extends Repository {
 
             return $bool;
         } else {
-            Log::warn('#tab%s 牵引失败', $ip);
+            Response::warn('#tab%s 牵引失败', $ip);
             Notify::developer('IP：%s 牵引操作失败');
             return false;
         }
@@ -79,7 +79,7 @@ Class BlackHole extends Repository {
             'order'  => ''
         ]);
         if (!$ids) {
-            Log::note('#tab未找到牵引过期的记录');
+            Response::note('#tab未找到牵引过期的记录');
             return [];
         }
 
@@ -93,9 +93,9 @@ Class BlackHole extends Repository {
         $bool = self::transact(function() use ($ids, &$ips){
             $awhere = ['id' => $ids];
             if ( self::update(['is_unblock' => 1], $awhere) ) {
-                Log::note('#tab解除牵引更新“标志值为已解除”成功');
+                Response::note('#tab解除牵引更新“标志值为已解除”成功');
             } else {
-                Log::note('#tab解除牵引更新“标志值为已解除”失败');
+                Response::note('#tab解除牵引更新“标志值为已解除”失败');
                 return false;
             }
 
@@ -104,9 +104,9 @@ Class BlackHole extends Repository {
             $ips = array_unique(Arr::flat($ips));
             //将牵引过期的ips所在的实例的net_state字段为正常(0)
             if (Instance::update_net_status($ips, 0)) {
-                Log::note('#tab实例状态更新为“正常”成功：%s', implode('，', $ips));
+                Response::note('#tab实例状态更新为“正常”成功：%s', implode('，', $ips));
             } else {
-                Log::note('#tabIP实例更新为正常状态失败');
+                Response::note('#tabIP实例更新为正常状态失败');
                 return false;
             }
 
@@ -116,7 +116,7 @@ Class BlackHole extends Repository {
 
         if (!$bool) {
             $msg = '事务处理失败：解除牵引更新“标志值为已解除”、实例状态更新为“正常”';
-            Log::error('#tab$msg');
+            Response::error('#tab$msg');
             Notify::developer($msg);
             System::halt();
         }
@@ -128,7 +128,7 @@ Class BlackHole extends Repository {
                 exec($command, $output, $return);
             }
         }
-        Log::note('#tab成功解除牵引：%s', implode('，', $ips));
+        Response::note('#tab成功解除牵引：%s', implode('，', $ips));
 
         return $ips;
     }

@@ -5,7 +5,7 @@ use Landers\Utils\Arr;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Queue;
 use Landers\Framework\Core\Redis;
 use Landers\Apps\Tasks\SendEmailNotify;
@@ -25,10 +25,10 @@ class Notify {
     public static function developer($title, $content = '', $context = NULL) {
         $is_sended = self::isDoneToday(md5($title), 'developer');
         $title_bak = $title;
-        Log::note('#tab'.$title_bak.'，需电邮开发者');
+        Response::note('#tab'.$title_bak.'，需电邮开发者');
         if (!$is_sended) {
             $developers = Config::get('developer'); $contents = [];
-            $contents[] = Log::export();
+            $contents[] = Response::export();
             if ($content) $contents[] = $content;
             if ($context) {
                 if ($context === true) $context = debug_backtrace();
@@ -45,13 +45,13 @@ class Notify {
             if ($bool) {
                 $log_content = sprintf('已电邮开发者，队列ID：'.$retdat);
                 $log_content = colorize($log_content, 'pink');
-                Log::note("#tab$log_content");
+                Response::note("#tab$log_content");
             } else {
                 $log_content = '通知开发者失败。错误：'.$retdat;
-                Log::error("#tab$log_content");
+                Response::error("#tab$log_content");
             }
         } else {
-            Log::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
         }
 
 
@@ -60,7 +60,7 @@ class Notify {
 
     public static function client($content_key, $uid, array $data) {
         if (self::isDoneToday($content_key, $uid)) {
-            Log::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
             return false;
         }
         $uinfo = User::get($uid, 'realname, username, mobile, email');
@@ -78,9 +78,9 @@ class Notify {
         ]);
         if (!$bool) {
             $error = '#tab客户邮件通知失败！';
-            Log::warn($error);
+            Response::warn($error);
         } else {
-            Log::note('通知成功');
+            Response::note('通知成功');
         }
         return $bool;
     }
@@ -134,12 +134,12 @@ class Notify {
         $opts['is_queue'] = Arr::get($opts, 'is_queue', true);
         if (!$opts['is_queue']) {
             if($o->Send()) {
-                Log::note('实时邮件通知成功。');
+                Response::note('实时邮件通知成功。');
                 return true;
             } else {
                 $retdat = ob_get_contents();
                 $retdat or $retdat = $o->ErrorInfo.'！';
-                Log::error('实时邮件通知失败：'.$retdat);
+                Response::error('实时邮件通知失败：'.$retdat);
                 return false;
             }
         } else {

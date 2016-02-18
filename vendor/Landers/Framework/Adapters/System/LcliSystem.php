@@ -4,7 +4,7 @@ namespace Landers\Framework\Adapters\System;
 use Landers\Classes\MySQL;
 use Landers\Utils\Str;
 use Landers\Framework\Core\Config;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 use Landers\Interfaces\SystemClass;
 
 class LcliSystem extends SystemClass {
@@ -28,9 +28,9 @@ class LcliSystem extends SystemClass {
             $message = $e->getMessage();
             $code = $e->getCode();
             if ($code < 2000) {
-                Log::note('异常捕获：%s', $message);
+                Response::note('异常捕获：%s', $message);
             } else {
-                Log::warn('异常捕获：%s', $message);
+                Response::warn('异常捕获：%s', $message);
             }
         });
 
@@ -55,7 +55,7 @@ class LcliSystem extends SystemClass {
 
         //应用目录
         if (!$name = self::$argv[1]) {
-            Log::error('应用名称未指定！');
+            Response::error('应用名称未指定！');
             self::halt();
         }
         self::$app['name'] = $name;
@@ -71,7 +71,7 @@ class LcliSystem extends SystemClass {
         //加载脚本
         $script_file = $path.'/actions/'.$action.'.php';
         if (is_file($script_file)) include($script_file);
-        else Log::warn('应用文件'.$script_file.'不存在！');
+        else Response::warn('应用文件'.$script_file.'不存在！');
     }
 
     /**
@@ -153,7 +153,7 @@ class LcliSystem extends SystemClass {
     }
 
     public static function halt($msg = '任务出错，结束任务') {
-        Log::error($msg); exit();
+        Response::error($msg); exit();
     }
 
     /**
@@ -162,7 +162,7 @@ class LcliSystem extends SystemClass {
     public static function continues($sleep = false){
         $msg = '本轮任务结束';
         if ($sleep) $msg .= sprintf('，等待%s秒后继续...', $sleep);
-        Log::note(array('#line', '#blank', "$msg\n\n"));
+        Response::note(array('#line', '#blank', "$msg\n\n"));
         if (!$sleep) exit; else sleep($sleep);
     }
 }

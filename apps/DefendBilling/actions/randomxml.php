@@ -1,9 +1,9 @@
 <?php
 use Landers\Utils\Fso;
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 
-Log::note(['【生成模拟防火墙数据】（'.System::app('name').'）开始工作','#dbline']);
+Response::note(['【生成模拟防火墙数据】（'.System::app('name').'）开始工作','#dbline']);
 
 $ips = [
     '192.168.7.100',
@@ -35,7 +35,7 @@ $tpl = Fso::read(dirname(__DIR__).'/data/random-tpl.xml');
 $content = sprintf($tpl, implode('', $hosts));
 $file = dirname(__DIR__).'/data/random.xml';
 if (Fso::write($file, $content)) {
-    Log::note('模拟防火墙数据成功生成在'.$file);
+    Response::note('模拟防火墙数据成功生成在'.$file);
 } else {
-    Log::note('模拟防火墙数据生成失败');
+    Response::note('模拟防火墙数据生成失败');
 }

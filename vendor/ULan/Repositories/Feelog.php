@@ -36,4 +36,4 @@ class Feelog extends Repository {
         ]);
     }
 }
-Feelog::init();
+FeeResponse::init();

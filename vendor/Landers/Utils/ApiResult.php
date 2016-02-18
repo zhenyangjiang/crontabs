@@ -17,8 +17,7 @@ Class ApiResult {
                 } else {
                     $success = false; $message = '服务器繁忙!!!'; $data = $no_data; $code = $base_code + 101;
                 }
-            } else {
-                if (func_num_args() == 2) {
+            } elseif (func_num_args() == 2) {
                     $parse = auto_parse_args(func_get_args());
                     if ( array_key_exists('boolean', $parse) ) {
                         list($success, $xvar) = func_get_args();
@@ -41,32 +40,31 @@ Class ApiResult {
                         $success = false; $data = $no_data;
                         list($message, $code) = func_get_args();
                     }
-                } elseif (func_num_args() == 3) {
-                    list($success, $xvar1, $xvar2) = func_get_args();
-                    if (gettype($xvar1) !== gettype($xvar2)) {
-                        $parse = auto_parse_args([$xvar1, $xvar2]);
-                        $message = $parse['string'];
-                        if ($success) {
-                            unset($parse['string']);
-                            $data = pos($parse);
-                            $code = 0;
-                        } else {
-                            $data = $no_data;
-                            $code = array_key_exists('integer', $parse) ? $parse['integer'] : $base_code + 1;
-                        }
-                    } else {
-                        $success = true;
-                        $data = $xvar1;
-                        $message = $xvar2;
+            } elseif (func_num_args() == 3) {
+                list($success, $xvar1, $xvar2) = func_get_args();
+                if (gettype($xvar1) !== gettype($xvar2)) {
+                    $parse = auto_parse_args([$xvar1, $xvar2]);
+                    $message = $parse['string'];
+                    if ($success) {
+                        unset($parse['string']);
+                        $data = pos($parse);
                         $code = 0;
+                    } else {
+                        $data = $no_data;
+                        $code = array_key_exists('integer', $parse) ? $parse['integer'] : $base_code + 1;
                     }
-                } elseif (func_num_args() == 4) {
-                    list($success, $data, $message, $code) = func_get_args();
-                    if (
-                        ($success && $code > 0) ||
-                        (!$success && $code === 0)
-                    ) throw new \Exception('状态与错误代码有冲突');
+                } else {
+                    $success = true;
+                    $data = $xvar1;
+                    $message = $xvar2;
+                    $code = 0;
                 }
+            } else {
+                list($success, $data, $message, $code) = func_get_args();
+                if (
+                    ($success && $code > 0) ||
+                    (!$success && $code === 0)
+                ) throw new \Exception('状态与错误代码有冲突');
             }
 
             $this->set([
@@ -75,6 +73,8 @@ Class ApiResult {
                 'data'          => $data,
                 'message'       => $message
             ]);
+        } else {
+            throw new \Exception('ApiResult调用错误！');
         }
     }
 

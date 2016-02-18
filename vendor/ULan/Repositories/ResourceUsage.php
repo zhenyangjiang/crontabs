@@ -4,7 +4,7 @@
 use Landers\Utils\Arr;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 
 class ResourceUsage extends Repository {
     protected static $connection = 'resource-usage';

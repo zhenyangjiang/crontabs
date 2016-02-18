@@ -4,7 +4,7 @@ use Landers\Utils\Datetime;
 use Landers\Utils\Arr;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Repository;
-use Landers\Framework\Core\Log;
+use Landers\Framework\Core\Response;
 use Landers\Classes\StatusCtrl;
 use ULan\SolusVM\Solusvm;
 
@@ -151,7 +151,7 @@ class Instance extends Repository {
         if ( $notify_at && !Datetime::diff($notify_at, time()) ) {
             $begin = Datetime::format($notify_at, 'Y-m-d H:i:s');
             $end = Datetime::add('days', 1, $notify_at, 'Y-m-d H:i:s');
-            Log::note('此实例在%s ~ %s已通知，已需重复通知', colorize($begin, 'yellow'), colorize($end, 'yellow'));
+            Response::note('此实例在%s ~ %s已通知，已需重复通知', colorize($begin, 'yellow'), colorize($end, 'yellow'));
             return true;
         } else {
             return false;
@@ -167,9 +167,9 @@ class Instance extends Repository {
         $id = self::info($xinstance, 'id');
         $msg = '实例最后通知时间更新';
         if ($bool = self::update(['notified_at' => time()], ['id' => $id])) {
-            Log::note($msg . '成功。');
+            Response::note($msg . '成功。');
         } else {
-            Log::note($msg . '失败！');
+            Response::note($msg . '失败！');
         }
         return $bool;
     }

@@ -113,8 +113,8 @@ foreach ($instances as $instance) {
                     'instance_ip' => $instance_ip,
                     'uid' => $uid,
                     'amount' => $fee_renew_total,
-                    'title' => sprintf(
-                        '实例：%s, IP：%s + 云盾:%sGbps，自动续费%s',
+                    'description' => sprintf(
+                        '云主机:%s (%s) + 云盾:%sGbps，自动续费%s',
                         $instance['hostname'], $instance_ip, $mitigation_ability,
                         $valid_times['begin'].' ~ '.$valid_times['end']
                     ),
@@ -136,8 +136,8 @@ foreach ($instances as $instance) {
                 'instance_ip' => $instance_ip,
                 'uid' => $uid,
                 'amount' => $fee_renew_insntance,
-                'title' => sprintf(
-                    '实例：%s，IP：%s，自动续费%s',
+                'description' => sprintf(
+                    '云主机:%s (%s)，自动续费%s',
                     $instance['hostname'], $instance_ip,
                     $valid_times['begin'].' ~ '.$valid_times['end']
                 ),

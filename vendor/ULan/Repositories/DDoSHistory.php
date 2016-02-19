@@ -218,7 +218,7 @@ class DDoSHistory extends Repository {
             'instance_ip' => $ip,
             'uid' => $uid,
             'amount' => $fee,
-            'title' => sprintf(
+            'description' => sprintf(
                 'IP：%s 按需防护费用, 持续%s小时, 峰值：%sMbps/%spps',
                 $ip, $peak_info['mbps']['value'], $peak_info['pps']['value'], $duration
             ),

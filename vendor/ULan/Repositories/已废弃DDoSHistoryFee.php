@@ -200,7 +200,7 @@ Class DDoSHistoryFee extends Repository {
             'instance_ip' => $instance_ip,
             'uid' => $uid,
             'amount' => $total_fee,
-            'title' => sprintf(
+            'description' => sprintf(
                 '实例：%s, IP：%s, 按需防护费用',
                 $instance_ip, $instance['hostname'],
                 date('Y-m')

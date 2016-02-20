@@ -95,7 +95,6 @@ class Http {
         }
         $header = array_slice($arr, 0, $i);
         $body = array_slice($arr, $i+1);
-        dp(debug_backtrace(0));
         array_pop($body);
         $ret['body'] = implode(PHP_EOL, $body);
 

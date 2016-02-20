@@ -23,10 +23,12 @@ Class System {
                 self::$adapter = $pre.'SimpleSystem';
                 break;
             default :
-                exit('未指定系统适配器！');
+                throw new \Expectation('未指定系统适配器！');
         }
 
-        Response::init($mode);
+        if (class_exists(Response::class)) {
+            Response::init($mode);
+        }
 
         if (method_exists(self::$adapter, 'init')) {
             call_user_func_array(array(self::$adapter, 'init'), $args);

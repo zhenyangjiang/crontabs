@@ -17,6 +17,10 @@ class Feelog extends Repository {
             'terminal' => 'crontab',
         ];
 
+        if ( $data['amount'] != 0 ) {
+            $data['amount'] = - $data['amount'];
+        }
+
         $time = &$data['time'];
         if (is_string($time)) $time = strtotime($time);
         $time or $time = time();

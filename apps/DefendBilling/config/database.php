@@ -1,13 +1,24 @@
 <?php
 return [
     'mitigation' => [
-        'host'      => '172.31.50.5',
-        'port'      => '3306',
-        'dbname'  => 'ulan_mitigation',
-        'username'  => 'landers',
-        'password'  => 'CpBbVRJqGvsrLc3n',
-        'charset'   => 'utf8',
-        'log-path'  => dirname(__DIR__).'/logs/'
+        'read'      => [
+            'host'      => '172.31.50.5',
+            'port'      => '3306',
+            'dbname'    => 'ulan_mitigation',
+            'username'  => 'landers',
+            'password'  => 'CpBbVRJqGvsrLc3n',
+            'charset'   => 'utf8',
+            'log-path'  => dirname(__DIR__).'/logs/'
+        ],
+        'write'      => [
+            'host'      => '172.31.50.5',
+            'port'      => '3306',
+            'dbname'    => 'ulan_mitigation',
+            'username'  => 'landers',
+            'password'  => 'CpBbVRJqGvsrLc3n',
+            'charset'   => 'utf8',
+            'log-path'  => dirname(__DIR__).'/logs/'
+        ]
     ],
 
     'main' => [

@@ -209,7 +209,10 @@ class DDoSHistory extends Repository {
 
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
 
-        // if (!$fee) return true;
+        if (!$fee) {
+            Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
+            return true;
+        }
 
         //按需防护扣费日志数据包
         $feelog_mitigation_data = [
@@ -220,7 +223,7 @@ class DDoSHistory extends Repository {
             'amount' => $fee,
             'description' => sprintf(
                 'IP：%s 按需防护费用, 持续%s小时, 峰值：%sMbps/%spps',
-                $ip, $peak_info['mbps']['value'], $peak_info['pps']['value'], $duration
+                $ip, $duration, $peak_info['mbps']['value'], $peak_info['pps']['value']
             ),
         ];
 

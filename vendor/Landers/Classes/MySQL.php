@@ -3,14 +3,88 @@ namespace Landers\Classes;
 
 use Landers\Utils\Arr;
 
-/**
- * MySQL驱动
- * @author Landers
- */
-class MySQL{
-	private static $conns = array();
-	private $conn, $connid, $dbname, $log_path;
-	private $dbd_cache, $query_sqls = array(), $is_debug = false;
+class MysqlConnect {
+	public $conns = array();
+
+	public function __construct($connection) {
+		$connections = array();
+		//提取read和write
+		if ( $t = Arr::get($connection, 'read') ) {
+			$connections['read'] = array_slice($t, 0);
+			unset($connection['read']);
+		}
+		if ( $t = Arr::get($connection, 'write') ) {
+			$connections['write'] = array_slice($t, 0);
+			unset($connection['write']);
+		}
+
+		//其它剩余字段作为default
+		$connections['default'] = array_slice($connection, 0);
+
+		//补全read和write中的信息
+		if (array_key_exists('read', $connections)) {
+			//$connection['read'] = array_merge($connection, $connection['read']);
+		}
+		if (array_key_exists('write', $connections)) {
+			//$connection['read'] = array_merge($connection, $connection['read']);
+		}
+
+		//default为空时，用write
+		if (!count($connections['default'])) {
+			$connections['default'] = array_slice($connections['write'], 0);
+		}
+
+		foreach ($connections as $key => $config) {
+			$this->connect($config, $key);
+		}
+	}
+
+	/**
+	 * 创建新数据库连接
+	 * @param  [type] $config 	  [description]
+	 * @param  [type] $connid     [description]
+	 * @return [type]             [description]
+	 */
+	public function connect($config, $connid) {
+		$host = $config['host'];
+		$username = $config['username'];
+		$password = $config['password'];
+		$dbname = $config['dbname'];
+		$pconnect = $config['pconnect'];
+		$charset = $config['charset'];
+		$port = $config['port'];
+		$fun_conn = $pconnect ? 'mysqli_pconnect' : 'mysqli_connect';
+		if ( !$conn = Arr::get($this->conns, $connid) ){
+			$conn = @call_user_func($fun_conn, $host, $username, $password, NULL, $port);
+						  //@call_user_func($fun_conn, "$host:$port", $username, $pwd);
+			$this->conns[$connid] = $conn;
+		}
+		if ( !$conn ) {
+			throw new \Exception('Can not connect database host!');
+		}
+		if ( !@mysqli_select_db($conn, $dbname) ) {
+			throw new \Exception("Database is not exists!");
+		}
+	}
+
+	public function getConn($connid) {
+		$default = 'default';
+		if (!$connid || !array_key_exists($connid, $this->conns)) {
+			$connid = 'default';
+		}
+
+		if (array_key_exists($connid, $this->conns)) {
+			return $this->conns[$connid];
+		} else {
+			$message = sprintf('试图引用一个不存在数据库连接：%s！', $connid);
+			throw new \Exception($message);
+		}
+	}
+}
+
+Trait MysqlCache {
+	private $log_path, $dbd_cache;
+	private $is_debug = false, $sql_logs = array('read' => array(), 'write' => array());
 
 	public function clear_cache(){
 		$this->dbd_cache->clear();
@@ -36,27 +110,45 @@ class MySQL{
 			return $ret;
 		}
 	}
+}
 
-	public function __construct($host, $user, $pwd, $dbname = NULL, $pconnect = false, $charset='utf8', $port = '3306', $is_error_break = true){
+/**
+ * MySQL驱动
+ * @author Landers
+ */
+class MySQL{
+	use MysqlCache;
+
+	private $connecter;
+
+	public function __construct($connection) {
+		//实例化数据库数据缓存
 		$this->dbd_cache = new dbd_cache(true);
-		$this->dbname = $dbname;
-		$fun_conn	= $pconnect ? 'mysqli_pconnect' : 'mysqli_connect';
-		$this->connid = md5($fun_conn.$host.$port.$user.$pwd);
-		$this->conn = Arr::get(self::$conns, $this->connid);
-		$this->conn or $this->conn = call_user_func($fun_conn, $host, $user, $pwd, NULL, $port);
 
-		//$this->conn = @call_user_func($fun_conn, "$host:$port", $user, $pwd);
-		$this->conn or die("Can not connect database host.\n");
-		$this->execute("set character set '$charset'");//读库
-		$this->execute("set names '$charset'");  		//写库
-		if ($dbname && !$this->active($dbname) && $is_error_break) die("Database is not exists!\n");
+		//实例化连接器
+		$this->connecter = new MysqlConnect($connection);
+
+		//初始化编码
+		$this->execute("set character set '$charset'"); //读库时的编编码
+		$this->execute("set names '$charset'");  		//写库时的编编码
+	}
+
+	public function __destruct(){
+		$this->close();
 	}
 
 	/**
 	 * 错误信息
 	 */
-	public function error(){return mysqli_error($this->conn);}
-	public function errno(){return mysqli_errno($this->conn);}
+	public function error($connid = NULL){
+		$conn = $this->connecter->getConn($connid);
+		return mysqli_error($conn);
+	}
+
+	public function errno($connid = NULL){
+		$conn = $this->connecter->getConn($connid);
+		return mysqli_errno($conn);
+	}
 
 	/**
 	 * 数据库是否存在
@@ -64,41 +156,42 @@ class MySQL{
 	 * @return [type]         [description]
 	 */
 	public function db_exists($dbname){
-		$sql = 'show databases'; $dbns = array();
+		$sql = 'show databases';
+		$dbns = array();
 		$ret = $this->query($sql);
 		if ($ret === false) return false;
-		foreach ($ret as $item) $dbns[] = $item['Database'];
-		$dbns = array_flip($dbns);
-		return array_key_exists( $dbname, $dbns);
-	}
-	public function version() {return mysqli_get_server_info($this->conn);}
-	//public function rows(&$rs){return mysqli_num_rows($rs);}
-	public function close(){
-		if (!$this->conn) return;
-		@mysqli_close($this->conn);
-		if ($this->is_debug) {
-			debug($this->query_sqls, false);
-			debug(dbd_cache::$data, false);
+		foreach ($ret as $item) {
+			$dbns[] = $item['Database'];
 		}
+		$dbns = array_flip($dbns);
+		return array_key_exists( $dbname, $dbns );
 	}
+
 	/**
-	 * 选取数据库
-	 * @param  [type] $dbname [description]
-	 * @return [type]         [description]
+	 * 关闭数据库连接
+	 * @return [type] [description]
 	 */
-	public function active($dbname){
-		$bool = mysqli_select_db($this->conn, $dbname);
-		if ($bool) $this->dbname = $dbname;
-		return $bool;
+	public function close(){
+		if ($this->connecter && ($conns = &$this->connecter->conns)) {
+			foreach ($conns as $conn) {
+				@mysqli_close($conn);
+			}
+			if ($this->is_debug) {
+				debug($this->sql_logs, false);
+				debug(dbd_cache::$data, false);
+			}
+		}
 	}
 
 	/**
 	 * 返回由insert产生的最后一条记录ID
-	 * @param  [type] $this->conn [description]
-	 * @return [type]             [description]
+	 * @param  [type]  			[description]
+	 * @return [type]           [description]
 	 */
-	public function newid(){return mysqli_insert_id($this->conn);}
-	public function __destruct(){$this->close();}
+	public function newid(){
+		$conn = $this->connecter->getConn('write');
+		return mysqli_insert_id($conn);
+	}
 
 	/**
 	 * 执行查询
@@ -113,9 +206,9 @@ class MySQL{
 		} else {
 			if (!$sql = &$sql_rs) return false;
 			if ($ret = $this->dbd_cache->get($sql)) return $ret;
-			if ($this->is_debug) $this->query_sqls[] = $sql;
-			if (!is_string($sql)) debug(debug_backtrace(0));
-			$rs = mysqli_query($this->conn, $sql);
+			if ($this->is_debug) $this->sql_logs['read'][] = $sql;
+			$conn = $this->connecter->getConn('read');
+			$rs = mysqli_query($conn, $sql);
 			if (!$rs) {
 				$this->save_log($sql);
 				return false;
@@ -179,8 +272,13 @@ class MySQL{
 	 */
 	public function execute($sql, $is_save_error = true){
 		if (!$sql) return false;
-		$ret = mysqli_query($this->conn, $sql);
+
+		$conn = $this->connecter->getConn('write');
+		$ret = mysqli_query($conn, $sql);
+
+		if ($this->is_debug) $this->sql_logs['write'][] = $sql;
 		if (!$ret && $is_save_error) $this->save_log($sql);
+
 		return $ret;
 	}
 
@@ -206,7 +304,7 @@ class MySQL{
 	 * @return boolean
 	 */
 	public function transact($callback) {
-		$conn = &$this->conn;
+		$conn = $this->connecter->getConn('read');
 		$this->execute('BEGIN', $conn);
 		if ( $ret = $callback() ) {
 			$this->execute('COMMIT', $conn);
@@ -234,7 +332,8 @@ class MySQL{
 	 * @return [type] [description]
 	 */
 	public function affect_rows(){
-		$x = mysqli_affected_rows($this->conn);
+		$conn = $this->connecter->getConn('write');
+		$x = mysqli_affected_rows($conn);
 		return $x < 0 ? 0 : $x;
 	}
 
@@ -354,7 +453,8 @@ class MySQL{
 	 */
 	public function conv_value($v){
 		if (is_numeric($v)) return $v;
-		return mysqli_real_escape_string($this->conn, $v);
+		$conn = $this->connecter->getConn('read');
+		return mysqli_real_escape_string($conn, $v);
 		//return str_replace(array("\\'", "'"), array("'", "''"), $v);
 	}
 

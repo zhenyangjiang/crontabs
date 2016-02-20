@@ -412,6 +412,24 @@ class Solusvm {
     }
 
     /**
+     * 修改主机CPU核心数
+     *
+     * @param $serverID
+     * @param $limit
+     * @param $overlimit
+     * @return array
+     * @throws Exception
+     * @link https://documentation.solusvm.com/display/DOCS/Change+Bandwidth+Limits
+     */
+    public function changeCpu($serverID, $cpu) {
+        if(!is_numeric($serverID))
+            throw new Exception("Invalid ServerID");
+        if(!is_numeric($cpu))
+            throw new Exception("Invalid CPU");
+        return $this->execute(array("action"=>"vserver-change-cpu", "vserverid"=>$serverID, "cpu"=>$cpu));
+    }
+
+    /**
      * 修改服务器带宽大小
      *
      * @param $serverID
@@ -492,7 +510,6 @@ class Solusvm {
     public function changeRootPassword($serverID, $rootpassword) {
         if(!is_numeric($serverID))
             throw new Exception("Invalid ServerID");
-
         return $this->execute(array("action"=>"vserver-rootpassword", "vserverid"=>$serverID, "rootpassword"=>$rootpassword));
     }
 

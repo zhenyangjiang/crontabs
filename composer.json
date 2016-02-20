@@ -3,7 +3,7 @@
         "phpmailer/phpmailer": "~5.2",
         "pda/pheanstalk": "^3.1",
         "predis/predis": "^1.0",
-        "ulan/solusvm": "^1.0"
+        "nesbot/carbon": "^1.21"
     },
     "autoload":{
         "classmap": [

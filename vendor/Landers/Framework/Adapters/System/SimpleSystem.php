@@ -36,8 +36,8 @@ class SimpleSystem extends SystemClass{
     public static function db($connection = NULL) {
         $db = &self::$dbs[$connection];
         if (!$db) {
-            $$connection = self::db_config($connection);
-            $db = new MySQL($connection);
+            $config = self::db_config($connection);
+            $db = new MySQL($config);
             if ($cfg['log-path']) {
                 $db->set_log_path($cfg['log-path']);
             }

@@ -6,35 +6,35 @@ use Landers\Utils\Arr;
 class MysqlConnect {
 	public $conns = array();
 
-	public function __construct($connection) {
-		$connections = array();
+	public function __construct($_config) {
+		$configs = array();
 		//提取read和write
-		if ( $t = Arr::get($connection, 'read') ) {
-			$connections['read'] = array_slice($t, 0);
-			unset($connection['read']);
+		if ( $t = Arr::get($_config, 'read') ) {
+			$configs['read'] = array_slice($t, 0);
+			unset($_config['read']);
 		}
-		if ( $t = Arr::get($connection, 'write') ) {
-			$connections['write'] = array_slice($t, 0);
-			unset($connection['write']);
+		if ( $t = Arr::get($_config, 'write') ) {
+			$configs['write'] = array_slice($t, 0);
+			unset($_config['write']);
 		}
 
 		//其它剩余字段作为default
-		$connections['default'] = array_slice($connection, 0);
+		$configs['default'] = array_slice($_config, 0);
 
 		//补全read和write中的信息
-		if (array_key_exists('read', $connections)) {
-			//$connection['read'] = array_merge($connection, $connection['read']);
+		if (array_key_exists('read', $configs)) {
+			//$_config['read'] = array_merge($_config, $_config['read']);
 		}
-		if (array_key_exists('write', $connections)) {
-			//$connection['read'] = array_merge($connection, $connection['read']);
+		if (array_key_exists('write', $configs)) {
+			//$_config['read'] = array_merge($_config, $_config['read']);
 		}
 
 		//default为空时，用write
-		if (!count($connections['default'])) {
-			$connections['default'] = array_slice($connections['write'], 0);
+		if (!count($configs['default'])) {
+			$configs['default'] = array_slice($configs['write'], 0);
 		}
 
-		foreach ($connections as $key => $config) {
+		foreach ($configs as $key => $config) {
 			$this->connect($config, $key);
 		}
 	}
@@ -62,6 +62,11 @@ class MysqlConnect {
 		if ( !$conn ) {
 			throw new \Exception('Can not connect database host!');
 		}
+
+		//初始化编码
+		mysqli_query($conn, "set character set '$charset'"); //读库时的编编码
+		mysqli_query($conn, "set names '$charset'");  		//写库时的编编码
+
 		if ( !@mysqli_select_db($conn, $dbname) ) {
 			throw new \Exception("Database is not exists!");
 		}
@@ -121,16 +126,12 @@ class MySQL{
 
 	private $connecter;
 
-	public function __construct($connection) {
+	public function __construct($config) {
 		//实例化数据库数据缓存
 		$this->dbd_cache = new dbd_cache(true);
 
 		//实例化连接器
-		$this->connecter = new MysqlConnect($connection);
-
-		//初始化编码
-		$this->execute("set character set '$charset'"); //读库时的编编码
-		$this->execute("set names '$charset'");  		//写库时的编编码
+		$this->connecter = new MysqlConnect($config);
 	}
 
 	public function __destruct(){

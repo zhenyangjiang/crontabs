@@ -135,8 +135,8 @@ class LcliSystem extends SystemClass {
         $db = &self::$dbs[$connection];
         if (!$db) {
             $connections = Config::get('database');
-            $connection = $connections[$connection];
-            $db = new MySQL($connection);
+            $config = $connections[$connection];
+            $db = new MySQL($config);
         }
         if ($cfg['log-path']) {
             $db->set_log_path($cfg['log-path']);

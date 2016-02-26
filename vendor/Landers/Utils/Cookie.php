@@ -8,16 +8,15 @@ class Cookie {
     private static $cookie_data = array();
     public static function set($key, $val, $expire = NULL){
         if (self::$is_cookie_encrypt === true) {
-            $key = md5('xweb'.$key);
-            if ($val) $val = self::dz_encrypt($val);
+            $key = md5('lwap'.$key);
+            if ($val) $val = Crypt::encode($val);
         }
         if (!is_null($val)) {
             $expire or $expire = (int)ENV_cookietime or $expire = 1;
             $expire = strtolower((string)$expire);
             preg_match('/\d+/', $expire, $match);
-            if ($match)  $match_number = $match[0];
-            preg_match('/[a-zA-Z]+/', $expire, $match);
-            if ($match) {
+            if ($match) $match_number = $match[0];
+            if (preg_match('/[a-zA-Z]+/', $expire, $match)) {
                 $match_letter = $match[0];
                 switch ($match_letter) {
                     case 'h': $expire = 3600 * $match_number; break;
@@ -25,12 +24,15 @@ class Cookie {
                     case 's': $expire = $match_number; break;
                     default : $expire = $match_number <= 24 ? $match_number * 3600 : $match_number; break;
                 }
+            } else {
+                $expire = $match_number * 3600;
             }
+
             self::$cookie_data[$key] = $val;
         } else {
             unset(self::$cookie_data[$key]); $expire = -1;
         }
-        setcookie($key, $val, time() + $expire, '/');
+        @setcookie($key, $val, time() + $expire, '/');
     }
 
     public static function get($key){
@@ -45,7 +47,7 @@ class Cookie {
                 $ret = NULL;
             }
         }
-        if ( $is ) $ret = self::dz_decrypt($ret);
+        if ( $is ) $ret = Crypt::decode($ret);
         return $ret;
     }
 

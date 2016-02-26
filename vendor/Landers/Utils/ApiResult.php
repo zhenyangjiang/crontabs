@@ -4,30 +4,32 @@ namespace Landers\Utils;
 Class ApiResult {
     private $pack;
     public function __construct() {
-        $no_data = NULL; $base_code = 1000;
+        $no_data = NULL;
+        $baseerror_code = 1000;
+        $success_code = 0;
         if (func_num_args() > 0) {
             if (func_num_args() == 1) {
                 $arg = func_get_arg(0);
                 if ( is_array($arg) || is_object($arg) || is_numeric($arg)) {
-                    $success = true; $message = ''; $data = &$arg; $code = 0;
+                    $success = true; $message = ''; $data = &$arg; $code = $success_code;
                 } elseif (is_string($arg)) {
-                    $success = false; $message = $arg; $data = $no_data; $code = $base_code + 1;
+                    $success = false; $message = $arg; $data = $no_data; $code = $baseerror_code + 1;
                 } elseif (is_bool($arg)) {
                     $success = $arg; $message = $data = $code = NULL;
                 } else {
-                    $success = false; $message = '服务器繁忙!!!'; $data = $no_data; $code = $base_code + 101;
+                    $success = false; $message = '服务器繁忙!!!'; $data = $no_data; $code = $baseerror_code + 101;
                 }
             } elseif (func_num_args() == 2) {
-                    $parse = auto_parse_args(func_get_args());
+                    $parse = self::auto_parse_args(func_get_args());
                     if ( array_key_exists('boolean', $parse) ) {
                         list($success, $xvar) = func_get_args();
                         if ($success) {
                             if ( is_string($xvar)) {
-                                $data = $message = $xvar;
+                                $data = NULL; $message = $xvar;
                             } else {
                                 $data = $xvar; $message = '';
                             }
-                            $code = 0;
+                            $code = $success_code;
                         } else {
                             $data = $no_data;
                             if (is_numeric($xvar)) {
@@ -43,27 +45,27 @@ Class ApiResult {
             } elseif (func_num_args() == 3) {
                 list($success, $xvar1, $xvar2) = func_get_args();
                 if (gettype($xvar1) !== gettype($xvar2)) {
-                    $parse = auto_parse_args([$xvar1, $xvar2]);
+                    $parse = self::auto_parse_args([$xvar1, $xvar2]);
                     $message = $parse['string'];
                     if ($success) {
                         unset($parse['string']);
                         $data = pos($parse);
-                        $code = 0;
+                        $code = $success_code;
                     } else {
                         $data = $no_data;
-                        $code = array_key_exists('integer', $parse) ? $parse['integer'] : $base_code + 1;
+                        $code = array_key_exists('integer', $parse) ? $parse['integer'] : $baseerror_code + 1;
                     }
                 } else {
                     $success = true;
                     $data = $xvar1;
                     $message = $xvar2;
-                    $code = 0;
+                    $code = $success_code;
                 }
             } else {
                 list($success, $data, $message, $code) = func_get_args();
                 if (
-                    ($success && $code > 0) ||
-                    (!$success && $code === 0)
+                    ($success && $code > $success_code) ||
+                    (!$success && $code === $success_code)
                 ) throw new \Exception('状态与错误代码有冲突');
             }
 
@@ -76,6 +78,15 @@ Class ApiResult {
         } else {
             throw new \Exception('ApiResult调用错误！');
         }
+    }
+
+    private static function auto_parse_args($args) {
+        $ret = [];
+        foreach ($args as $arg) {
+            $type = gettype($arg);
+            $ret[$type] = $arg;
+        };
+        return $ret;
     }
 
     public function get() {

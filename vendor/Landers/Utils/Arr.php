@@ -204,5 +204,15 @@ class Arr {
         }
         return $ret;
     }
+
+    //深度遍历
+    public static function traverse_if_array(&$a, \Closure $callback) {
+        foreach ($a as &$item) {
+            if (is_array($item)) {
+                $callback($item);
+                self::traverse_if_array($item, $callback);
+            }
+        }
+    }
 }
 ?>

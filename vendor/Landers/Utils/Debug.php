@@ -76,4 +76,7 @@ if (!function_exists('dp')) {
 if (!function_exists('dpp')) {
 	function dpp() {Debug::pause(1);}
 }
+if (!function_exists('pause')) {
+	function pause() {Debug::pause(1);}
+}
 ?>

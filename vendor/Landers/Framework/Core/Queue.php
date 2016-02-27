@@ -4,8 +4,11 @@ namespace Landers\Framework\Core;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
 use Landers\Interfaces\TaskInterface;
+use Landers\Traits\MakeInstance;
 
 class Queue {
+    use MakeInstance;
+
     const FAILD_RETRY_COUNT = 1;
     private $config;
     private $pheanstalk;
@@ -13,8 +16,8 @@ class Queue {
     /**
      * 构造方法
      */
-    public function __construct() {
-        $this->config = Config::getDefault('queue', 'pheanstalk');
+    public function __construct($queueKey) {
+        $this->config = Config::get('queue', $queueKey);
         $this->pheanstalk = new Pheanstalk($this->config['host']);
     }
 
@@ -31,10 +34,10 @@ class Queue {
             // ->put(serialize($task), $priority, $delay, $ttr);
             ->put(json_encode(['data' => serialize($task)]));
         if ($ret) {
-            if ($is_note) Log::note('#tab任务成功进入队列，ID：%s', $ret);
+            if ($is_note) Response::note('#tab任务成功进入队列，ID：%s', $ret);
             return $ret;
         } else {
-            if ($is_note) Log::error('#tab任务入队失败！');
+            if ($is_note) Response::error('#tab任务入队失败！');
             return false;
         }
     }
@@ -54,7 +57,7 @@ class Queue {
                 $task_id = $task->getId();
                 $logpre = '队列任务 #'.$task_id.'：';
 
-                Log::note('抽取到一项队列任务，正在执行中...');
+                Response::note('抽取到一项队列任务，正在执行中...');
                 $str = $task->getData();
 
                 $object = json_decode($str);
@@ -62,7 +65,7 @@ class Queue {
                 $bool = $object->execute($retmsg);
                 $logmsg = $logpre.$retmsg;
                 if ($bool) {
-                    Log::note($logmsg);
+                    Response::note($logmsg);
                     $this->pheanstalk->delete($task);
                 } else {
                     $counts = &$this->tasks_faild_counts;
@@ -70,20 +73,20 @@ class Queue {
                     $count = &$counts[$task_id];
 
                     //到达重试次数，删除该任务
-                    Log::warn($logmsg);
+                    Response::warn($logmsg);
                     if ($count >= self::FAILD_RETRY_COUNT) {
-                        Log::warn($logpre.'已重试%s次仍失败，该任务被删除。', self::FAILD_RETRY_COUNT);
+                        Response::warn($logpre.'已重试%s次仍失败，该任务被删除。', self::FAILD_RETRY_COUNT);
                         $this->pheanstalk->delete($task);
                         unset($counts[$task_id]);
                     } else {
-                        Log::error($logmsg.'(失败%s次)', $count);
+                        Response::error($logmsg.'(失败%s次)', $count);
                         $count++;
                     }
                 }
-                Log::note('#line');
+                Response::note('#line');
             } else {
-                Log::warn('无效队列任务，请查看控制台');
-                Log::note('#line');
+                Response::warn('无效队列任务，请查看控制台');
+                Response::note('#line');
                 sleep(1);
             }
         }
@@ -104,6 +107,6 @@ class Queue {
      */
     public function check_listening(){
         $ret = $this->pheanstalk->getConnection()->isServiceListening();
-        Log::note('检查结果：%s', $ret);
+        Response::note('检查结果：%s', $ret);
     }
 }

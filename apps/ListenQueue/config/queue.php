@@ -1,10 +1,14 @@
 <?php
 return [
-    'default'       => 'pheanstalk',
-
-    'pheanstalk'    => [
+    'notify'    => [
         'host'      => '172.31.50.7',
-        'queue'     => 'Crontabs',
+        'queue'     => 'Notify',
+        'ttr'       => 60,
+    ],
+
+    'blackhole'    => [
+        'host'      => '172.31.50.7',
+        'queue'     => 'BlackHole',
         'ttr'       => 60,
     ]
 ];

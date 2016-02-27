@@ -20,16 +20,19 @@ Class Config {
      * @param  string $filekey 主文件名
      * @return mixed
      */
-    public static function get($filekey, $is_default = false) {
+    public static function get($filekey, $key = NULL) {
         $file = self::file($filekey);
         $config = System::cache('CONFIG') or $config = array();
         if ($ret = &$config[$filekey]) return $ret;
         if ($file) $ret = @include($file);
         if ($ret) System::cache('CONFIG', $config);
         $ret or $ret = array();
-        if ($is_default) {
+        if (!$key) return $ret;
+        if ($key === true) {
             return $ret[$ret['default']];
-        } else return $ret;
+        } else {
+            return $ret[$key];
+        }
     }
 
     /**

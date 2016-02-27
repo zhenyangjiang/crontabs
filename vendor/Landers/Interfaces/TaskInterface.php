@@ -6,5 +6,5 @@ interface TaskInterface {
      * 执行任务
      * @return void
      */
-    public function execute(&$retmsg);
+    public function execute(&$retmsg = NULL);
 }

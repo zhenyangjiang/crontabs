@@ -156,7 +156,7 @@ class Notify {
             if ($retdat = $o->ErrorInfo) {
                 return false;
             } else {
-                $retdat = (new Queue())->push(new SendEmailNotify($o));
+                $retdat = Queue::make('notify')->push(new SendEmailNotify($o));
                 return true;
             }
         }

@@ -39,9 +39,16 @@ Class LcliResponse {
         self::show('error', func_get_args());
     }
 
+    public static function halt() {
+        self::show('error', func_get_args()); exit();
+    }
+
+
     public static function warn() {
         self::show('warn', func_get_args());
     }
+
+
 
     /**
      * 去除格式

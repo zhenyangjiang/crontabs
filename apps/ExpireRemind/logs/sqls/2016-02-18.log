@@ -1,0 +1,1049 @@
+insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, '云主机过期续费提醒', '尊敬的用户陆海兴：\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\"color:#cccccc\">本邮件由系统自动发送，请勿回复</div>', '2016-02-18 14:31:42', '2016-02-18 14:31:42')
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 183,
+    'function' => 'save_log',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:31:42\', \'2016-02-18 14:31:42\')',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 414,
+    'function' => 'execute',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:31:42\', \'2016-02-18 14:31:42\')',
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 425,
+    'function' => 'insert',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/Repository.php',
+    'line' => 41,
+    'function' => 'create',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 78,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'create',
+      1 => 
+      array (
+        0 => 
+        array (
+          'uid' => 1,
+          'title' => '云主机过期续费提醒',
+          'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 78,
+    'function' => 'create',
+    'class' => 'Message',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    'line' => 60,
+    'function' => 'client',
+    'class' => 'Notify',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'instance_is_about_to_expire_enough_balance_for_manual_renew',
+      1 => 1,
+      2 => 
+      array (
+        'instance_name' => '1-v8UWCN',
+        'instance_ip' => '123.1.1.101',
+        'expire_date' => '2016-02-22 14:30:12',
+        'days' => 4,
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Adapters/System/LcliSystem.php',
+    'line' => 73,
+    'args' => 
+    array (
+      0 => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  8 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/System.php',
+    'line' => 32,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/app',
+    'line' => 5,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, '云主机过期续费提醒', '尊敬的用户陆海兴：\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\"color:#cccccc\">本邮件由系统自动发送，请勿回复</div>', '2016-02-18 14:32:10', '2016-02-18 14:32:10')
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 183,
+    'function' => 'save_log',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:32:10\', \'2016-02-18 14:32:10\')',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 414,
+    'function' => 'execute',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:32:10\', \'2016-02-18 14:32:10\')',
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 425,
+    'function' => 'insert',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/Repository.php',
+    'line' => 41,
+    'function' => 'create',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 78,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'create',
+      1 => 
+      array (
+        0 => 
+        array (
+          'uid' => 1,
+          'title' => '云主机过期续费提醒',
+          'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 78,
+    'function' => 'create',
+    'class' => 'Message',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    'line' => 60,
+    'function' => 'client',
+    'class' => 'Notify',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'instance_is_about_to_expire_enough_balance_for_manual_renew',
+      1 => 1,
+      2 => 
+      array (
+        'instance_name' => '1-v8UWCN',
+        'instance_ip' => '123.1.1.101',
+        'expire_date' => '2016-02-22 14:30:12',
+        'days' => 4,
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Adapters/System/LcliSystem.php',
+    'line' => 73,
+    'args' => 
+    array (
+      0 => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  8 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/System.php',
+    'line' => 32,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/app',
+    'line' => 5,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, '云主机过期续费提醒', '尊敬的用户陆海兴：\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\"color:#cccccc\">本邮件由系统自动发送，请勿回复</div>', '2016-02-18 14:32:23', '2016-02-18 14:32:23')
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 183,
+    'function' => 'save_log',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:32:23\', \'2016-02-18 14:32:23\')',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 61,
+    'function' => 'execute',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:32:23\', \'2016-02-18 14:32:23\')',
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 211,
+    'function' => 'Landers\\Classes\\{closure}',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 65,
+    'function' => 'transact',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      Closure::__set_state(array(
+      )),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 413,
+    'function' => 'show_debug',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `title`, `content`, `created_at`, `updated_at`) values (1, \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:32:23\', \'2016-02-18 14:32:23\')',
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 425,
+    'function' => 'insert',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/Repository.php',
+    'line' => 41,
+    'function' => 'create',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 79,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'create',
+      1 => 
+      array (
+        0 => 
+        array (
+          'uid' => 1,
+          'title' => '云主机过期续费提醒',
+          'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+        ),
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 79,
+    'function' => 'create',
+    'class' => 'Message',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    'line' => 60,
+    'function' => 'client',
+    'class' => 'Notify',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'instance_is_about_to_expire_enough_balance_for_manual_renew',
+      1 => 1,
+      2 => 
+      array (
+        'instance_name' => '1-v8UWCN',
+        'instance_ip' => '123.1.1.101',
+        'expire_date' => '2016-02-22 14:30:12',
+        'days' => 4,
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Adapters/System/LcliSystem.php',
+    'line' => 73,
+    'args' => 
+    array (
+      0 => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  11 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  12 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/System.php',
+    'line' => 32,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  13 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/app',
+    'line' => 5,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, 'user', '云主机过期续费提醒', '尊敬的用户陆海兴：\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\"color:#cccccc\">本邮件由系统自动发送，请勿回复</div>', '2016-02-18 14:35:49', '2016-02-18 14:35:49')
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 183,
+    'function' => 'save_log',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, \'user\', \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:35:49\', \'2016-02-18 14:35:49\')',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 61,
+    'function' => 'execute',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, \'user\', \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:35:49\', \'2016-02-18 14:35:49\')',
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 211,
+    'function' => 'Landers\\Classes\\{closure}',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 65,
+    'function' => 'transact',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      Closure::__set_state(array(
+      )),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 413,
+    'function' => 'show_debug',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, \'user\', \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:35:49\', \'2016-02-18 14:35:49\')',
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 425,
+    'function' => 'insert',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'type' => 'user',
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/Repository.php',
+    'line' => 41,
+    'function' => 'create',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'type' => 'user',
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Message.php',
+    'line' => 17,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'create',
+      1 => 
+      array (
+        0 => 
+        array (
+          'uid' => 1,
+          'type' => 'user',
+          'title' => '云主机过期续费提醒',
+          'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+        ),
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Message.php',
+    'line' => 17,
+    'function' => 'create',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'type' => 'user',
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 75,
+    'function' => 'sendTo',
+    'class' => 'Message',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 1,
+      1 => '云主机过期续费提醒',
+      2 => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    'line' => 60,
+    'function' => 'client',
+    'class' => 'Notify',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'instance_is_about_to_expire_enough_balance_for_manual_renew',
+      1 => 1,
+      2 => 
+      array (
+        'instance_name' => '1-v8UWCN',
+        'instance_ip' => '123.1.1.101',
+        'expire_date' => '2016-02-22 14:30:12',
+        'days' => 4,
+      ),
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Adapters/System/LcliSystem.php',
+    'line' => 73,
+    'args' => 
+    array (
+      0 => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  12 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  13 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/System.php',
+    'line' => 32,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  14 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/app',
+    'line' => 5,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, 'user', '云主机过期续费提醒', '尊敬的用户陆海兴：\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\"color:#cccccc\">本邮件由系统自动发送，请勿回复</div>', '2016-02-18 14:36:05', '2016-02-18 14:36:05')
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 183,
+    'function' => 'save_log',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, \'user\', \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:36:05\', \'2016-02-18 14:36:05\')',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 61,
+    'function' => 'execute',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, \'user\', \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:36:05\', \'2016-02-18 14:36:05\')',
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/MySQL.php',
+    'line' => 211,
+    'function' => 'Landers\\Classes\\{closure}',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 65,
+    'function' => 'transact',
+    'class' => 'Landers\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      Closure::__set_state(array(
+      )),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 413,
+    'function' => 'show_debug',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'insert into `ulan_messages` (`uid`, `type`, `title`, `content`, `created_at`, `updated_at`) values (1, \'user\', \'云主机过期续费提醒\', \'尊敬的用户陆海兴：\\n　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style=\\"color:#cccccc\\">本邮件由系统自动发送，请勿回复</div>\', \'2016-02-18 14:36:05\', \'2016-02-18 14:36:05\')',
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Classes/DBModel.php',
+    'line' => 425,
+    'function' => 'insert',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'type' => 'user',
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/Repository.php',
+    'line' => 41,
+    'function' => 'create',
+    'class' => 'Landers\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'type' => 'user',
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Message.php',
+    'line' => 17,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'create',
+      1 => 
+      array (
+        0 => 
+        array (
+          'uid' => 1,
+          'type' => 'user',
+          'title' => '云主机过期续费提醒',
+          'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+        ),
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Message.php',
+    'line' => 17,
+    'function' => 'create',
+    'class' => 'Landers\\Framework\\Core\\Repository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'uid' => 1,
+        'type' => 'user',
+        'title' => '云主机过期续费提醒',
+        'content' => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/ULan/Repositories/Notify.php',
+    'line' => 75,
+    'function' => 'sendTo',
+    'class' => 'Message',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 1,
+      1 => '云主机过期续费提醒',
+      2 => '尊敬的用户陆海兴：
+　　您的云主机：1-v8UWCN（IP：123.1.1.101）将4天后(2016-02-22 14:30:12)到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>',
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    'line' => 60,
+    'function' => 'client',
+    'class' => 'Notify',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'instance_is_about_to_expire_enough_balance_for_manual_renew',
+      1 => 1,
+      2 => 
+      array (
+        'instance_name' => '1-v8UWCN',
+        'instance_ip' => '123.1.1.101',
+        'expire_date' => '2016-02-22 14:30:12',
+        'days' => 4,
+      ),
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Adapters/System/LcliSystem.php',
+    'line' => 73,
+    'args' => 
+    array (
+      0 => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/apps/ExpireRemind/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  12 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  13 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/vendor/Landers/Framework/Core/System.php',
+    'line' => 32,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  14 => 
+  array (
+    'file' => '/home/vagrant/Code/YiyunProjects/ULan-Crontabs/app',
+    'line' => 5,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+

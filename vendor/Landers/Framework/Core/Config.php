@@ -2,17 +2,17 @@
 namespace Landers\Framework\Core;
 
 Class Config {
-    private static $path;
-    public static function init($path) {
-        self::$path = $path;
+    private static $paths = array();
+    public static function init($paths) {
+        self::$paths = $paths;
     }
 
     private static function file($filekey) {
-        if (self::$path) {
-            return self::$path."$filekey.php";
-        } else {
-            return NULL;
+        foreach (self::$paths as $path) {
+            $file = $path."$filekey.php";
+            if (is_file($file)) return $file;
         }
+        return NULL;
     }
 
     /**
@@ -22,16 +22,20 @@ Class Config {
      */
     public static function get($filekey, $key = NULL) {
         $file = self::file($filekey);
-        $config = System::cache('CONFIG') or $config = array();
-        if ($ret = &$config[$filekey]) return $ret;
-        if ($file) $ret = @include($file);
-        if ($ret) System::cache('CONFIG', $config);
-        $ret or $ret = array();
-        if (!$key) return $ret;
-        if ($key === true) {
-            return $ret[$ret['default']];
+        $configs = System::cache('CONFIG') or $configs = array();
+        if (!$config = &$configs[$filekey]) {
+            if ($file) $config = @include($file);
+            if ($config) System::cache('CONFIG', $configs);
+            $config or $config = array();
+        }
+        if (!$key) {
+            return $config;
         } else {
-            return $ret[$key];
+            if ($key === true) {
+                return $config[$config['default']];
+            } else {
+                return $config[$key];
+            }
         }
     }
 

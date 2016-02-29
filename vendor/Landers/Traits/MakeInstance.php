@@ -12,13 +12,12 @@ Trait MakeInstance {
         $class or $class = static::class;
         $args or $args = array();
         switch (count($args)) {
-            case 0 : $o = new $class(); break;
-            case 1 : $o = new $class($args[0]); break;
-            case 2 : $o = new $class($args[0], $args[1]); break;
-            case 3 : $o = new $class($args[0], $args[1], $args[2]); break;
-            case 4 : $o = new $class($args[0], $args[1], $args[2], $args[3]); break;
+            case 0 : return new $class(); break;
+            case 1 : return new $class($args[0]); break;
+            case 2 : return new $class($args[0], $args[1]); break;
+            case 3 : return new $class($args[0], $args[1], $args[2]); break;
+            case 4 : return new $class($args[0], $args[1], $args[2], $args[3]); break;
         }
-        return $o;
     }
 
     /**

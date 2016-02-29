@@ -1,9 +1,15 @@
 <?php
 use Landers\Framework\Core\System;
+use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Queue;
 
-dp(System::)
+$queue = System::argv(3);
+if (!$queue) Response::halt('未指定队列名称！');
 
-Response::note(['【Notify任务队列监听器】（'.System::app('name').'）开始工作','#dbline']);
-Queue::singleton('notify')->listen();
+$config = Config::get('queue', $queue);
+if (!$config) Response::halt('不存在队列标识“%s”', $queue);
+
+$title = sprintf('【%s监听器】（%s）开始工作', $config['name'], System::app('name'));
+Response::note([$title,'#dbline']);
+Queue::singleton($queue)->listen();

@@ -1,5 +1,4 @@
 <?php
-require_once(__DIR__.'/../../../Helpers.php');
 function pause() {
     $x = str_repeat('=', 40);
     $a = debug_backtrace(); $dat = &$a[0];

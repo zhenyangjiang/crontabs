@@ -3,8 +3,10 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Utils\Datetime;
 
-// BlackHole::doBlock('123.1.1.10', 6000); exit();
-// BlackHole::doUnblock('123.1.1.10'); exit();
+BlackHole::doBlock('123.1.1.10', 6000);
+BlackHole::doBlock('123.1.1.101', 6000); exit();
+BlackHole::doUnblock('123.1.1.10');
+BlackHole::doUnblock('123.1.1.101'); exit();
 
 // require_once('randomxml.php'); usleep(100000);
 // Response::note(['#blank', '#blank', '#blank']);

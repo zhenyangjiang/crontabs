@@ -23,7 +23,7 @@ Class BlackHole extends Repository {
         $task = new BlackholeAction('block', [
             'ip' => $ip, 'bps' => $bps,
         ]);
-        return Queue::make('blackhole')->push($task);
+        return Queue::singleton('blackhole')->push($task);
     }
 
     /**
@@ -73,7 +73,7 @@ Class BlackHole extends Repository {
         $task = new BlackholeAction('unblock', [
             'ip' => $ip
         ]);
-        return Queue::make('blackhole')->push($task);
+        return Queue::singleton('blackhole')->push($task);
     }
 
     /**

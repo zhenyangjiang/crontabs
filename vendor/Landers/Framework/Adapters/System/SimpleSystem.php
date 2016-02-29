@@ -19,7 +19,7 @@ class SimpleSystem extends SystemClass{
      * @param  string   连接名
      * @return array    配置信息
      */
-    public static function db_config($connection = NULL) {
+    public static function db_config($connection = 'default') {
         $config = Config::get('database');
         if ( !$connection || $connection == 'default') {
             $connection = $config['default'];
@@ -33,7 +33,7 @@ class SimpleSystem extends SystemClass{
      * @return object   连接对象
      */
     private static $dbs = array();
-    public static function db($connection = NULL) {
+    public static function db($connection = 'default') {
         $db = &self::$dbs[$connection];
         if (!$db) {
             $config = self::db_config($connection);

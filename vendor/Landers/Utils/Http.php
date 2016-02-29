@@ -67,14 +67,14 @@ class Http {
      * @param  [type] $err [description]
      * @return [type]      [description]
      */
-    public static function status($status){
-        $status_text = self::$statuses[$status];
-        $description = "$status $status_text";
+    public static function status($code){
+        $status_text = self::$statuses[$code];
+        $description = "$code $status_text";
         header("HTTP/1.1 $description");
         header("Status: $description");
         switch (true) {
-            case $status >= 400 && $status < 599 :
-                return 'HTTP '.$description.'错误';
+            case $code >= 400 && $code < 599 :
+                return 'HTTP '.$description;
                 break;
         }
     }

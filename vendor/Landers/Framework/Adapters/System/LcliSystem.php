@@ -66,10 +66,10 @@ class LcliSystem extends SystemClass {
         self::$app['path'] = $path;
 
         //初始Config路径
-        Config::init([
+        Config::init(array(
             $path.'/config/',
             self::$root.'/config/'
-        ]);
+        ));
 
         //加载脚本
         $script_file = $path.'/actions/'.$action.'.php';

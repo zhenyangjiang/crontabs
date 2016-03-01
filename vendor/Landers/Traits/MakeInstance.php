@@ -8,9 +8,8 @@ Trait MakeInstance {
      * @param  [type] $args  [description]
      * @return [type]        [description]
      */
-    public static function makeBy($class, $args) {
+    public static function makeBy(Array $args, $class = NULL) {
         $class or $class = static::class;
-        $args or $args = array();
         switch (count($args)) {
             case 0 : return new $class(); break;
             case 1 : return new $class($args[0]); break;
@@ -25,7 +24,7 @@ Trait MakeInstance {
      * @return [type] [description]
      */
     public static function make() {
-        return self::makeBy(static::class, func_get_args());
+        return self::makeBy(func_get_args(), static::class);
     }
 
     /**
@@ -40,7 +39,7 @@ Trait MakeInstance {
 
         $ret = &self::$_instances[$unique];
         if ( !$ret ) {
-            $ret = self::makeBy(static::class, $args);
+            $ret = self::makeBy($args, static::class);
         }
         return $ret;
     }

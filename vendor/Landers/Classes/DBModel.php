@@ -7,7 +7,6 @@ use Landers\Utils\Json;
 use Landers\Utils\Verify;
 
 
-
 /**
  * 数据模型基础类
  * @author Landers
@@ -63,10 +62,14 @@ Class DBModel {
                 }
                 return false;
             });
-            if (class_exists('\Landers\Classes\Request') && \Landers\Classes\Request::is_ajax()) {
-                exit(Json::encode([100, $msg]));
+            $is_ajax = class_exists(Request::class) && Request::is_ajax();
+            if ($is_ajax) ob_start();
+            if (function_exists('dp')) dp($msg, !$is_ajax, 4); else {print_r($msg); if ($is_ajx) exit();}
+            if ($is_ajax) {
+                $message = ob_get_contents(); ob_end_clean();
+                ApiResult::make()->debug($message)->output();
             }
-            if (function_exists('dp')) dp($msg, true, 4); else {print_r($msg); exit();}
+
         }
     }
 

@@ -20,15 +20,15 @@
     // "user": "root",
     // "password": "4tqmSYUan5",
 
-    "host": "172.31.50.8",
-    "user": "root",
-    "password": "ULan.io123",
-    "remote_path": "/data/wwwroot/crontabs",
-
-    // "host": "172.31.51.1",
+    // "host": "172.31.50.8",
     // "user": "root",
     // "password": "ULan.io123",
-    // "remote_path": "/usr/local/ulan",
+    // "remote_path": "/data/wwwroot/crontabs",
+
+    "host": "172.31.51.1",
+    "user": "root",
+    "password": "ULan.io123",
+    "remote_path": "/usr/local/ulan",
 
     "ignore_regexes": [
         "\\.sublime-(project|workspace)", "sftp-config(-alt\\d?)?\\.json",

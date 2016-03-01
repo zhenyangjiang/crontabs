@@ -8,7 +8,7 @@ Class Config {
     }
 
     private static function file($filekey) {
-        foreach (self::$paths as $path) {
+        foreach ((array)self::$paths as $path) {
             $file = $path."$filekey.php";
             if (is_file($file)) return $file;
         }

@@ -44,7 +44,7 @@ return array(
     'resource-usage' => array(
         'host'      => '172.31.50.5',
         'port'      => '3306',
-        'dbname'    => 'ulan_monitor',
+        'dbname'    => 'ulan_usage',
         'username'  => 'landers',
         'password'  => 'CpBbVRJqGvsrLc3n',
         'charset'   => 'utf8',

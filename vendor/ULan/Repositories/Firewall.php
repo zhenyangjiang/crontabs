@@ -5,6 +5,7 @@ use Landers\Framework\Core\Config;
 
 Class Firewall {
     public static function get_attack() {
+        $data = array();
         $urls = Config::get('fwurls');
         if (!$urls) {
             System::halt('未设置防火墙数据源URL');
@@ -19,7 +20,7 @@ Class Firewall {
                     $item['pps'][0] <= 1
                 ) continue;
 
-                $ret[$dest_ip] = [
+                $data[$dest_ip] = [
                     'dest'      => $dest_ip,
                     'type'      => implode(',', $item['types']),
                     'src'       => implode(',', $item['src']),
@@ -30,7 +31,8 @@ Class Firewall {
                 ];
             }
         }
-        return $ret;
+
+        return $data;
     }
 
     public static function make_attack(){

@@ -60,7 +60,8 @@ class MysqlConnect {
 			$this->conns[$connid] = $conn;
 		}
 		if ( !$conn ) {
-			throw new \Exception('Can not connect database host!');
+			$message = sprintf('Can not connect database host!', $host);
+			throw new \Exception($message);
 		}
 
 		//初始化编码

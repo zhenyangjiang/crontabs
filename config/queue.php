@@ -12,5 +12,12 @@ return [
         'host'      => '172.31.50.7',
         'queue'     => 'BlackHole',
         'ttr'       => 60,
+    ],
+
+    'ddoscollecter' => [
+        'name'      => 'DDos攻击源收集',
+        'host'      => '172.31.50.7',
+        'queue'     => 'DDosCollecter',
+        'ttr'       => 60,
     ]
 ];

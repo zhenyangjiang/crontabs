@@ -6,7 +6,6 @@ define('ENV_debug'              , true);
 define('ENV_charset'            , 'utf-8');
 define('ENV_system_name'        , 'ULan Crontabs');
 define('ENV_sleep_time'         , 5);
-define('ENV_deving'             , true);
 ini_set('default_charset', ENV_charset);
 
 header('content-type:text/html; charset=' . ENV_charset);

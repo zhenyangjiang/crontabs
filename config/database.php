@@ -24,7 +24,7 @@ return array(
     'main' => array(
         'host'      => '172.31.50.5',
         'port'      => '3306',
-        'dbname'  => 'ulan_main',
+        'dbname'    => 'ulan_main',
         'username'  => 'landers',
         'password'  => 'CpBbVRJqGvsrLc3n',
         'charset'   => 'utf8',
@@ -34,21 +34,11 @@ return array(
     'oauth' => array(
         'host'      => '172.31.50.5',
         'port'      => '3306',
-        'dbname'  => 'ulan_oauth',
+        'dbname'   => 'ulan_oauth',
         'username'  => 'landers',
         'password'  => 'CpBbVRJqGvsrLc3n',
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
-
-    'resource-usage' => array(
-        'host'      => '172.31.50.5',
-        'port'      => '3306',
-        'dbname'    => 'ulan_usage',
-        'username'  => 'landers',
-        'password'  => 'CpBbVRJqGvsrLc3n',
-        'charset'   => 'utf8',
-        'log-path'  => dirname(__DIR__).'/logs/'
-    )
 );
 ?>

@@ -1,5 +1,5 @@
 <?php
-namespace Apps\DefendBilling\Tasks;
+namespace Tasks;
 
 use Landers\Interfaces\TaskInterface;
 use Landers\Utils\Http;
@@ -13,6 +13,7 @@ class CollectUpload implements TaskInterface {
     }
 
     public function execute(&$retmsg = NULL) {
+        // dp(var_export($this->data, true),false);
         $content = Http::post(self::$apiurl, $this->data);
         if ( trim($content) == 'true' ) {
             $retmsg = 'DDosInfo发往收集器成功';

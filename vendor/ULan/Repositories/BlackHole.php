@@ -6,7 +6,7 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
-use Apps\ListenQueue\Tasks\BlackholeAction;
+use Tasks\BlackholeAction;
 use Landers\Framework\Core\Queue;
 
 Class BlackHole extends Repository {

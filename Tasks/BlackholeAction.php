@@ -1,5 +1,5 @@
 <?php
-namespace Apps\ListenQueue\Tasks;
+namespace Tasks;
 
 use Landers\Interfaces\TaskInterface;
 use Landers\Utils\Http;

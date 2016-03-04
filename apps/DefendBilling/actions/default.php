@@ -3,7 +3,7 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Utils\Datetime;
 use Landers\Framework\Core\Queue;
-use Apps\DefendBilling\Tasks\CollectUpload;
+use Tasks\CollectUpload;
 
 // require_once('randomxml.php'); usleep(100000);
 // Response::note(['#blank', '#blank', '#blank']);
@@ -24,7 +24,7 @@ Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_atta
 
 //推往收集器collecter.ulan.com
 $temp_ququeId = Queue::singleton('ddoscollecter')->push(new CollectUpload($ori_pack_attack));
-Response::noteSuccessFail(!!$temp_ququeId, 'DDoSInfo发送到收集中心%s');
+Response::noteSuccessFail('DDoSInfo发送到收集中心%s', !!$temp_ququeId);
 
 // 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
 $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);

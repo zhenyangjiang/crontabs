@@ -10,7 +10,7 @@
             "vendor/ULan"
         ],
         "psr-4": {
-            "Apps\\" : "apps/",
+            "Tasks\\" : "Tasks/",
             "Landers\\": "vendor/Landers/"
         },
         "files": [

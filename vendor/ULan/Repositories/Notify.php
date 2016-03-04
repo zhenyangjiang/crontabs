@@ -55,6 +55,7 @@ class Notify {
             }
         } else {
             Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
+            $bool = true;
         }
 
         return $bool;

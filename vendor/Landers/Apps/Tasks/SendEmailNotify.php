@@ -17,7 +17,7 @@ class SendEmailNotify implements TaskInterface {
      * 执行任务
      * @return void
      */
-    public function execute(&$retmsg) {
+    public function execute(&$retmsg = NULL) {
         // $retmsg = '虚拟邮件发送成功。';
         // return true;
 

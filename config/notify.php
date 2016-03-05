@@ -1,7 +1,7 @@
 <?php
 return [
     'email' => [
-        'host'          => '192.168.1.181',
+        'host'          => '192.168.1.179',
         'port'          => '25',
         'username'      => 'webmaster',
         'password'      => '123456',

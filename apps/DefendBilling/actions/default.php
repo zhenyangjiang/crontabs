@@ -16,10 +16,10 @@ BlackHole::unblock(); //解除牵引
 Response::note('#line');
 
 //读取防火墙数据
-//$pack_attack = Firewall::get_attack();
-$ori_pack_attack =  ENV_debug == true ?
-                Firewall::make_attack() :
-                Firewall::get_attack();
+$ori_pack_attack = Firewall::get_attack();
+if (ENV_debug == true) {
+    $ori_pack_attack = Firewall::make_attacks($ori_pack_attack);
+}
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 //推往收集器collecter.ulan.com

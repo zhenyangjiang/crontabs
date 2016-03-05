@@ -35,14 +35,14 @@ Class Firewall {
         return $data;
     }
 
-    public static function make_attack(){
-        $tpl = '{"123.1.1.2":{"dest":"123.1.1.2","type":"syn,ack","src":"90.74.202.5,106.51.71.58,51.74.180.35","bps0":45732.78,"bps1":2.15,"pps0":47786466,"pps1":3187}}';
+    public static function make_attacks($data){
+        // $tpl = '{"123.1.1.2":{"dest":"123.1.1.2","type":"syn,ack","src":"90.74.202.5,106.51.71.58,51.74.180.35","bps0":45732.78,"bps1":2.15,"pps0":47786466,"pps1":3187}}';
+
         $ips = [];
         $ips[] = '123.1.1.10';
         $ips[] = '123.1.1.100';
         $ips[] = '123.1.1.101';
 
-        $data = json_decode($tpl, true);
         foreach ($ips as $ip) {
             $data[$ip] = $data['123.1.1.2'];
             $data[$ip]['dest'] = $ip;

@@ -47,7 +47,6 @@ Class Firewall {
             $data[$ip] = $data['123.1.1.2'];
             $data[$ip]['dest'] = $ip;
         }
-        unset($data['123.1.1.2']);
         return $data;
     }
 }

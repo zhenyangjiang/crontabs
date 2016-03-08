@@ -23,6 +23,7 @@ if (ENV_debug == true) {
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 //推往收集器collecter.ulan.com
+
 $temp_ququeId = Queue::singleton('ddoscollecter')->push(new CollectUpload($ori_pack_attack));
 Response::noteSuccessFail('DDoSInfo发送到收集中心%s', !!$temp_ququeId);
 

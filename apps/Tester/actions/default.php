@@ -2,6 +2,11 @@
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Utils\Datetime;
+use Tasks\CollectUpload;
+
+
+dp((new CollectUpload([]))->execute());
+
 
 Response::note('测试邮件发送...');
 $bool = Notify::send_email([

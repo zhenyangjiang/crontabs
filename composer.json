@@ -7,11 +7,11 @@
     },
     "autoload":{
         "classmap": [
-            "vendor/ULan"
+            "vendor/landers/ULan"
         ],
         "psr-4": {
             "Tasks\\" : "Tasks/",
-            "Landers\\": "vendor/Landers/"
+            "Landers\\": "vendor/landers/"
         },
         "files": [
             "vendor\\Landers\\Framework\\Adapters\\Helpers\\LcliHelpers.php"

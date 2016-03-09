@@ -14,7 +14,7 @@
             "Landers\\": "vendor/landers/"
         },
         "files": [
-            "vendor\\Landers\\Framework\\Adapters\\Helpers\\LcliHelpers.php"
+            "vendor\\Landers\\ULan\\Helpers.php"
         ]
     }
 }

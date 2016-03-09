@@ -5,7 +5,7 @@ use Landers\Interfaces\TaskInterface;
 use Landers\Utils\Http;
 use Landers\Framework\Core\Response;
 
-class CollectUpload implements TaskInterface {
+class DDoSCollect implements TaskInterface {
     private $pack = array();
     private static $apiurl = 'http://collecter.ulan.com/ddossource/collect';
 

@@ -42,11 +42,20 @@ Class Firewall {
         $ips[] = '123.1.1.10';
         $ips[] = '123.1.1.100';
         $ips[] = '123.1.1.101';
-
         foreach ($ips as $ip) {
             $data[$ip] = $data['123.1.1.2'];
             $data[$ip]['dest'] = $ip;
+            $data[$ip]['src'] = self::make_by_src_random_ip($data[$ip]['src']);
         }
         return $data;
+    }
+    private static function make_by_src_random_ip($ips){
+        $ips = array_map(function($ip){
+            $nums = array_map(function() {
+                return rand(1, 255);
+            }, explode('.', $ip));
+            return implode('.', $nums);
+        }, explode(',', $ips));
+        return implode(',', $ips);
     }
 }

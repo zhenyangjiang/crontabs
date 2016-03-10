@@ -16,8 +16,9 @@ Class LcliResponse {
         $items = self::parse($args);
         $datas = &self::$data;
         $texts = &self::$text;
-        $L = 3;
+        $L = 3; $ret = [];
         foreach ($items as $item) {
+            $ret[] = $item;
             $i = count($datas) + 1;
             $i = substr(str_repeat('0', $L).$i, -$L, $L);
             $pre = $i.' => '; $pre = '';
@@ -29,23 +30,24 @@ Class LcliResponse {
             $texts[] = $text;
             if ($type == 'error_notify') Notify::developer($text);
         }
+        return count($ret) == 1 ? implode('', $ret) : $ret;
     }
 
     public static function note() {
-        self::show('note', func_get_args());
+        return self::show('note', func_get_args());
     }
 
     public static function error() {
-        self::show('error', func_get_args());
+        return self::show('error', func_get_args());
     }
 
     public static function halt() {
-        self::show('error', func_get_args()); exit();
+        return self::show('error', func_get_args()); exit();
     }
 
 
     public static function warn() {
-        self::show('warn', func_get_args());
+        return self::show('warn', func_get_args());
     }
 
 

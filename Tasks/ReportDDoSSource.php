@@ -4,12 +4,15 @@ namespace Tasks;
 use Landers\Interfaces\TaskInterface;
 use Landers\Utils\Http;
 use Landers\Framework\Core\Response;
+use Landers\Framework\Core\Config;
 
-class DDoSCollect implements TaskInterface {
+class ReportDDoSSource implements TaskInterface {
     private $pack = array();
-    private static $apiurl = 'http://collecter.ulan.com/ddossource/collect';
+    private $apiurl = '%s/ddossource/collect';
 
     function __construct($pack) {
+        $hosts = Config::get('hosts', 'collecter');
+        $this->apiurl = sprintf($this->apiurl, $hosts);
         foreach ($pack as &$item) {
             $item['bps'] = $item['bps0'];
             $item['pps'] = $item['pps0'];
@@ -22,7 +25,7 @@ class DDoSCollect implements TaskInterface {
     }
 
     public function execute(&$retmsg = NULL) {
-        $content = Http::post(self::$apiurl, $this->pack);
+        $content = Http::post($this->apiurl, $this->pack);
         Response::note('服务器返回:%s', strip_tags($content));
         if ( trim($content) == 'true' ) {
             $retmsg = 'DDosInfo发往收集器成功';

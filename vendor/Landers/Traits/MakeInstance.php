@@ -34,8 +34,7 @@ Trait MakeInstance {
     private static $_instances = array();
     public static function singleton() {
         $args = func_get_args();
-        $unqiue = serialize($unique);
-        $unique = md5($unique);
+        $unique = md5(serialize($args));
 
         $ret = &self::$_instances[$unique];
         if ( !$ret ) {

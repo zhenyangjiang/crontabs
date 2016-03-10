@@ -14,10 +14,17 @@ return [
         'ttr'       => 60,
     ],
 
-    'ddoscollecter' => [
-        'name'      => 'DDos攻击源收集',
+    'report-ddossource' => [
+        'name'      => '上报DDos攻击源',
         'host'      => '172.31.50.7',
-        'queue'     => 'DDosCollecter',
+        'queue'     => 'ReportDDosSource',
         'ttr'       => 60,
-    ]
+    ],
+
+    'report-exception' => [
+        'name'      => '异常上报',
+        'host'      => '172.31.50.7',
+        'queue'     => 'ReportException',
+        'ttr'       => 60,
+    ],
 ];

@@ -20,8 +20,16 @@ class DDoSInfo extends Repository {
             'awhere' => ['net_state' => 2, 'mainipaddress' => $ips]
         ]);
         if ($lists) {
+            $exception_ips = [];
             foreach ($lists as $item) {
+                $exception_ips[] = $item['ip'];
                 unset($pack[$item['ip']]);
+            }
+
+            //已被牵引的IP还存在防火墙被攻击列表中
+            if ($exception_ips) {
+                $message = sprintf('已被牵引的IP："%s"，还存在防火墙被攻击列表中', implode(', ', $exception_ips));
+                reportOptException($message);
             }
         }
         return $pack;

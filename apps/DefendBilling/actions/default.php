@@ -3,7 +3,8 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Utils\Datetime;
 use Landers\Framework\Core\Queue;
-use Tasks\DDoSCollect;
+use Tasks\ReportDDoSSource;
+
 
 // require_once('randomxml.php'); usleep(100000);
 // Response::note(['#blank', '#blank', '#blank']);
@@ -23,13 +24,11 @@ if (ENV_debug == true) {
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 //推往收集器collecter.ulan.com
-
-$temp_ququeId = Queue::singleton('ddoscollecter')->push(new DDoSCollect($ori_pack_attack));
-Response::noteSuccessFail('DDoSInfo发送到收集中心%s', !!$temp_ququeId);
+$temp_ququeId = Queue::singleton('report-ddossource')->push(new ReportDDoSSource($ori_pack_attack));
+Response::noteSuccessFail('上报DDoSSource入队%s', !!$temp_ququeId);
 
 // 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
 $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);
-//如果有存在的话，需要给出异常
 
 //保存攻击数据
 $pack_attack = DDoSInfo::save_attack($pack_attack);
@@ -98,7 +97,6 @@ if (!$all_ips) {
         System::halt('过滤掉后成为空数据包，本次任务提前结束');
     }
 }
-
 //记录开始攻击
 Response::note('#line');
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
@@ -106,6 +104,7 @@ $ret = DDoSHistory::save_start_attack($all_ips);
 
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '#blank', '开始逐一对所有被攻击IP操作...']);
+
 foreach ($pack_attack as $item) {
     Response::note('#line');
     $item['mbps'] = &$item['bps0'];//bps0改名为mbps
@@ -115,9 +114,11 @@ foreach ($pack_attack as $item) {
 
     //读取云盾表中该ip的云盾配置
     $mitigation = Mitigation::find_ip($dest_ip);
+
     if (!$mitigation) {
         //找不到记录，属异常，超100Mbps即牵引
-        Response::note('IP：%s，未知的异常IP地址', $dest_ip);
+        $echo = Response::note('IP：%s，未知的异常IP地址', $dest_ip);
+        reportOptException($echo, array('context' => $item));
 
         if ($item['mbps'] >= 100 || $item['pps'] >= 100000) {
             Response::note('当前攻击值：%sMbps / %spps，正在牵引...', $item['mbps'], $item['pps']);
@@ -125,7 +126,9 @@ foreach ($pack_attack as $item) {
         } else {
             Response::note('当前攻击值：%sMbps/%spps，继续清洗...', $item['mbps'], $item['pps']);
         }
+
     } else {
+
         switch ($mitigation['billing']) {
             case 'month' :
                 //按月计费：仅防护，由ExpireHandler进行到期扣取次月
@@ -146,6 +149,7 @@ foreach ($pack_attack as $item) {
                 break;
 
             case 'hour' :
+
                 //按需计费：先防护后计前1小时的费用，单价采用所属数据中心中的价格
                 Response::note('IP：%s，计费方案：按需计费', $dest_ip);
 
@@ -194,7 +198,8 @@ foreach ($pack_attack as $item) {
 
                     //强制牵引
                     if (BlackHole::exists($ip)) {
-                        Response::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
+                        $echo = Response::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
+                        reportDevException($echo);
                         //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
                         continue;
                     } else {

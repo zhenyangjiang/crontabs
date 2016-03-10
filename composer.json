@@ -14,7 +14,8 @@
             "Landers\\": "vendor/landers/"
         },
         "files": [
-            "vendor\\Landers\\ULan\\Helpers.php"
+            "vendor/landers/Framework/Adapters/Helpers/LcliHelpers.php",
+            "vendor/Landers/ULan/Crontabs/Helpers.php"
         ]
     }
 }

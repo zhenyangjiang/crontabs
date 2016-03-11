@@ -64,7 +64,13 @@ Class DBModel {
             });
             $is_ajax = class_exists(Request::class) && Request::is_ajax();
             if ($is_ajax) ob_start();
-            if (function_exists('dp')) dp($msg, !$is_ajax, 4); else {print_r($msg); if ($is_ajx) exit();}
+            if (function_exists('dp')) {
+                $msg[] = $this->db->error();
+                $msg[] = $this->db->errno();
+                dp($msg, !$is_ajax, 4);
+            } else {
+                print_r($msg); if ($is_ajx) exit();
+        }
             if ($is_ajax) {
                 $message = ob_get_contents(); ob_end_clean();
                 ApiResult::make()->debug($message)->output();

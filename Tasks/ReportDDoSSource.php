@@ -28,10 +28,10 @@ class ReportDDoSSource implements TaskInterface {
         $content = Http::post($this->apiurl, $this->pack);
         Response::note('服务器返回:%s', strip_tags($content));
         if ( trim($content) == 'true' ) {
-            $retmsg = 'DDosInfo发往收集器成功';
+            $retmsg = 'DDosSource发往收集器成功';
             return true;
         } else {
-            $retmsg = 'DDosInfo发往收集器失败';
+            $retmsg = 'DDosSource发往收集器失败';
             return false;
         }
     }

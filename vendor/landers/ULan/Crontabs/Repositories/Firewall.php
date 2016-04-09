@@ -22,7 +22,7 @@ Class Firewall {
 
                 $data[$dest_ip] = [
                     'dest'      => $dest_ip,
-                    'type'      => implode(',', $item['types']),
+                    'types'     => implode(',', $item['types']),
                     'src'       => implode(',', $item['src']),
                     'bps0'      => $item['bps'][0],
                     'bps1'      => $item['bps'][1],

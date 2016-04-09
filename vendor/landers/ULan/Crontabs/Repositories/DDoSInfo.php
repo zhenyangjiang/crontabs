@@ -41,7 +41,9 @@ class DDoSInfo extends Repository {
             //存储数据
             $bool = self::import($pack);
             if (!$bool) {
-                Notify::developer('攻击数据导入到DDoS表时失败');
+                $message = '攻击数据导入到DDoS表时失败';
+                reportDevException($message, array('context' => $pack));
+                Notify::developer($message);
                 System::halt();
             }
         } else {

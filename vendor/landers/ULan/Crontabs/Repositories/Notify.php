@@ -63,8 +63,8 @@ class Notify {
 
     public static function client($content_key, $uid, array $data) {
         if (self::isDoneToday($content_key, $uid)) {
-            // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
-            // return false;
+            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+            return false;
         }
         $uinfo = User::get($uid, 'realname, username, mobile, email');
         $data = array_merge($uinfo, $data);

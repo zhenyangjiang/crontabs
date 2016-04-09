@@ -1,12 +1,12 @@
 <?php
 return [
     'email' => [
-        'host'          => '192.168.1.179',
-        'port'          => '25',
-        'username'      => 'webmaster',
-        'password'      => '123456',
-        'from_email'    => 'webmaster@x1982.com',
-        'from_name'     => ENV_system_name.' - ServiceA'
+        'host'          => 'smtp.qq.com',
+        'port'          => '465',
+        'username'      => '2144576175',
+        'password'      => 'wykylypduvdwdgdg',
+        'from_email'    => 'notify-server@qq.com',
+        'from_name'     => ENV_system_name
     ],
     'sms'   => [
 

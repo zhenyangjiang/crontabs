@@ -137,7 +137,7 @@ Class LcliResponse {
         return str_replace(array_keys($rep), array_values($rep), $text);
     }
 
-    public static function noteSuccessFail($tpl, $bool) {
+    public static function bool($bool, $tpl) {
         $text = $bool ? '成功' : '失败';
         if ($bool) {
             return self::note($tpl, $text);

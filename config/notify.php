@@ -9,6 +9,7 @@ return [
         'from_name'     => ENV_system_name
     ],
     'sms'   => [
-
+        'apikey'        => '271f9c48e96a10d62ffb5b8da8f56176',
+        'sign'          => '【壹云云计算】'
     ]
 ];

@@ -25,7 +25,7 @@ class LcliSystem extends SystemClass {
             if (class_exists($class) && method_exists($class, 'handle')) {
                 $class::handle($e);
             }
-            $message = $e->getMessage();
+            $message = $e->getMessage().sprintf('位于 (%s : %s行)', $e->getFile(), $e->getLine());
             $code = $e->getCode();
             if ($code < 2000) {
                 Response::note('异常捕获：%s', $message);

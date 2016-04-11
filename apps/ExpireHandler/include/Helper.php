@@ -7,13 +7,13 @@ function deduct_transact($uid, $instance_update, $feelog_data, $callbacks = arra
         //用户扣费
         $balance_instance = $feelog_data['balance'];
         $bool = User::set_money($uid, $balance_instance);
-        Response::noteSuccessFail('#tab实例扣费%s', $bool);
+        Response::bool($bool, '#tab实例扣费%s');
         if (!$bool) return false;
 
         return Instance::transact(function() use ($uid, $instance_update, $feelog_data, $callbacks) {
             // 实例扣费日志
             $bool = Feelog::create($feelog_data);
-            Response::noteSuccessFail('#tab实例扣费日志写入%s', $bool);
+            Response::bool($bool, '#tab实例扣费日志写入%s');
             if ( !$bool ) return false;
 
             // 更新实例
@@ -47,7 +47,7 @@ function suspend_transact($instance, $user, $some_days, $callback) {
         $bool_transact = Mitigation::transact( function() use ( $instance, $user ) {
             //降级云盾
             $bool = Mitigation::down_grade($instance);
-            Response::noteSuccessFail('#tab云盾强制降级%s', $bool);
+            Response::bool($bool, '#tab云盾强制降级%s');
             if ( !$bool) return false;
 
             //取消自动续费
@@ -55,7 +55,7 @@ function suspend_transact($instance, $user, $some_days, $callback) {
                 ['is_auto_renew' => 0 ],
                 ['id' => $instance['id']]
             );
-            Response::noteSuccessFail('#tab自动续费取消%s', $bool);
+            Response::bool($bool, '#tab自动续费取消%s');
             if ( !$bool) return false;
 
             //挂起实例
@@ -85,7 +85,7 @@ function destroy_instance($instance, $some_days) {
         Response::note('调试开启：执行虚拟销毁');
     } else {
         $bool = Instance::destroy($instance);
-        Response::noteSuccessFail('#tab实例销毁%s！', $bool);
+        Response::bool($bool, '#tab实例销毁%s！');
         if (!$bool) {
             Notify::developer('实例销毁失败', Arr::to_html($instance));
         }

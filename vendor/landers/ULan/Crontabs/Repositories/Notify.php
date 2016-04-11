@@ -6,8 +6,9 @@ use Landers\Framework\Core\Repository;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Queue;
 use Landers\Framework\Core\Redis;
-use Landers\Apps\Tasks\SendEmailNotify;
+use Landers\Substrate\Apps\Tasks\SendEmailNotify;
 use Landers\Substrate\Classes\Tpl;
+use Ender\YunPianSms\SMS\YunPianSms;
 
 class Notify {
     private static $mail_suffix = '<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>';
@@ -61,37 +62,73 @@ class Notify {
 
     public static function client($content_key, $uid, array $data) {
         if (self::isDoneToday($content_key, $uid)) {
-            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
-            return false;
+            // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m_d'));
+            // return false;
         }
-        $uinfo = User::get($uid, 'realname, username, mobile, email');
+        $uinfo = User::get($uid, 'username, mobile, email');
         $data = array_merge($uinfo, $data);
         $notify_contents = Config::get('notify-content');
         $notify_contents = Arr::get($notify_contents, $content_key);
         $message = $notify_contents['message'];
         $email = $notify_contents['email'];
+        $sms = $notify_contents['sms'];
 
         // 发送站内消息
+        $bool1 = true;
         if ($message && $message['content']) {
             $message['content'] = Tpl::replace($message['content'], $data);
-            $ret = Message::sendTo($uid, $message['title'], $message['content']);
+            $bool1 = Message::sendTo($uid, $message['title'], $message['content']);
+            if (!$bool1) Response::warn('#tab站内消息通知失败');
         }
 
         // 发送邮件
-        $email['content'] = Tpl::replace($email['content'], $data);
-        $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
-        $bool = self::send_email([
-            'to'        => $to,
-            'content'   => $email['content'],
-            'subject'   => $email['title']
-        ]);
-        if (!$bool) {
-            $error = '#tab客户邮件通知失败！';
-            Response::warn($error);
-        } else {
-            Response::note('#tab通知成功');
+        $bool2 = true;
+        if ($email && $email['content']) {
+            if ($uinfo['email']) {
+                $email['content'] = Tpl::replace($email['content'], $data);
+                $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
+                $bool2 = self::send_email([
+                    'to'        => $to,
+                    'content'   => $email['content'],
+                    'subject'   => $email['title']
+                ]);
+                if (!$bool2) Response::warn('#tab客户邮件通知失败！');
+            }
         }
-        return $bool;
+
+        //发送短信
+        $bool3 = true;
+        if ($sms) {
+            $sms = Tpl::replace($sms, $data);
+            $mobile = $uinfo['mobile'];
+            $bool3 = Notify::send_sms($mobile, $sms);
+            if (!$bool3) Response::warn('#tab客户短信通知失败！');
+        }
+
+
+        return $bool1 && $bool2 && $bool3;
+    }
+
+    /**
+     * 发送短信
+     * @param  [type]  $mobile   [description]
+     * @param  [type]  $content  [description]
+     * @param  boolean $is_queue [description]
+     * @return [type]            [description]
+     */
+    public static function send_sms($mobile, $content, $is_queue = true) {
+        $config = Config::get('notify');
+        $sign = Arr::get($config, 'sms.sign');
+        $content = $sign . $content;
+        if ( $is_queue ) {
+            $task = new SendSmsNotify($config, $mobile, $content);
+            return Queue::singleton('notify')->push($task);
+        } else {
+            $apikey = Arr::get($config, 'sms.apikey');
+            $yunpianSms = new YunPianSms($apikey);
+            $ret = $yunpianSms->send($mobile, $content);
+            return $ret['status'] == 200;
+        }
     }
 
     /**
@@ -159,9 +196,6 @@ class Notify {
                 return true;
             }
         }
-     }
-
-    public static function send_sms(){
-
     }
+
 }

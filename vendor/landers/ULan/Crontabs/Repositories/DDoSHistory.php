@@ -110,7 +110,7 @@ class DDoSHistory extends Repository {
         ];
         $awhere = ['id' => $history['id']];
         $bool = self::update($data, $awhere);
-        Response::noteSuccessFail('#tab更新“攻击结束的相关信息”%s', $bool);
+        Response::bool($bool, '#tab更新“攻击结束的相关信息”%s');
         if (!$bool) {
             Notify::developer('更新攻击结束信息失败');
             return false;
@@ -230,7 +230,7 @@ class DDoSHistory extends Repository {
         //写入总计费用日志
         $bool = !!Feelog::create($feelog_mitigation_data);
         Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
-        Response::noteSuccessFail('#tab云盾合计扣费日志写入%s', $bool);
+        Response::bool($bool, '#tab云盾合计扣费日志写入%s');
         return $bool;
     }
 }

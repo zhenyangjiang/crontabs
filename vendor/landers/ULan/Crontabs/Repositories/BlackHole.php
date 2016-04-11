@@ -42,7 +42,7 @@ Class BlackHole extends Repository {
             return Instance::transact(function() use ($ip, $bps){
                 //牵引动作入队列
                 $ret = self::doBlock($ip, $bps);
-                Response::noteSuccessFail('#tab牵引请求入队%s', !!$ret);
+                Response::bool(!!$ret, '#tab牵引请求入队%s');
                 if (!$ret) return false;
 
                 //确定牵引时长
@@ -52,7 +52,7 @@ Class BlackHole extends Repository {
                 $hours = $block_duration;
                 $data = ['ip' => $ip, 'expire' => strtotime("+$hours hours"), 'bps' => $bps];
                 $bool = self::insert($data);
-                Response::noteSuccessFail('#tab牵引记录写入%s', $bool);
+                Response::bool($bool, '#tab牵引记录写入%s');
                 if (!$bool) return false;
 
                 //更新ip的攻击历史为结束攻击
@@ -61,7 +61,7 @@ Class BlackHole extends Repository {
 
                 //更新实例的网络状态为2（牵引中）
                 $bool = Instance::update_net_status($ip, 2, true);
-                Response::noteSuccessFail('#tab更新实例的网络状态为“牵引中”%s', $bool);
+                Response::bool($bool, '#tab更新实例的网络状态为“牵引中”%s');
                 if (!$bool) return false;
 
                 return true;
@@ -104,7 +104,7 @@ Class BlackHole extends Repository {
             //解除牵引动作入队列
             foreach ($ips as $ip) {
                 $ret = self::doUnblock($ip);
-                Response::noteSuccessFail('#tab解除牵引请求入队%s', !!$ret);
+                Response::bool(!!$ret, '#tab解除牵引请求入队%s');
             }
 
             $awhere = ['id' => $ids];

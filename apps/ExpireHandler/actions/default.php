@@ -148,7 +148,7 @@ foreach ($instances as $instance) {
             $bool_transact = deduct_transact($uid, $instance_update, $feelog_data, [
                 function() use ($instance){//强制降级云盾
                     $bool = Mitigation::down_grade($instance);
-                    Response::noteSuccessFail('#tab云盾强制降级%s', $bool);
+                    Response::bool($bool, '#tab云盾强制降级%s');
                     if ( !$bool) return false;
 
                     return true;

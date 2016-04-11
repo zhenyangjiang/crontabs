@@ -8,7 +8,7 @@ Class System {
 
     private static $adapter;
     public static function init($mode, $args = array()) {
-        $pre = '\\Landers\Substrate\\Framework\\Adapters\\System\\';
+        $pre = '\\Landers\\Substrate\\Framework\\Adapters\\System\\';
         switch (strtoupper($mode)) {
             case 'LWAP' :
                 self::$adapter = $pre.'LwapSystem';

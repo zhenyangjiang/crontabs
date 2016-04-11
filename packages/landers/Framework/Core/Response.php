@@ -8,7 +8,7 @@ Class Response {
 
     private static $adapter;
     public static function init($mode, $args = array()) {
-        $pre = '\\Landers\\Substrate\\Framework\\Adapters\\Response\\';
+        $pre = '\\Landers\\Framework\\Adapters\\Response\\';
         switch (strtoupper($mode)) {
             case 'LWAP' :
                 self::$adapter = $pre.'LwapResponse';

@@ -3,8 +3,8 @@ namespace Landers\Framework\Core;
 
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
-use Landers\Interfaces\TaskInterface;
-use Landers\Traits\MakeInstance;
+use Landers\Substrate\Interfaces\TaskInterface;
+use Landers\Substrate\Traits\MakeInstance;
 
 class Queue {
     use MakeInstance;

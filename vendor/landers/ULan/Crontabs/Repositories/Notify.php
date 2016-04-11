@@ -1,7 +1,5 @@
 <?php
-// namespace Ulan\Modules;
-
-use Landers\Utils\Arr;
+use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
@@ -9,7 +7,7 @@ use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Queue;
 use Landers\Framework\Core\Redis;
 use Landers\Apps\Tasks\SendEmailNotify;
-use Landers\Classes\Tpl;
+use Landers\Substrate\Classes\Tpl;
 
 class Notify {
     private static $mail_suffix = '<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>';

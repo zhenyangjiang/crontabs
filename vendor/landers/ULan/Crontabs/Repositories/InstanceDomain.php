@@ -1,8 +1,4 @@
 <?php
-// namespace Ulan\Modules;
-
-// use Ulan\Classes\module;
-// use Landers\Classes\utils;
 use Landers\Framework\Core\Repository;
 
 class InstanceDomain extends Repository {

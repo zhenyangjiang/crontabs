@@ -1,7 +1,7 @@
 <?php
 namespace Landers\Framework\Core;
 
-use Landers\Classes\DBModel;
+use Landers\Substrate\Classes\DBModel;
 
 /**
  * 模块基础类

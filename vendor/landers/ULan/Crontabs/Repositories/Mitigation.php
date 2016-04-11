@@ -1,6 +1,4 @@
 <?php
-// namespace Ulan\Modules;
-
 use Landers\Framework\Core\Repository;
 
 class Mitigation extends Repository {

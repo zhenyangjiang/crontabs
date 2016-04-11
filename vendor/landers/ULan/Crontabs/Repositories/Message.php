@@ -1,5 +1,4 @@
 <?php
-// namespace Ulan\Modules;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
 

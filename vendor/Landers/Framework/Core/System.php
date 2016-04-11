@@ -1,14 +1,14 @@
 <?php
 namespace Landers\Framework\Core;
 
-use Landers\Traits\AdapterStatic;
+use Landers\Substrate\Traits\AdapterStatic;
 
 Class System {
     use AdapterStatic;
 
     private static $adapter;
     public static function init($mode, $args = array()) {
-        $pre = '\\Landers\\Framework\\Adapters\\System\\';
+        $pre = '\\Landers\Substrate\\Framework\\Adapters\\System\\';
         switch (strtoupper($mode)) {
             case 'LWAP' :
                 self::$adapter = $pre.'LwapSystem';

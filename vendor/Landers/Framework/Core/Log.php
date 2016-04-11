@@ -1,7 +1,7 @@
 <?
 namespace Landers\Framework\Core;
 
-use Landers\Utils\Fso;
+use Landers\Substrate\Utils\Fso;
 
 class Log {
 

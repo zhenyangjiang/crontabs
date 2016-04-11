@@ -1,10 +1,10 @@
 <?php
 namespace Landers\Framework\Adapters\System;
 
-use Landers\Classes\MySQL;
-use Landers\Utils\Str;
+use Landers\Substrate\Classes\MySQL;
+use Landers\Substrate\Utils\Str;
 use Landers\Framework\Core\Config;
-use Landers\Interfaces\SystemClass;
+use Landers\Substrate\Interfaces\SystemClass;
 
 class SimpleSystem extends SystemClass{
     /**

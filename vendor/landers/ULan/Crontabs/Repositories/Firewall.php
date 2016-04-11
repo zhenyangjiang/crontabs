@@ -1,6 +1,6 @@
 <?php
-use Landers\Utils\Arr;
-use Landers\Utils\Http;
+use Landers\Substrate\Utils\Arr;
+use Landers\Substrate\Utils\Http;
 use Landers\Framework\Core\Config;
 
 Class Firewall {

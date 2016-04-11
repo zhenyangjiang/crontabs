@@ -24,7 +24,7 @@ Class Config {
         $file = self::file($filekey);
         $configs = System::cache('CONFIG') or $configs = array();
         if (!$config = &$configs[$filekey]) {
-            if ($file) $config = @include($file);
+            if ($file) $config = include($file);
             if ($config) System::cache('CONFIG', $configs);
             $config or $config = array();
         }

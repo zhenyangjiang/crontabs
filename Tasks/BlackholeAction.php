@@ -1,8 +1,8 @@
 <?php
 namespace Tasks;
 
-use Landers\Interfaces\TaskInterface;
-use Landers\Utils\Http;
+use Landers\Substrate\Interfaces\TaskInterface;
+use Landers\Substrate\Utils\Http;
 
 class BlackholeAction implements TaskInterface {
     private $action;

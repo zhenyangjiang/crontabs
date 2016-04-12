@@ -1,5 +1,5 @@
 <?php
-use Landers\Substrate\Utils\Http;
+use Landers\Utils\Http;
 use Tasks\ReportException;
 use Landers\Framework\Core\Queue;
 use Landers\Framework\Core\Response;
@@ -7,7 +7,7 @@ use Landers\Framework\Core\Response;
 function reportException($message, $type, $extra_data = array()){
     $task = new ReportException($message, $type, $extra_data);
     $temp_ququeId = Queue::singleton('report-exception')->push($task );
-    Response::noteSuccessFail('异常上报任务入队%s', !!$temp_ququeId);
+    Response::warn('异常“%s”，上报任务入队%s', $message, !!$temp_ququeId ? '成功' : '失败');
 }
 function reportDevException($message, $extra_data = array()){
     return reportException($message, 0, $extra_data);

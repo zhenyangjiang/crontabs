@@ -15,7 +15,8 @@
             "Landers\\": "packages/landers/"
         },
         "files": [
-            "packages/Landers/ULan/Crontabs/Helpers.php"
+            "packages/landers/Framework/Adapters/Helpers/LcliHelpers.php",
+            "packages/landers/ULan/Crontabs/Helpers.php"
         ]
     }
 }

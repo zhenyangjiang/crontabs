@@ -79,6 +79,15 @@ class Str {
         return preg_split('/[ '.$split.']+/', $xvar);
     }
 
+    //对字符串进行遮掩
+    public static function mask($str, $start, $len, $str_mask = '*'){
+        $a = str_split($str);
+        for ($i = 0; $i < $len; $i++) {
+            $a[$start-1+$i] = $str_mask;
+        };
+        return implode('', $a);
+    }
+
     //从集合是否存在某数据
     public static function existsInSet($char, $str){
         if (!strlen($str)) return false;

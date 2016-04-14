@@ -33,6 +33,7 @@ class Debug {
 
 	public static function show($x = NULL, $is = true, $opts = NULL, $back = 0){
 		$opts or $opts = array();
+		header('content-type:text/html; charset=utf-8');
 		if (!array_key_exists('is_ext', $opts)) $opts['is_ext'] = true; extract($opts);
 		if (ENV_DEBUG_client !== false || $opts['is_force']){
 			switch(gettype($x)){

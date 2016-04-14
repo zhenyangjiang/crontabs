@@ -107,7 +107,7 @@ Trait MysqlCache {
 			$arr = array($sql, str_repeat('=', $line_width), var_export($a, true), str_repeat('-', $line_width));
 			$arr = array_merge($arr, array('', '', '', '', ''));
 			$content = implode(PHP_EOL, $arr);
-			$fso = '\Landers\Substrate\Utils\Fso';
+			$fso = '\\Landers\\Substrate\\Utils\\Fso';
 			if (class_exists($fso)) {
 				$ret = $fso::write($file, $content, true);
 			} else {

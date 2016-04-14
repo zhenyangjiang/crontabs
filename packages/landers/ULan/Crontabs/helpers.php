@@ -7,7 +7,7 @@ use Landers\Framework\Core\Response;
 function reportException($message, $type, $extra_data = array()){
     $task = new ReportException($message, $type, $extra_data);
     $temp_ququeId = Queue::singleton('report-exception')->push($task );
-    Response::noteSuccessFail('异常上报任务入队%s', !!$temp_ququeId);
+    Response::bool(!!$temp_ququeId, '异常上报任务入队%s');
 }
 function reportDevException($message, $extra_data = array()){
     return reportException($message, 0, $extra_data);

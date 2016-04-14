@@ -40,5 +40,15 @@ return array(
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
+
+    'collecter' => array(
+        'host'      => '172.31.50.5',
+        'port'      => '3306',
+        'dbname'    => 'ulan_collecter',
+        'username'  => 'landers',
+        'password'  => 'CpBbVRJqGvsrLc3n',
+        'charset'   => 'utf8',
+        'log-path'  => dirname(__DIR__).'/logs/'
+    ),
 );
 ?>

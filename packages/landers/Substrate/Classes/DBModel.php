@@ -426,7 +426,8 @@ Class DBModel {
             return NULL;
         }
 
-        return $this->db->newid();
+        $ret = $this->db->newid();
+        return $ret == 0 ? true : $ret;
     }
 
     //insert的别名

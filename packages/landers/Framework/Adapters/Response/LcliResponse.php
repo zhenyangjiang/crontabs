@@ -130,7 +130,7 @@ Class LcliResponse {
     private static function colorize($text, $color) {
         $a = explode('#tab', $text);
         foreach ($a as &$item) {
-            $item = colorize($item, $color);
+            $item = function_exists('colorize') ? colorize($item, $color) : $item;
         }; unset($item);
         $text = implode('#tab', $a);
         $rep = array('#tab' => str_repeat(' ', 4));

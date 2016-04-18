@@ -105,12 +105,12 @@ $ret = DDoSHistory::save_start_attack($all_ips);
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '#blank', '开始逐一对所有被攻击IP操作...']);
 
-foreach ($pack_attack as $item) {
+foreach ($pack_attack as $dest_ip => $item) {
     Response::note('#line');
-    $item['mbps'] = &$item['bps0'];//bps0改名为mbps
-    $item['pps'] = &$item['pps0'];//pps0改名为pps
-
-    $dest_ip = $item['dest'];
+    $item = array(
+        'bps' => $item['bps0'],
+        'pps' => $item['pps0']
+    );
 
     //读取云盾表中该ip的云盾配置
     $mitigation = Mitigation::find_ip($dest_ip);

@@ -7,7 +7,7 @@ use Landers\Substrate\Utils\Http;
 class BlackholeAction implements TaskInterface {
     private $action;
     private $params;
-    private static $apiurl = 'http://api.ulan.com/blackhole/action';
+    private static $apiurl = ENV_api_host.'/blackhole/action';
 
     function __construct($action, $params) {
         $this->action = $action;

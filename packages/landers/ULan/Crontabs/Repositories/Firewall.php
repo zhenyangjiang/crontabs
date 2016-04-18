@@ -2,36 +2,34 @@
 use Landers\Substrate\Utils\Arr;
 use Landers\Substrate\Utils\Http;
 use Landers\Framework\Core\Config;
+use Landers\Framework\Core\System;
 
 Class Firewall {
     public static function get_attack() {
+        $fwurl = Config::get('fwurl');
+        if ( !$content = Http::get($fwurl) ) {
+            System::halt('防火墙数据读取失败！');
+        }
+        if (!$pack = json_decode($content, true)) {
+            System::halt('读取无法解析的防火墙数据错误！');
+        }
+
         $data = array();
-        $urls = Config::get('fwurls');
-        if (!$urls) {
-            System::halt('未设置防火墙数据源URL');
+        foreach ($pack as $dest_ip => $item) {
+            if ($item['bps'][0] <= 1 ||
+                $item['pps'][0] <= 1
+            ) continue;
+
+            $data[$dest_ip] = [
+                'dest'      => $dest_ip,
+                'types'     => implode(',', $item['types']),
+                'src'       => implode(',', $item['src']),
+                'bps0'      => $item['bps'][0],
+                'bps1'      => $item['bps'][1],
+                'pps0'      => $item['pps'][0],
+                'pps1'      => $item['pps'][1],
+            ];
         }
-        foreach ($urls as $url) {
-            $content = Http::get($url);
-            if (!$content) continue;
-
-            $pack = json_decode($content, true);
-            foreach ($pack as $dest_ip => $item) {
-                if ($item['bps'][0] <= 1 ||
-                    $item['pps'][0] <= 1
-                ) continue;
-
-                $data[$dest_ip] = [
-                    'dest'      => $dest_ip,
-                    'types'     => implode(',', $item['types']),
-                    'src'       => implode(',', $item['src']),
-                    'bps0'      => $item['bps'][0],
-                    'bps1'      => $item['bps'][1],
-                    'pps0'      => $item['pps'][0],
-                    'pps1'      => $item['pps'][1],
-                ];
-            }
-        }
-
         return $data;
     }
 

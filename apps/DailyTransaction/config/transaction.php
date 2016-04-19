@@ -4,5 +4,5 @@ return array(
     'useage_save_days' => 7,
 
     //DDoS-Source数据保留天数
-    'ddossource_save_hours' => 1
+    'ddossource_save_hours' => 24
 );

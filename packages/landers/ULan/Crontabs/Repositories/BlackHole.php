@@ -19,7 +19,7 @@ Class BlackHole extends Repository {
     public static function doBlock($ip, $bps) {
         //牵引动作入队列
         $task = new BlackholeAction('block', [
-            'ip' => $ip, 'bps' => $bps,
+            'ip' => $ip, 'bps' => $bps, 'from' => 'Crontab'
         ]);
         return Queue::singleton('blackhole')->push($task);
     }

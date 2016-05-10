@@ -24,8 +24,12 @@ if (ENV_debug == true) {
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 //推往收集器collecter.ulan.com
-$temp_ququeId = Queue::singleton('report-ddossource')->push(new ReportDDoSSource($ori_pack_attack));
-Response::bool(!!$temp_ququeId, '上报DDoSSource入队%s');
+// $temp_ququeId = Queue::singleton('report-ddossource')->push(new ReportDDoSSource($ori_pack_attack));
+// Response::bool(!!$temp_ququeId, '上报DDoSSource入队%s');
+// 此工作由swoole接管，此处无需处理
+
+//确保大网安全
+$ori_pack_attack = Firewall::makeSafe($ori_pack_attack);
 
 // 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
 $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);

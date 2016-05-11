@@ -73,7 +73,10 @@ class SQL {
                     $unions or $unions = array();
                     foreach ($unions as $item) {
                         if (!is_numeric($item)) $item = strtotime($item);
-                        $ret[] = $this->dt.'_'.date($parter_mode, $item);
+                        $table = $this->dt.'_'.date($parter_mode, $item);
+                        if ( $this->db->dt_exists($table) ) {
+                        	$ret[] = $table;
+                        }
                     }
                 }
                 break;

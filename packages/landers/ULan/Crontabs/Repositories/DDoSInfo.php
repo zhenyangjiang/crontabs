@@ -12,43 +12,52 @@ class DDoSInfo extends Repository {
 
     public static function filte_blocked_attack($pack) {
         if (!$pack) return array();
-        $ips = array_keys($pack);
-        $lists = Instance::lists([
-            'fields' => 'mainipaddress as ip',
-            'awhere' => ['net_state' => 2, 'mainipaddress' => $ips]
-        ]);
-        if ($lists) {
-            $exception_ips = [];
-            foreach ($lists as $item) {
-                $exception_ips[] = $item['ip'];
-                unset($pack[$item['ip']]);
-            }
+        foreach ($pack as $i => &$group) {
+            $ips = array_keys($group);
+            $lists = Instance::lists([
+                'fields' => 'mainipaddress as ip',
+                'awhere' => ['net_state' => 2, 'mainipaddress' => $ips]
+            ]);
+            if ($lists) {
+                $exception_ips = [];
+                foreach ($lists as $item) {
+                    $exception_ips[] = $item['ip'];
+                    unset($group[$item['ip']]);
+                }
 
-            //已被牵引的IP还存在防火墙被攻击列表中
-            if ($exception_ips) {
-                $message = sprintf('已被牵引的IP："%s"，还存在防火墙被攻击列表中', implode(', ', $exception_ips));
-                reportOptException($message);
+                //已被牵引的IP还存在防火墙被攻击列表中
+                if ($exception_ips) {
+                    $message = sprintf('已被牵引的IP："%s"，还存在防火墙被攻击列表中', implode(', ', $exception_ips));
+                    reportOptException($message);
+                }
             }
+            if (count($group) == 0) unset($pack[$i]);
         }
         return $pack;
     }
 
     //保存来自防火墙的源数据
     public static function save_attack($pack) {
+        $ret = []; //返回合所有组的包
         if ($pack) { //确定是二维数组列表
-            //存储数据
-            $bool = self::import($pack);
-            if (!$bool) {
-                $message = '攻击数据导入到DDoS表时失败';
-                reportDevException($message, array('context' => $pack));
-                Notify::developer($message);
-                System::halt();
+            foreach ($pack as $group) {
+                //存储数据
+                dp($group);
+                $bool = self::import($group);
+                if (!$bool) {
+                    $message = '攻击数据导入到DDoS表时失败';
+                    reportDevException($message, array('context' => $group));
+                    Notify::developer($message);
+                    System::halt();
+                } else {
+                    $ret = array_merge($ret, $group);
+                }
             }
         } else {
             Response::warn(colorize('空数据包，无需导入', 'yellow'));
         }
 
-        return $pack;
+        return $ret;
     }
 
 

@@ -18,9 +18,6 @@ Response::note('#line');
 
 //读取防火墙数据
 $ori_pack_attack = Firewall::get_attack();
-if (ENV_debug == true) {
-    $ori_pack_attack = Firewall::make_attacks($ori_pack_attack);
-}
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 //推往收集器collecter.ulan.com
@@ -29,7 +26,7 @@ Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_atta
 // 此工作由swoole接管，此处无需处理
 
 //确保大网安全
-$ori_pack_attack = Firewall::makeSafe($ori_pack_attack);
+// $ori_pack_attack = Firewall::makeSafe($ori_pack_attack);
 
 // 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
 $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);

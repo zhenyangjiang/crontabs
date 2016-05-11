@@ -678,8 +678,9 @@ Class DBModel {
     public function pullLast($n, $opts = array(), $ignore = false, $action_key = NULL) {
         $action_key or $action_key = md5( $this->dt.date('Y-m'));
         $last_id = $ignore ? 0 : (int)Arr::get($_COOKIE, $action_key);
+        $awhere = array_merge((array)$opts['awhere'], ["id>$last_id"]);
         $opts = array_merge($opts, [
-            'awhere'=> ["id>$last_id"],
+            'awhere'=> $awhere,
             'limit' => $n,
             'order' => 'id desc',
         ]);

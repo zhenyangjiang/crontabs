@@ -14,23 +14,27 @@ Class Firewall {
             System::halt('读取无法解析的防火墙数据错误！');
         }
 
-        $data = array();
-        foreach ($pack as $dest_ip => $item) {
-            if ($item['bps'][0] <= 1 ||
-                $item['pps'][0] <= 1
-            ) continue;
+        foreach ($pack as &$group) {
+            foreach ($group as $dest_ip => &$item) {
+                if ($item['bps'][0] <= 1 ||
+                    $item['pps'][0] <= 1
+                ) {
+                    unset($group[$dest_ip]);
+                    continue;
+                }
 
-            $data[$dest_ip] = [
-                'dest'      => $dest_ip,
-                'types'     => implode(',', $item['types']),
-                'src'       => implode(',', $item['src']),
-                'bps0'      => $item['bps'][0],
-                'bps1'      => $item['bps'][1],
-                'pps0'      => $item['pps'][0],
-                'pps1'      => $item['pps'][1],
-            ];
+                $item = [
+                    'dest'      => $dest_ip,
+                    'types'     => implode(',', $item['types']),
+                    'src'       => implode(',', $item['src']),
+                    'bps0'      => $item['bps'][0],
+                    'bps1'      => $item['bps'][1],
+                    'pps0'      => $item['pps'][0],
+                    'pps1'      => $item['pps'][1],
+                ];
+            }
         }
-        return $data;
+        return $pack;
     }
 
 

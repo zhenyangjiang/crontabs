@@ -94,8 +94,7 @@ class Http {
             if ( ord($str) == 13 ) break;
         }
         $header = array_slice($arr, 0, $i);
-        $body = array_slice($arr, $i+1);
-        array_pop($body);
+        $body = array_slice($arr, $i);
         $ret['body'] = implode(PHP_EOL, $body);
 
         foreach (self::$statuses as $code => $status) {
@@ -115,7 +114,7 @@ class Http {
 		$opts = array_merge(array(
 			'build'			=> true,
 			'header'		=> array(),
-            'respone-header'=> 0,
+            'response-header'=> 0,
 			'timeout'		=> 30,
 			'referer'		=> '',
             'cookie'        => '',
@@ -148,7 +147,7 @@ class Http {
             $opts['header'] = self::conv_array_format($opts['header'], NULL, ':');
             curl_setopt($ch, CURLOPT_HTTPHEADER, $opts['header']);
         }
-        curl_setopt($ch, CURLOPT_HEADER, $opts['respone-header']);  // 显示返回的Header区域内容
+        curl_setopt($ch, CURLOPT_HEADER, $opts['response-header']);  // 显示返回的Header区域内容
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);                // 获取的信息以文件流的形式返回
         if (array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
             curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -180,7 +179,7 @@ class Http {
 	public static function get($url, $opts = array()){
 		$opts = array_merge(array(
 			'header'	=> array(),
-            'respone-header' => 0,
+            'response-header' => 0,
 			'timeout'	=> 30,
 			'referer'	=> '',
             'cookie'    => '',
@@ -203,7 +202,7 @@ class Http {
             $opts['header'] = self::conv_array_format($opts['header']);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $opts['header']);
         }
-        curl_setopt($ch, CURLOPT_HEADER, $opts['respone-header']);                // 显示返回的Header区域内容
+        curl_setopt($ch, CURLOPT_HEADER, $opts['response-header']);                // 显示返回的Header区域内容
         curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
         $ret = curl_exec($ch);
         $errno = curl_errno($ch);

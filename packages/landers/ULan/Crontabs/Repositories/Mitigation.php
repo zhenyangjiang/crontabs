@@ -1,5 +1,6 @@
 <?php
 use Landers\Framework\Core\Repository;
+use Landers\Substrate\Utils\Arr;
 
 class Mitigation extends Repository {
     protected static $connection = 'main';
@@ -84,6 +85,26 @@ class Mitigation extends Repository {
                 return true;
             }
         }
+    }
+
+    /**
+     * 根据所给的ip列表过滤出免费防护的ip
+     * @param  Array  $ips [description]
+     * @return [type]      [description]
+     */
+    public static function filteFree(Array $ips) {
+        $lists = parent::lists([
+            'fields' => 'ip',
+            'awhere' => [
+                'ip' => $ips,
+                'price' => 0,
+                'billing' => 'month'
+            ]
+        ]);
+        if ($lists) {
+            $lists = Arr::pick($lists, 'ip');
+        }
+        return $lists;
     }
 }
 Mitigation::init();

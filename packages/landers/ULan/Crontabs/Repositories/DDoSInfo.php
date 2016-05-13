@@ -42,7 +42,7 @@ class DDoSInfo extends Repository {
         if ($pack) { //确定是二维数组列表
             foreach ($pack as $group) {
                 //存储数据
-                dp($group);
+                // self::debug();
                 $bool = self::import($group);
                 if (!$bool) {
                     $message = '攻击数据导入到DDoS表时失败';

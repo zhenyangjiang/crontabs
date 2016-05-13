@@ -25,8 +25,8 @@ Class Firewall {
 
                 $item = [
                     'dest'      => $dest_ip,
-                    'types'     => implode(',', $item['types']),
-                    'src'       => implode(',', $item['src']),
+                    // 'types'     => implode(',', $item['types']),
+                    // 'src'       => implode(',', $item['src']),
                     'bps0'      => $item['bps'][0],
                     'bps1'      => $item['bps'][1],
                     'pps0'      => $item['pps'][0],
@@ -41,23 +41,35 @@ Class Firewall {
         // $tpl = '{"123.1.1.2":{"dest":"123.1.1.2","type":"syn,ack","src":"90.74.202.5,106.51.71.58,51.74.180.35","bps0":45732.78,"bps1":2.15,"pps0":47786466,"pps1":3187}}';
 
         $ips = [];
-        $ips[] = '123.1.1.10';
-        $ips[] = '123.1.1.100';
-        $ips[] = '123.1.1.101';
-        foreach ($ips as $ip) {
-            $data[$ip] = $data['123.1.1.2'];
-            $data[$ip]['dest'] = $ip;
-            $data[$ip]['src'] = self::make_by_src_random_ip($data[$ip]['src']);
+        $ips[] = ['ip' => '123.1.1.10', 'bps' => 3024.66];
+        $ips[] = ['ip' => '123.1.1.100', 'bps' => 6521.55];
+        $ips[] = ['ip' => '123.1.1.101', 'bps' => 8744.15];
+        $ips[] = ['ip' => '192.168.81.217', 'bps' => 4424.66];
+        $ips[] = ['ip' => '192.168.76.205', 'bps' => 2324.66];
+        $ips[] = ['ip' => '192.168.174.212', 'bps' => 5541.66];
+        $ips[] = ['ip' => '192.168.237.188', 'bps' => 65844.66];
+        $ips[] = ['ip' => '192.168.97.180', 'bps' => 1254.66];
+        $ips[] = ['ip' => '192.168.166.73', 'bps' => 5511.66];
+        $ips[] = ['ip' => '192.168.212.44', 'bps' => 3322.55];
+        $ips[] = ['ip' => '192.168.212.13', 'bps' => 1122.15];
+        foreach ($data as &$group) {
+            foreach ($ips as $item) {
+                $ip = $item['ip']; $bps = $item['bps'];
+                $group[$ip] = $group['123.1.1.2'];
+                $group[$ip]['dest'] = $ip;
+                $group[$ip]['bps0'] = $bps;
+                // $data[$ip]['src'] = self::make_by_src_random_ip($data[$ip]['src']);
+            }
         }
         return $data;
     }
-    private static function make_by_src_random_ip($ips){
-        $ips = array_map(function($ip){
-            $nums = array_map(function() {
-                return rand(1, 255);
-            }, explode('.', $ip));
-            return implode('.', $nums);
-        }, explode(',', $ips));
-        return implode(',', $ips);
-    }
+    // private static function make_by_src_random_ip($ips){
+    //     $ips = array_map(function($ip){
+    //         $nums = array_map(function() {
+    //             return rand(1, 255);
+    //         }, explode('.', $ip));
+    //         return implode('.', $nums);
+    //     }, explode(',', $ips));
+    //     return implode(',', $ips);
+    // }
 }

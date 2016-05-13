@@ -1,4 +1,3 @@
-
 <?php
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Config;
@@ -133,6 +132,13 @@ class Notify {
         }
     }
 
+    private static $retry = [];
+    private static function retry($uniq_key) {
+        $t = &self::$retry[$uniq_key];
+        if (is_null($t)) $t = 0;
+        return ++$t;
+    }
+
     /**
      * 发送邮件
      * @param  [type] $opts to, content, subject, is_queue
@@ -194,8 +200,19 @@ class Notify {
             if ($retdat = $o->ErrorInfo) {
                 return false;
             } else {
-                $retdat = Queue::singleton('notify')->push(new SendEmailNotify($o));
-                return true;
+                try {
+                    $retdat = Queue::singleton('notify')->push(new SendEmailNotify($o));
+                    return true;
+                } catch (\Exception $e) {
+                    $uniq_key = md5(serialize($opts));
+                    $retry = self::retry($uniq_key);
+                    $reties = $config['retries'];
+                    if ( $retry <= $reties) {
+                        Response::warn('入队失败，第%s次重试中...', $retry);
+                        sleep(1);
+                        self::send_email($opts);
+                    }
+                }
             }
         }
     }

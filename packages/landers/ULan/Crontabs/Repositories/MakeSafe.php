@@ -22,8 +22,10 @@ Class MakeSafe {
      * @param  [type] $group_id [description]
      * @return [type]           [description]
      */
-    private static function getDataCenterMaxDefend($group_id) {
-        return 4 * 1000;
+    private static function getDataCenterMaxDefendByIp($ip) {
+        $instance = Instance::find_ip($ip);
+        $datacenter = DataCenter::find($instance['datacenter_id']);
+        return $datacenter['max_mbps'];
     }
 
     /**
@@ -34,7 +36,7 @@ Class MakeSafe {
     public static function check($attack_pack) {
         foreach ($attack_pack as $group_id => &$group) {
             $total = self::calcTotalByGroup($group);
-            $max = self::getDataCenterMaxDefend($group_id);
+            $max = self::getDataCenterMaxDefendByIp($group_id);
             Response::note('当前组[%s]的最高防护值为：%s', $group_id, $max);
             Response::note('当前组的攻击总量为：%s', $total);
             Response::note('当前组的总攻击总已超总防护值，需要作策略牵引...');

@@ -1,22 +1,57 @@
 {
+    "name": "ulan/crontabs",
+    "description": "ULan Crontabs apps",
+    "keywords": [
+        "ULan",
+        "Crontabs"
+    ],
+    "type" : "project",
     "require": {
         "phpmailer/phpmailer": "~5.2",
         "pda/pheanstalk": "^3.1",
         "predis/predis": "^1.0",
         "nesbot/carbon": "^1.21",
-        "ender/yunpian-sms": "^1.0"
+        "ender/yunpian-sms": "^1.0",
+        "landers/substrate": "dev-master",
+        "landers/framework": "dev-master",
+        "landers/laravel": "dev-master",
+        "landers/ulan": "dev-master"
     },
     "autoload":{
         "classmap": [
-            "packages/landers/ULan"
+            "vendor/landers/ulan"
         ],
         "psr-4": {
-            "Tasks\\" : "Tasks/",
-            "Landers\\": "packages/landers/"
         },
         "files": [
-            "packages/landers/Framework/Adapters/Helpers/LcliHelpers.php",
-            "packages/landers/ULan/Crontabs/helpers.php"
+            "vendor/landers/framework/Adapters/Helpers/LcliHelpers.php",
+            "vendor/landers/ulan/Crontabs/helpers.php"
         ]
+    },
+   "repositories": [
+
+    ],
+    "repositories": {
+        "0" : {
+            "type": "vcs",
+            "url": "https://git.ulan.io/landers/substrate.git"
+        },
+        "1" : {
+            "type": "vcs",
+            "url": "https://git.ulan.io/landers/framework.git"
+        },
+        "2" : {
+            "type": "vcs",
+            "url": "https://git.ulan.io/landers/laravel.git"
+        },
+        "3" : {
+            "type": "vcs",
+            "url": "https://git.ulan.io/landers/ulan.git"
+        },
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
     }
+
 }

@@ -346,7 +346,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/ulan.git",
-                "reference": "e15191b6310ea29cfce1b06e98ca226ed3a594df"
+                "reference": "c1e82331f9474a2ff9a6e0d0fbf87083b09df7c6"
             },
             "require": {
                 "php": ">=5.5"
@@ -354,9 +354,7 @@
             "type": "library",
             "autoload": {
                 "classmap": [],
-                "files": [
-                    "ApiCenter/helpers.php"
-                ],
+                "files": [],
                 "psr-4": []
             },
             "license": [
@@ -374,7 +372,7 @@
                 "Landers",
                 "ULan"
             ],
-            "time": "2016-05-18 00:33:21"
+            "time": "2016-05-21 00:51:47"
         },
         {
             "name": "nesbot/carbon",
@@ -433,7 +431,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "http://packagist.phpcomposer.com/files/pda/pheanstalk/430e77c551479aad0c6ada0450ee844cf656a18b.zip",
+                "url": "https://api.github.com/repos/pda/pheanstalk/zipball/430e77c551479aad0c6ada0450ee844cf656a18b",
                 "reference": "430e77c551479aad0c6ada0450ee844cf656a18b",
                 "shasum": ""
             },

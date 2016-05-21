@@ -22,6 +22,7 @@
             "vendor/landers/ulan"
         ],
         "psr-4": {
+            "Tasks\\" : "Tasks/"
         },
         "files": [
             "vendor/landers/framework/Adapters/Helpers/LcliHelpers.php",

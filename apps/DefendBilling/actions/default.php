@@ -24,11 +24,6 @@ if (ENV_debug == true) {
 }
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
-//推往收集器collecter.ulan.com
-// $temp_ququeId = Queue::singleton('report-ddossource')->push(new ReportDDoSSource($ori_pack_attack));
-// Response::bool(!!$temp_ququeId, '上报DDoSSource入队%s');
-// 此工作由swoole接管，此处无需处理
-
 //确保大网安全
 Response::note(['#line', '确保大网安全：']);
 $ori_pack_attack = MakeSafe::check($ori_pack_attack);
@@ -38,6 +33,7 @@ Response::note(['#line', '过滤掉已被牵引的IP：']);
 $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);
 
 //保存攻击数据
+Response::note(['#line', '保存攻击数到DDoSInfo...']);
 $pack_attack = DDoSInfo::save_attack($pack_attack);
 $pack_attack or $pack_attack = [];
 if ( $all_ips = array_keys($pack_attack) ) {
@@ -123,7 +119,7 @@ foreach ($pack_attack as $dest_ip => $item) {
     $mitigation = Mitigation::find_ip($dest_ip);
 
     if (!$mitigation) {
-        //找不到记录，属异常，超100Mbps即牵引
+        //找不到记录：（可能是第二IP，暂属异常），超100Mbps即牵引
         $echo = Response::note('IP：%s，未知的异常IP地址', $dest_ip);
         reportOptException($echo, array('context' => $item));
 

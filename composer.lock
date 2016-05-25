@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "21d71c7580b358c2f1e0ebd7d3019e91",
-    "content-hash": "6540e8798accf4b2e82076c483574260",
+    "hash": "adf07da9918f794583cf23cbe63a1510",
+    "content-hash": "ff48bade307dc9987466ace23634400f",
     "packages": [
         {
             "name": "ender/yunpian-sms",
@@ -274,7 +274,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/laravel.git",
-                "reference": "215af0f8644886224b2924b2bc31e081c7119ae2"
+                "reference": "4fcdd46b5ae96eb3cca543a427f50f55cc09423d"
             },
             "require": {
                 "php": ">=5.5"
@@ -302,7 +302,7 @@
                 "Landers",
                 "Laravel"
             ],
-            "time": "2016-05-25 08:02:03"
+            "time": "2016-05-25 08:37:24"
         },
         {
             "name": "landers/substrate",
@@ -752,6 +752,28 @@
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
             "time": "2016-03-25 01:41:20"
+        },
+        {
+            "name": "ulan/virtsdk",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://git.ulan.io/ULan/virtsdk.git",
+                "reference": "df816a999b1ea783bf3534dfe62096b5df248ec0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ULan\\Virt\\": "src/Virt/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "BitQiu",
+                    "email": "i@bitqiu.cc"
+                }
+            ],
+            "time": "2016-05-18 09:24:53"
         }
     ],
     "packages-dev": [],
@@ -761,7 +783,8 @@
         "landers/substrate": 20,
         "landers/framework": 20,
         "landers/laravel": 20,
-        "landers/ulan": 20
+        "landers/ulan": 20,
+        "ulan/virtsdk": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "14686c2350bb24cb622d2620d385f111",
+    "hash": "21d71c7580b358c2f1e0ebd7d3019e91",
     "content-hash": "6540e8798accf4b2e82076c483574260",
     "packages": [
         {
@@ -238,7 +238,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/framework.git",
-                "reference": "1c2b4e63c9fd24edbac6c0c7a0e35cb353eddc92"
+                "reference": "29871ef7ef57af22364f2c5f8df23dcb880410d7"
             },
             "require": {
                 "php": ">=5.5"
@@ -248,7 +248,7 @@
                 "classmap": [],
                 "files": [],
                 "psr-4": {
-                    "Landers\\Framework\\": ""
+                    "Landers\\Framework\\": "src"
                 }
             },
             "license": [
@@ -266,7 +266,7 @@
                 "Framework",
                 "Landers"
             ],
-            "time": "2016-05-25 07:47:34"
+            "time": "2016-05-25 08:01:37"
         },
         {
             "name": "landers/laravel",
@@ -274,7 +274,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/laravel.git",
-                "reference": "7663fd36351a43bb3bf81b18e8171c7adca8addd"
+                "reference": "215af0f8644886224b2924b2bc31e081c7119ae2"
             },
             "require": {
                 "php": ">=5.5"
@@ -284,7 +284,7 @@
                 "classmap": [],
                 "files": [],
                 "psr-4": {
-                    "Landers\\Laravel\\": ""
+                    "Landers\\Laravel\\": "src"
                 }
             },
             "license": [
@@ -302,7 +302,7 @@
                 "Landers",
                 "Laravel"
             ],
-            "time": "2016-05-25 07:48:34"
+            "time": "2016-05-25 08:02:03"
         },
         {
             "name": "landers/substrate",
@@ -310,7 +310,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/substrate.git",
-                "reference": "6a2fec05cf224e1aa7e1fc98c072e8aa7ed0cdc9"
+                "reference": "d011a3831d2f0e957d38f933f0703f00e7facbfa"
             },
             "require": {
                 "php": ">=5.5"
@@ -320,7 +320,7 @@
                 "classmap": [],
                 "files": [],
                 "psr-4": {
-                    "Landers\\Substrate\\": ""
+                    "Landers\\Substrate\\": "src"
                 }
             },
             "license": [
@@ -338,7 +338,7 @@
                 "Landers",
                 "Substrate"
             ],
-            "time": "2016-05-25 07:52:42"
+            "time": "2016-05-25 08:03:11"
         },
         {
             "name": "landers/ulan",

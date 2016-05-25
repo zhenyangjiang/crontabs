@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "eea2dea2cf6c11992aafb4e89aad4667",
+    "hash": "14686c2350bb24cb622d2620d385f111",
     "content-hash": "6540e8798accf4b2e82076c483574260",
     "packages": [
         {
@@ -238,7 +238,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/framework.git",
-                "reference": "24a44bf8d05dc13851782ff17881d030683ab6ed"
+                "reference": "1c2b4e63c9fd24edbac6c0c7a0e35cb353eddc92"
             },
             "require": {
                 "php": ">=5.5"
@@ -266,7 +266,7 @@
                 "Framework",
                 "Landers"
             ],
-            "time": "2016-05-17 16:22:34"
+            "time": "2016-05-25 07:47:34"
         },
         {
             "name": "landers/laravel",
@@ -274,7 +274,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/laravel.git",
-                "reference": "1c33ef2e4e5a0bb735dbcbda47ce4cbfd4addb23"
+                "reference": "7663fd36351a43bb3bf81b18e8171c7adca8addd"
             },
             "require": {
                 "php": ">=5.5"
@@ -302,7 +302,7 @@
                 "Landers",
                 "Laravel"
             ],
-            "time": "2016-05-16 03:11:38"
+            "time": "2016-05-25 07:48:34"
         },
         {
             "name": "landers/substrate",
@@ -310,7 +310,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/substrate.git",
-                "reference": "689b360c3ee02bc08a49b83ec60b8e20af7d8e3a"
+                "reference": "6a2fec05cf224e1aa7e1fc98c072e8aa7ed0cdc9"
             },
             "require": {
                 "php": ">=5.5"
@@ -338,7 +338,7 @@
                 "Landers",
                 "Substrate"
             ],
-            "time": "2016-05-17 16:17:16"
+            "time": "2016-05-25 07:52:42"
         },
         {
             "name": "landers/ulan",
@@ -346,7 +346,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/ulan.git",
-                "reference": "c1e82331f9474a2ff9a6e0d0fbf87083b09df7c6"
+                "reference": "a2c6bdb3fcf19981ebe968a077a102809a4cf047"
             },
             "require": {
                 "php": ">=5.5"
@@ -372,7 +372,7 @@
                 "Landers",
                 "ULan"
             ],
-            "time": "2016-05-21 00:51:47"
+            "time": "2016-05-25 07:54:29"
         },
         {
             "name": "nesbot/carbon",

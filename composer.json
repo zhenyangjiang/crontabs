@@ -25,8 +25,8 @@
             "Tasks\\" : "Tasks/"
         },
         "files": [
-            "vendor/landers/framework/Adapters/Helpers/LcliHelpers.php",
-            "vendor/landers/ulan/Crontabs/helpers.php"
+            "vendor/landers/framework/src/Adapters/Helpers/LcliHelpers.php",
+            "vendor/landers/ulan/src/Crontabs/helpers.php"
         ]
     },
    "repositories": [

@@ -34,12 +34,12 @@ foreach ($instances as $instance) {
     Response::note('此实例的过期时间：%s', $expire_date);
 
     //系统允许过期天数、剩余天数
-    $allow_days = Settings::get('instance_timeout_days');
-    $retain_days = $allow_days - $expire_days;
+    $retain_days = Settings::get('instance_expire_retain_days');
+    $retain_days = $retain_days - $expire_days;
 
     $some_days = [
         'expire' => $expire_days,
-        'allow' => $allow_days,
+        'allow' => $retain_days,
         'retain' => $retain_days
     ];
 

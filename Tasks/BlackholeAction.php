@@ -7,11 +7,12 @@ use Landers\Substrate\Utils\Http;
 class BlackholeAction implements TaskInterface {
     private $action;
     private $params;
-    private static $apiurl = ENV_api_host.'/blackhole/action';
+    private static $apiurl;
 
     function __construct($action, $params) {
         $this->action = $action;
         $this->params = $params;
+        self::$apiurl = Config::get('hosts', 'api') . '/blackhole/action';
     }
 
     public function block(){

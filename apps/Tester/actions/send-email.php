@@ -1,5 +1,6 @@
 <?php
 use Landers\Framework\Core\Response;
+include 'inc-headline.php';
 
 Response::note('测试邮件发送...');
 $bool = Notify::send_email([

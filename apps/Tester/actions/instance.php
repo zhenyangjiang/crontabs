@@ -1,6 +1,7 @@
 <?php
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\System;
+include 'inc-headline.php';
 
 if (!$action = System::argv(3)) {
     System::halt('缺少操作方法');
@@ -15,11 +16,4 @@ Response::note('操作命令：%s %s', $action, $instance_id);
 
 $bool = call_user_func_array(array('Instance', $action), [$instance_id]);
 Response::bool($bool, '操作%s');
-
-// if ( !$instance_id = System::argv(3) ) {
-//
-// }
-
-// $ret = Instance::suspend();
-// Response::bool($bool, '短信发送任务入队%s');
-// Response::note('#line');
+System::complete();

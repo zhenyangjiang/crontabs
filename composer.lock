@@ -238,7 +238,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/framework.git",
-                "reference": "29871ef7ef57af22364f2c5f8df23dcb880410d7"
+                "reference": "f73350e04bdafc96a543b6906c433740aad94b7a"
             },
             "require": {
                 "php": ">=5.5"
@@ -266,7 +266,7 @@
                 "Framework",
                 "Landers"
             ],
-            "time": "2016-05-25 08:01:37"
+            "time": "2016-05-26 09:03:44"
         },
         {
             "name": "landers/laravel",
@@ -274,7 +274,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/laravel.git",
-                "reference": "4fcdd46b5ae96eb3cca543a427f50f55cc09423d"
+                "reference": "f72f1a887d7ebe01757cfa27638834e29631187a"
             },
             "require": {
                 "php": ">=5.5"
@@ -302,7 +302,7 @@
                 "Landers",
                 "Laravel"
             ],
-            "time": "2016-05-25 08:37:24"
+            "time": "2016-05-26 07:42:00"
         },
         {
             "name": "landers/substrate",
@@ -310,7 +310,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/substrate.git",
-                "reference": "d011a3831d2f0e957d38f933f0703f00e7facbfa"
+                "reference": "4f514bc4fdfb3927cce997c0bb432d95e4571938"
             },
             "require": {
                 "php": ">=5.5"
@@ -338,7 +338,7 @@
                 "Landers",
                 "Substrate"
             ],
-            "time": "2016-05-25 08:03:11"
+            "time": "2016-05-26 09:03:56"
         },
         {
             "name": "landers/ulan",
@@ -346,7 +346,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/landers/ulan.git",
-                "reference": "a2c6bdb3fcf19981ebe968a077a102809a4cf047"
+                "reference": "4d48a13574e9a75db858ef4e20b29a5dd5a1ce1a"
             },
             "require": {
                 "php": ">=5.5"
@@ -372,7 +372,7 @@
                 "Landers",
                 "ULan"
             ],
-            "time": "2016-05-25 07:54:29"
+            "time": "2016-05-26 09:04:09"
         },
         {
             "name": "nesbot/carbon",
@@ -759,7 +759,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.ulan.io/ULan/virtsdk.git",
-                "reference": "df816a999b1ea783bf3534dfe62096b5df248ec0"
+                "reference": "f6ffb0103f65c98c9e892baf59ecb96fb90a2433"
             },
             "type": "library",
             "autoload": {
@@ -773,7 +773,7 @@
                     "email": "i@bitqiu.cc"
                 }
             ],
-            "time": "2016-05-18 09:24:53"
+            "time": "2016-05-26 09:05:13"
         }
     ],
     "packages-dev": [],

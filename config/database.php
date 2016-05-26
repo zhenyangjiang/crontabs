@@ -50,5 +50,15 @@ return array(
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
+
+    'blackhole' => array(
+        'host'      => '172.31.66.200',
+        'port'      => '3306',
+        'dbname'    => 'ulan_blackhole',
+        'username'  => 'root',
+        'password'  => 'ULan.io123',
+        'charset'   => 'utf8',
+        'log-path'  => dirname(__DIR__).'/logs/'
+    )
 );
 ?>

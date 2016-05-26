@@ -1,2 +1,2 @@
 <?php
-return ENV_collecter_host.'/FW-API';
+return Config::get('hosts', 'collecter').'/FW-API';

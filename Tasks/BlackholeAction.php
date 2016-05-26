@@ -3,6 +3,7 @@ namespace Tasks;
 
 use Landers\Substrate\Interfaces\TaskInterface;
 use Landers\Substrate\Utils\Http;
+use Landers\Framework\Core\Config;
 
 class BlackholeAction implements TaskInterface {
     private $action;

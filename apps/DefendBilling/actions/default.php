@@ -24,8 +24,8 @@ if (ENV_debug == true) $ori_pack_attack = Firewall::make_attacks($ori_pack_attac
 Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
 
 // 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
-Response::note(['#line', '过滤掉已被牵引的IP：']);
-$pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);
+// Response::note(['#line', '过滤掉已被牵引的IP：']);
+// $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);
 
 //保存攻击数据
 Response::note(['#line', '保存攻击数到DDoSInfo...']);

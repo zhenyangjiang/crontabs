@@ -5,8 +5,7 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 require __DIR__.'/../include/Helper.php';
 
-echo PHP_EOL;
-Response::note(['【实例到期后，实例挂起、待删除、自动续费】（'.System::app('name').'）开始工作','#dbline']);
+Response::note(['【实例到期后，挂起、待删除、自动续费后反挂起】（'.System::app('name').'）开始工作','#dbline']);
 
 $instances = Instance::timeout_expire();
 if ($instances) {
@@ -34,25 +33,22 @@ foreach ($instances as $instance) {
     Response::note('此实例的过期时间：%s', $expire_date);
 
     //系统允许过期天数、剩余天数
-    $retain_days = Settings::get('instance_expire_retain_days');
-    $retain_days = $retain_days - $expire_days;
+    $allow_days = Settings::get('instance_expire_retain_days');
+    $retain_days = $allow_days - $expire_days;
 
     $some_days = [
         'expire' => $expire_days,
-        'allow' => $retain_days,
+        'allow' => $allow_days,
         'retain' => $retain_days
     ];
 
     //延长实例有效期
-    $instance_update = [
-        'data' => ['expire' => strtotime("+1 month", $instance['expire'])],
-        'awhere' => ['id' => $instance['id']]
-    ];
+    $instance_update = ['expire' => strtotime("+1 month", $instance['expire'])];
 
     //续费后的有效时间段
     $valid_times = [
-        'begin' => date('Y-m-d H:i:s', $instance['expire'] + 1),
-        'end'   => date('Y-m-d H:i:s', $instance_update['data']['expire'])
+        'begin' => date('Y-m-d H:i:s', $instance['expire']),
+        'end'   => date('Y-m-d H:i:s', $instance_update['expire'])
     ];
 
     //确定实例每月费用
@@ -121,10 +117,10 @@ foreach ($instances as $instance) {
                 ];
             }
 
-            $transaction_name = '实例扣费、实例扣费日志、延长实例有效期';
+            $transaction_name = '实例扣费、实例扣费日志、延长实例有效期、反挂起实例';
             Response::note('#blank');
             Response::note('执行事务处理：%s：', $transaction_name);
-            $bool_transact = deduct_transact($uid, $instance_update, $feelog_data);
+            $bool_transact = renew_transact($uid, $instance, $instance_update, $feelog_data);
         } elseif ( $user['money'] - $fee_renew_insntance > 0 ) {
             // 仅够续费 云主机 ：强制降级云盾
             Response::note('#tab当前余额仅够自动续费 云主机，云盾将强制降级为免费或最低方案');
@@ -145,12 +141,11 @@ foreach ($instances as $instance) {
             $transaction_name = '实例扣费、实例扣费日志、延长实例有效期、强制降级云盾';
             Response::note('#blank');
             Response::note('执行事务处理：%s：', $transaction_name);
-            $bool_transact = deduct_transact($uid, $instance_update, $feelog_data, [
+            $bool_transact = renew_transact($uid, $instance, $instance_update, $feelog_data, [
                 function() use ($instance){//强制降级云盾
                     $bool = Mitigation::down_grade($instance);
                     Response::bool($bool, '#tab云盾强制降级%s');
                     if ( !$bool) return false;
-
                     return true;
                 }
             ]);

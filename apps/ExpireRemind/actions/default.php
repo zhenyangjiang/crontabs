@@ -3,7 +3,6 @@ use Landers\Substrate\Utils\Datetime;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 
-echo PHP_EOL;
 Response::note(['【实例即将到期提醒】（'.System::app('name').'）开始工作','#dbline']);
 
 $before_days = Settings::get('instance_expire_before_days');
@@ -12,7 +11,7 @@ if (!$instances) {
     Response::note('暂无%s天内到期在实例', $before_days);
     System::continues();
 }
-Response::note(['#blank', '逐一对过期的实例进行相关操作...']);
+Response::note(['#blank', '逐一对即将过期的实例进行相关操作...']);
 foreach ($instances as $instance) {
     Response::note('#line');
     $instance_ip = $instance['mainipaddress'];

@@ -30,13 +30,13 @@ return [
     'instance_is_about_to_expire_enough_balance_for_manual_renew' => [
         'email' => [
             'title'   => '云主机过期续费提醒',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的云主机：{instance_name}（IP：{instance_ip}）将{days}天后({expire_date})到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
+            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的云主机：{instance_name}（IP：{instance_ip}）将{days}天后({expire_date})到期，您的余额足够支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
         ],
         'message' => [
             'title'   => '云主机过期续费提醒',
-            'content' => '尊敬的用户{user_name}：<br/>　　您的云主机：{instance_name}（IP：{instance_ip}）将{days}天后({expire_date})到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
+            'content' => '尊敬的用户{user_name}：<br/>　　您的云主机：{instance_name}（IP：{instance_ip}）将{days}天后({expire_date})到期，您的余额足够支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
         ],
-        'sms' => '您的云主机：{instance_name}（IP：{instance_ip}）将{days}天后({expire_date})到期，您的余额还能支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
+        'sms' => '您的云主机：{instance_name}（IP：{instance_ip}）将{days}天后({expire_date})到期，您的余额足够支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
     ],
 ];
 ?>

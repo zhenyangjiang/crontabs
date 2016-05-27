@@ -4,12 +4,7 @@ use Landers\Framework\Core\Response;
 use Landers\Substrate\Utils\Datetime;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Queue;
-// use Tasks\ReportDDoSSource;
 
-// if (!StartUp::check()) exit();
-
-// require_once('randomxml.php'); usleep(100000);
-// Response::note(['#blank', '#blank', '#blank']);
 echo PHP_EOL;
 Response::note(['#blank', '【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
@@ -19,20 +14,17 @@ BlackHole::unblock(); //解除牵引
 Response::note('#line');
 
 //读取防火墙数据
-$ori_pack_attack = Firewall::get_attack();
-if (ENV_debug == true) $ori_pack_attack = Firewall::make_attacks($ori_pack_attack);
-Response::note('从防火墙上获取了%s条攻击信息', count($ori_pack_attack));
-
-// 过滤掉 pack_attack 中被牵引的IP(用Instances中的net_state作为过滤依据)
-// Response::note(['#line', '过滤掉已被牵引的IP：']);
-// $pack_attack = DDoSInfo::filte_blocked_attack($ori_pack_attack);
+Response::note('正在从防火墙上获取了攻击信息...');
+$pack_attack = Firewall::get_attack();
+// if (ENV_debug == true) $ori_pack_attack = Firewall::make_attacks($ori_pack_attack);
+Response::bool($pack_attack);
 
 //保存攻击数据
 Response::note(['#line', '保存攻击数到DDoSInfo...']);
 $all_ips = DDoSInfo::save_attack($pack_attack);
 if ( $all_ips) {
     foreach ($all_ips as $ip) Response::note("#tab$ip");
-    Response::note('#tab成功导入%s条数据', colorize(count($all_ips), 'green', 1));
+    Response::note('#tab导入%s条数据', count($all_ips));
 }
 Response::note('#line');
 
@@ -99,7 +91,7 @@ if (!$all_ips) {
 //记录开始攻击
 Response::note('#line');
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
-$ret = DDoSHistory::save_start_attack($all_ips);
+DDoSHistory::save_start_attack($all_ips);
 
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '开始逐一对所有被攻击IP操作...']);

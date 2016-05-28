@@ -8,21 +8,14 @@ class DataCenter extends Repository {
     protected static $datatable  = 'ulan_datacenter';
     protected static $DAO;
 
-    /**
-     * 通过IP确定数据中心
-     * @param  [type] $id     [description]
-     * @param  [type] $fields [description]
-     * @return [type]         [description]
-     */
-    public static function find($id, $fields = NULL){
-        $ret = parent::find($id, $field);
-        if ($ret && is_array($ret)) {
+    public static function parse(Array $dc) {
+        if ( is_string($dc['price_rules'] )) {
             //给此两字段json解码
             $keys = ['price_rules', 'block_duration'];
-            foreach ($keys as $key) $ret[$key] = json_decode($ret[$key], true);
+            foreach ($keys as $key) $dc[$key] = json_decode($dc[$key], true);
 
             //从价格规则中找出最大
-            $price_rules = &$ret['price_rules'];
+            $price_rules = &$dc['price_rules'];
             $keys = ['month', 'hour'];
             foreach ($keys as $key) {
                 $rules = $price_rules["mitigation-$key"];
@@ -32,10 +25,36 @@ class DataCenter extends Repository {
                     unset($rules[$Gbps]);
                 };
                 krsort($rules, SORT_NUMERIC);
-                $ret["$key-max-mbps"] = key($rules);
-                $ret["$key-max-pps"] = Mitigation::Mbps_to_pps($ret["$key-max-mbps"]);
+                $dc["$key-max-mbps"] = key($rules);
+                $dc["$key-max-pps"] = Mitigation::Mbps_to_pps($dc["$key-max-mbps"]);
                 $price_rules["mitigation-$key"] = $rules;
             }
+        }
+        return $dc;
+    }
+
+    public static function listById($id) {
+        $lists = parent::lists([
+            'awhere' => ['id' => $id]
+        ]);
+        if ($lists) {
+            foreach ($lists as &$item) {
+                $item = self::parse($item);
+            }
+        }
+        return $lists;
+    }
+
+    /**
+     * 通过IP确定数据中心
+     * @param  [type] $id     [description]
+     * @param  [type] $fields [description]
+     * @return [type]         [description]
+     */
+    public static function find($id, $fields = NULL){
+        $ret = parent::find($id, $field);
+        if ($ret && is_array($ret)) {
+            $ret = self::parse($ret);
         }
         return $ret;
     }

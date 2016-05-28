@@ -2,6 +2,7 @@
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Repository;
 use Landers\Framework\Core\Response;
+use Landers\Substrate\Utils\Arr;
 
 class DDoSInfo extends Repository {
     protected static $connection = 'mitigation';
@@ -45,7 +46,8 @@ class DDoSInfo extends Repository {
             foreach ($pack as $group) {
                 //存储数据
                 // self::debug();
-                $bool = self::import($group);
+                $data = Arr::pick($group, ['dest', 'bps0', 'bps1', 'pps0', 'pps1']);
+                $bool = self::import($data);
                 if (!$bool) {
                     $message = '攻击数据导入到DDoS表时失败';
                     reportDevException($message, array('context' => $group));

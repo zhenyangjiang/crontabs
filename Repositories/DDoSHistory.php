@@ -162,7 +162,7 @@ class DDoSHistory extends Repository {
             if ( $ret_price ) {
                 Response::note('#tab在%s峰值%sMbps/%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
             } else {
-                Response::note('#tab免费防护规格，无需扣款');
+                Response::note('#tab单价为0，免费防护规格');
             }
         } else {
             if ( (int)$price_bps > (int)$price_pps ) {

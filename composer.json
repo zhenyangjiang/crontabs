@@ -20,7 +20,7 @@
     },
     "autoload":{
         "classmap": [
-            "vendor/landers/ulan"
+            "Repositories"
         ],
         "psr-4": {
             "Tasks\\" : "Tasks/"

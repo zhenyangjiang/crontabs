@@ -16,16 +16,22 @@ Response::note('#line');
 //读取防火墙数据
 Response::note('正在从防火墙上获取了攻击信息...');
 $pack_attack = Firewall::get_attack();
-// if (ENV_debug == true) $ori_pack_attack = Firewall::make_attacks($ori_pack_attack);
+if (ENV_debug == true) $pack_attack = Firewall::make_attacks($pack_attack);
+
+//一次性读取所有被攻击IP的云盾
+$mitigations = Mitigation::lists([
+    'awhere' => ['ip' => array_keys($pack_attack)],
+    'askey' => 'ip'
+]);
+
+//对攻击数据进行分组
+$pack_attack = Firewall::groupBy($pack_attack, $mitigations);
 Response::bool($pack_attack);
 
 //保存攻击数据
 Response::note(['#line', '保存攻击数到DDoSInfo...']);
 $all_ips = DDoSInfo::save_attack($pack_attack);
-if ( $all_ips) {
-    foreach ($all_ips as $ip) Response::note("#tab$ip");
-    Response::note('#tab导入%s条数据', count($all_ips));
-}
+Response::echoSuccess('成功导入%s条数据', count($all_ips));
 Response::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
@@ -36,11 +42,13 @@ if ($attaching_ips) {
     foreach ($attaching_ips as $ip) Response::note('#tab%s', $ip);
     Response::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
     $diff_ips = array_diff($attaching_ips, $all_ips);
+    $diff_ips = ['172.31.52.244'];
 
     Response::note('#blank');
 
     if ($diff_ips) {
         Response::note(['#blank', '#blank', '逐一对以上IP作攻击自然结束：']);
+
         foreach ($diff_ips as $ip) {
             Response::note('#line');
 
@@ -111,6 +119,8 @@ foreach ($pack_attack as $fw_group_id => $group) {
         $max_mbps = 0;
         Response::warn('未找到 fw_group_id=%s 的数据中心，因此无法确定其对应的最大防护值', $fw_group_id);
     }
+
+    Response::note('当前组 --- 总攻击：%s, 防火强编号为：%s, 最高防护值：%s', $total_mbps, $fw_group_id, $max_mbps);
 
     // 大网威胁
     $group_threat = $total_mbps >= $max_mbps;

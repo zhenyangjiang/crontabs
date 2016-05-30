@@ -5,12 +5,14 @@ use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
         //$content = '[{"123.1.1.6": {"src": ["110.61.224.49", "242.204.209.124", "65.186.42.191"], "types": ["SYN", "ACK"], "syn": {"bps": [7034.32, 0 ], "pps": [7374170, 0 ] }, "ack": {"bps": [5387.41, 0.56 ], "pps": [5565760, 835 ] }, "udp": {"bps": [0, 0 ], "pps": [0, 0 ] }, "icmp": {"bps": [0, 0 ], "pps": [0, 0 ] }, "frag": {"bps": [0, 0 ], "pps": [0, 0 ] }, "other": {"bps": [0, 0 ], "pps": [0, 0 ] }, "dns": {"bps": [0, 0 ], "pps": [0, 0 ] }, "bps": [12421.74, 0.56 ], "pps": [12939931, 835 ], "links": [34496, 0 ], "tcplinks": [34496, 0 ], "udplinks": [0, 0 ], "time": 1464401143 } } ]';
 
-        //$content = '{"123.1.1.6":{"src":["74.156.179.21","175.211.37.169","59.87.157.192"],"types":["SYN","ACK"],"syn":{"bps":[5541.41,0],"pps":[5811169,0]},"ack":{"bps":[4122.53,0.56],"pps":[4269565,839]},"udp":{"bps":[0,0],"pps":[0,0]},"icmp":{"bps":[0,0],"pps":[0,0]},"frag":{"bps":[0,0],"pps":[0,0]},"other":{"bps":[0,0],"pps":[0,0]},"dns":{"bps":[0,0],"pps":[0,0]},"bps":[9663.94,0.56],"pps":[10080735,839],"links":[34122,0],"tcplinks":[34122,0],"udplinks":[0,0],"time":1464422713}}'
+
 Class Firewall {
     public static function get_attack() {
         $fwurl = Config::get('fwurl');
 
-        if ( !$content = Http::get($fwurl) ) {
+        $content = '{"123.1.1.6":{"src":["74.156.179.21","175.211.37.169","59.87.157.192"],"types":["SYN","ACK"],"syn":{"bps":[5541.41,0],"pps":[5811169,0]},"ack":{"bps":[4122.53,0.56],"pps":[4269565,839]},"udp":{"bps":[0,0],"pps":[0,0]},"icmp":{"bps":[0,0],"pps":[0,0]},"frag":{"bps":[0,0],"pps":[0,0]},"other":{"bps":[0,0],"pps":[0,0]},"dns":{"bps":[0,0],"pps":[0,0]},"bps":[9663.94,0.56],"pps":[10080735,839],"links":[34122,0],"tcplinks":[34122,0],"udplinks":[0,0],"time":1464422713}}';
+
+        if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('防火墙数据读取失败！');
         }
 
@@ -52,32 +54,32 @@ Class Firewall {
      * @param  [type] $mitigations [description]
      * @return [type]              [description]
      */
-    public static function groupBy($data, $mitigations) {
+    public static function groupBy($data) {
         $ret = []; $dc_ids = [];
+
+        //一次性读取所有被攻击IP的云盾
+        $mitigations = Mitigation::lists([
+            'awhere' => ['ip' => array_keys($data)],
+            'askey' => 'ip'
+        ]);
 
         //分组并附上mitigation
         foreach ($data as $dest_ip => $item) {
             $mitigation = $mitigations[$dest_ip];
             if ( $mitigation ) {
                 $dc_id = $mitigation['datacenter_id'];
+                $mitigation = Arr::remove_keys($mitigation, 'created_at, updated_at, fw_sets, alert_sets');
+                $mitigation = Mitigation::attachs($mitigation);
                 $dc_ids[] = $dc_id;
             } else {
                 $dc_id = 0;
             }
+
             $ret[$dc_id] or $ret[$dc_id] = [];
             $item['mitigation'] = $mitigation;
             $ret[$dc_id][$dest_ip] = $item;
         }
 
-        //附上数据中心
-        $dc_ids = array_unique($dc_ids);
-        $dcs = DataCenter::listById($dc_ids);
-        $dcs = Arr::rekey($dcs, 'id');
-        foreach ($ret as $dc_id => &$items) {
-            foreach ($items as &$item){
-                $item['datacenter'] = $dcs[$dc_id];
-            }; unset($item);
-        }; unset($items);
         return $ret;
     }
 

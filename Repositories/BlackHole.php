@@ -31,7 +31,7 @@ Class BlackHole extends Repository {
      */
     public static function block($ip, $bps){
         if (self::exists($ip)) {
-            Response::note('#tabIP：%s尚处于牵引中， 无需再次牵引', $ip);
+            Response::note('#tab该IP尚处于牵引中，无需再次牵引', $ip);
             return;
         }
 
@@ -39,18 +39,20 @@ Class BlackHole extends Repository {
         return self::transact(function() use ($ip, $bps){
             return Instance::transact(function() use ($ip, $bps){
                 //牵引动作入队列
+                Response::note('#tab牵引请求入队...');
                 $ret = self::doBlock($ip, $bps);
-                Response::bool(!!$ret, '#tab牵引请求入队%s');
+                Response::bool(!!$ret);
                 if (!$ret) return false;
 
                 //确定牵引时长
                 $block_duration = DataCenter::block_duration(DataCenter::find_ip($ip));
 
                 //插入牵引记录
+                Response::note('#tab写入牵引记录...');
                 $hours = $block_duration;
                 $data = ['ip' => $ip, 'expire' => strtotime("+$hours hours"), 'bps' => $bps];
                 $bool = self::insert($data);
-                Response::bool($bool, '#tab牵引记录写入%s');
+                Response::bool($bool);
                 if (!$bool) return false;
 
                 //更新ip的攻击历史为结束攻击
@@ -58,8 +60,9 @@ Class BlackHole extends Repository {
                 if (!$bool) return false;
 
                 //更新实例的网络状态为2（牵引中）
+                Response::note('#tab更新实例的网络状态为“牵引中”...');
                 $bool = Instance::update_net_status($ip, 2, true);
-                Response::bool($bool, '#tab更新实例的网络状态为“牵引中”%s');
+                Response::bool($bool);
                 if (!$bool) return false;
 
                 return true;
@@ -106,23 +109,20 @@ Class BlackHole extends Repository {
             }
 
             $awhere = ['id' => $ids];
-            if ( self::update(['is_unblock' => 1], $awhere) ) {
-                Response::note('#tab解除牵引更新“标志值为已解除”成功');
-            } else {
-                Response::note('#tab解除牵引更新“标志值为已解除”失败');
-                return false;
-            }
+            Response::note('#tab解除牵引更新“标志值为已解除”...');
+            $bool = self::update(['is_unblock' => 1], $awhere);
+            Response::bool($bool);
+            if (!$bool) return false;
 
             //根据ids找出要应的ips
             $ips = self::lists(['awhere' => $awhere, 'fields' => 'ip']);
             $ips = array_unique(Arr::flat($ips));
+
             //将牵引过期的ips所在的实例的net_state字段为正常(0)
-            if (Instance::update_net_status($ips, 0)) {
-                Response::note('#tab实例状态更新为“正常”成功：%s', implode('，', $ips));
-            } else {
-                Response::note('#tabIP实例更新为正常状态失败');
-                return false;
-            }
+            Response::note('#tab%s 个IP状态更新为“正常”...', count($ips));
+            $bool = Instance::update_net_status($ips, 0);
+            Response::bool( $bool );
+            if ( !$bool ) return $bool;
 
             //最终返回true
             return true;
@@ -136,13 +136,14 @@ Class BlackHole extends Repository {
         }
 
         //给ips解除牵引
+        Response::note('#tab%s 个IP解除牵引任务入队...', count($ips));
+        $success_count = 0;
         foreach ($ips as $ip) {
-            if ($command = $config['unblock']) {
-                $command = sprintf($command, $ip);
-                exec($command, $output, $return);
+            if (self::doUnblock($ip)) {
+                $success_count++;
             }
         }
-        Response::note('#tab成功解除牵引：%s', implode('，', $ips));
+        Response::echoSuccess('%s 入队成功', $success_count);
 
         return $ips;
     }

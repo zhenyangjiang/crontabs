@@ -7,6 +7,14 @@ class Mitigation extends Repository {
     protected static $datatable = 'ulan_mitigations';
     protected static $DAO;
 
+    public static function attachs($mitigation) {
+        if ($mitigation && is_array($mitigation)){
+            $mitigation['ability_mbps'] = self::Gbps_to_Mbps($mitigation['ability']);
+            $mitigation['ability_pps'] = self::Gbps_to_pps($mitigation['ability']);
+        }
+        return $mitigation;
+    }
+
     /**
      * 取得IP的云盾配置
      * @param  String $ip IP
@@ -19,8 +27,7 @@ class Mitigation extends Repository {
             'fields' => $fields
         ]);
         if ($ret && is_array($ret)){
-            $ret['ability_mbps'] = self::Gbps_to_Mbps($ret['ability']);
-            $ret['ability_pps'] = self::Gbps_to_pps($ret['ability'] );
+            $ret = self::attachs($ret);
         }
         return $ret;
     }

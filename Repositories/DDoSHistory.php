@@ -109,8 +109,9 @@ class DDoSHistory extends Repository {
             'on_event' => $on_event,
         ];
         $awhere = ['id' => $history['id']];
+        Response::note('#tab更新“攻击结束的相关信息”...');
         $bool = self::update($data, $awhere);
-        Response::bool($bool, '#tab更新“攻击结束的相关信息”%s');
+        Response::bool($bool);
         if (!$bool) {
             Notify::developer('更新攻击结束信息失败');
             return false;

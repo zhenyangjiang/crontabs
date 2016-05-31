@@ -146,7 +146,11 @@ class DDoSHistory extends Repository {
 
         //确定[begin_time]和[end_time]之间的峰值
         $peak_info = DDoSInfo::get_attack_peak($ip, $begin_time, $end_time);
-        if ( !$peak_info ) return 0;
+        if ( !$peak_info ) {
+            $echo = Response::warn('未找到峰值或峰值为0');
+            reportDevException($echo, compact('ip', 'price_rules', 'begin_time', 'end_time'));
+            return 0;
+        }
         $peak_bps = $peak_info['mbps'];
         $peak_pps = $peak_info['pps'];
 
@@ -182,8 +186,8 @@ class DDoSHistory extends Repository {
      * 计算费用
      * @param  [type] $ip          [description]
      * @param  [type] $price_rules [description]
-     * @param  [type] $begin_time  [description]
-     * @param  [type] $end_time    [description]
+     * @param  [type] $peak_info   返回峰值信息
+     * @param  [type] $duration    返回时长（小时数）
      * @return [type]              [description]
      */
     public static function calcFee($history, $price_rules, &$peak_info = array(), &$duration = 0) {

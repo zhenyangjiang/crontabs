@@ -24,7 +24,7 @@ return [
             'title' => '云主机自动续费成功',
             'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的云主机：{instance_name}于{old_expire}成功自动续费一个月。续费金额：￥{renew_money}, 有效期：{new_expire}。'
         ],
-        'sms' => '您的云主机：{instance_name} 于{old_expire}成功自动续费一个月。续费金额：￥%s, 有效期：{new_expire}。'
+        'sms' => '您的云主机：{instance_name} 于{old_expire}成功自动续费一个月。续费金额：￥{renew_money}, 有效期：{new_expire}。'
     ]
 ];
 ?>

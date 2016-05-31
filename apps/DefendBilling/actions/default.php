@@ -37,12 +37,12 @@ if ($attaching_ips) {
     // foreach ($attaching_ips as $ip) Response::note('#tab%s', $ip);
     Response::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
     $diff_ips = array_diff($attaching_ips, $all_ips);
-    $diff_ips = ['172.31.52.244'];
+    // $diff_ips = ['172.31.52.244'];
 
     if ($diff_ips) {
         Response::note(['#blank', '#blank', '逐一对以上IP作攻击自然结束：']);
 
-        // 一次性取和所有需要自然结束的IP的云盾
+        // 一次性取得所有需要自然结束的IP的云盾
         $mitigations = Mitigation::lists([
             'awhere' => ['ip' => $diff_ips],
             'askey' => 'ip'
@@ -99,7 +99,6 @@ if ($attaching_ips) {
     Response::note('#tab当前历史中没有被攻击中的IP');
 }
 
-
 //空数据包时，任务提前结束
 if (!$all_ips) {
     if (!$ori_pack_attack) {
@@ -120,9 +119,10 @@ Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击
 foreach ($pack_attack as $dc_id => $group) {
     Response::note('#blank');
 
-    //未归属数据中心的组内的IP按统一标准处理牵引
+    //未归属数据中心的组内的IP按后台设置处理牵引
     if ( (!$dc_id) || (!$datacenter = DataCenter::find($dc_id)) ) {
         $threshold = Settings::get('defendbilling_unalloc_ip_block_threshold');
+        $threshold or $threshold = 1000;
         $tmp = sprintf('以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold);
         $tmp = colorize($tmp, 'yellow');
         Response::note($tmp);

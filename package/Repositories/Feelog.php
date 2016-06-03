@@ -1,8 +1,8 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class Feelog extends Repository {
+class Feelog extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable  = 'ulan_fee_logs';
     protected static $DAO;

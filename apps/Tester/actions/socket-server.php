@@ -1,4 +1,6 @@
 <?php
+use Landers\Framework\Core\System;
+
 //获取tcp协议号码。
 $tcp = getprotobyname("tcp");
 
@@ -38,3 +40,4 @@ while (true) {
     socket_close($connection);
     printf("Closed the socket\n");
 }
+System::complete();

@@ -1,12 +1,10 @@
 <?php
-// namespace Ulan\Modules;
-
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 
-class DDoSHistory extends Repository {
+class DDoSHistory extends StaticRepository {
     protected static $connection = 'mitigation';
     protected static $datatable = 'ddoshistory';
     protected static $DAO;

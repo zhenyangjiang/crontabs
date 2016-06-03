@@ -2,12 +2,12 @@
 use Landers\Substrate\Utils\Datetime;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Config;
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 use Landers\Substrate\Classes\StatusCtrl;
 use ULan\SolusVM\Solusvm;
 
-class Instance extends Repository {
+class Instance extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable = 'ulan_instances';
     protected static $DAO;

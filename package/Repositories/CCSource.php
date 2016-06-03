@@ -1,7 +1,7 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class CCSource extends Repository {
+class CCSource extends StaticRepository {
     protected static $connection = 'collecter';
     protected static $datatable  = 'ccsource';
     protected static $DAO;

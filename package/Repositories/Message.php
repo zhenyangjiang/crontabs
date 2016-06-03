@@ -1,8 +1,8 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class Message extends Repository {
+class Message extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable = 'ulan_messages';
     protected static $DAO;

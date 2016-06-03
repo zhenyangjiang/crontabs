@@ -20,10 +20,10 @@
     },
     "autoload":{
         "classmap": [
-            "Repositories"
+            "package/Repositories"
         ],
         "psr-4": {
-            "Tasks\\" : "Tasks/"
+            "Tasks\\" : "package/Tasks/"
         },
         "files": [
             "vendor/landers/framework/src/Adapters/Helpers/LcliHelpers.php",

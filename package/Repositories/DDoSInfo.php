@@ -1,10 +1,10 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 use Landers\Substrate\Utils\Arr;
 
-class DDoSInfo extends Repository {
+class DDoSInfo extends StaticRepository {
     protected static $connection = 'mitigation';
     protected static $datatable = 'ddosinfo';
     protected static $DAO;

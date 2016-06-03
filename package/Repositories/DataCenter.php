@@ -1,9 +1,7 @@
 <?php
-// namespace Ulan\Modules;
+use Landers\Framework\Core\StaticRepository;
 
-use Landers\Framework\Core\Repository;
-
-class DataCenter extends Repository {
+class DataCenter extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable  = 'ulan_datacenter';
     protected static $DAO;

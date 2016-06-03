@@ -1,7 +1,7 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class Usage extends Repository {
+class Usage extends StaticRepository {
     protected static $connection = 'collecter';
     protected static $datatable  = 'usage';
     protected static $DAO;

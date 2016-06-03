@@ -1,7 +1,7 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class User extends Repository {
+class User extends StaticRepository {
     protected static $connection = 'oauth';
     protected static $datatable = 'ulan_users';
     protected static $DAO;

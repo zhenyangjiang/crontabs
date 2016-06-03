@@ -1,7 +1,7 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class Settings extends Repository {
+class Settings extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable  = 'ulan_settings';
     protected static $DAO;

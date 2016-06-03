@@ -1,8 +1,8 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 use Landers\Substrate\Utils\Arr;
 
-class Mitigation extends Repository {
+class Mitigation extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable = 'ulan_mitigations';
     protected static $DAO;

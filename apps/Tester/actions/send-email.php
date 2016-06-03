@@ -1,4 +1,5 @@
 <?php
+use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 include 'inc-headline.php';
 
@@ -15,3 +16,4 @@ $bool = Notify::send_email([
 ], $retdat);
 Response::bool($bool, '邮件发送任务入队%s');
 Response::note('#line');
+System::complete();

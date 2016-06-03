@@ -1,8 +1,8 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Config;
 
-class FirewallRule extends Repository {
+class FirewallRule extends StaticRepository {
     protected static $connection = 'main';
     protected static $datatable  = 'ulan_firewall_rules';
     protected static $DAO;

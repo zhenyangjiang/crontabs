@@ -1,13 +1,13 @@
 <?php
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Repository;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
 use Tasks\BlackholeAction;
 use Landers\Framework\Core\Queue;
+use Landers\Framework\Core\StaticRepository;
 
-Class BlackHole extends Repository {
+Class BlackHole extends StaticRepository {
     protected static $connection = 'mitigation';
     protected static $datatable  = 'blackhole';
     protected static $DAO;

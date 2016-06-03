@@ -1,4 +1,5 @@
 <?php
+use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Config;
 include 'inc-headline.php';
@@ -36,3 +37,4 @@ $bool = Notify::client('instance_expire_retain_manual', 1, [
 ]);
 Response::bool($bool, '短信发送任务入队%s');
 Response::note('#line');
+System::complete();

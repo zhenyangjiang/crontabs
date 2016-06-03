@@ -1,7 +1,7 @@
 <?php
-use Landers\Framework\Core\Repository;
+use Landers\Framework\Core\StaticRepository;
 
-class FwEmulator extends Repository {
+class FwEmulator extends StaticRepository {
     protected static $connection = 'collecter';
     protected static $datatable  = 'fw_emulator';
     protected static $DAO;

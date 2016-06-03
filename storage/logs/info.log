@@ -1,0 +1,48 @@
+[2016-06-03 16:50:41] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:51:23] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:51:50] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:52:37] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:53:38] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:53:48] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:53:56] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+
+[2016-06-03 16:54:08] INFO: 
+	MESSAGE : kkkkkkkk
+	CONTENT : {"aaaa":"111111111","bbb":"222222222222222"}
+	TRACE : {"file":null,"line":null,"class":"Landers\\Framework\\Modules\\Log","function":"save","ip":"","http_method":null,"server":null,"referrer":null,"params":["info","kkkkkkkk","{\"aaaa\":\"111111111\",\"bbb\":\"222222222222222\"}"]}
+	DATA : {"COOKIE":[],"SESSION":[],"GET":[],"POST":[],"HTTP_RAW_POST_DATA":null,"php:\/\/input":null}
+

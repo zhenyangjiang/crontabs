@@ -1,4 +1,5 @@
 <?php
+use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 include 'inc-headline.php';
 
@@ -11,3 +12,4 @@ $bool = Notify::client('test', 1, [
 ]);
 Response::bool($bool, '客户通知%s');
 Response::note('#line');
+System::complete();

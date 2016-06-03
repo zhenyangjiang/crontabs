@@ -1,6 +1,6 @@
 <?php
-use Landers\Framework\Core\Response;
 use Landers\Framework\Core\System;
+use Landers\Framework\Core\Response;
 include 'inc-headline.php';
 
 if (!$action = System::argv(3)) {

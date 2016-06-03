@@ -87,6 +87,7 @@ if ($attaching_ips) {
             }
 
             //写入攻击自然结束
+            Response::note('#tab写入自然攻击结束...');
             DDoSHistory::save_end_attack($ip, 'stop');
 
             //更新实例网络状态为正常

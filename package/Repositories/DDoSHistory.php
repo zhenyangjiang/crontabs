@@ -99,6 +99,16 @@ class DDoSHistory extends StaticRepository {
         //更新历史记录的结束相关信息
         $end_time = time();
         $peak = DDoSInfo::get_attack_peak($history['ip'], $history['begin_time'], $end_time);
+        if ( !$peak ) {
+            $messsage = sprintf('攻击结束时发现%s ~ %s找不到峰值', $history['begin_time'], $end_time);
+            reportDevException($message, [
+                'ip' => $ip,
+                'history' => $history,
+                'peak' => $peak
+            ]);
+            Response::warn($message);
+        }
+
         $peak or $peak = [];
         $data = [
             'end_time' => time(),

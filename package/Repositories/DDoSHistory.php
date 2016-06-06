@@ -208,6 +208,7 @@ class DDoSHistory extends StaticRepository {
 
         // 确定此时间段的时长，由秒转换成小时
         $duration_seconds = $end_time - $begin_time;
+        $duration_seconds = $duration_seconds < 60 ? 60 : $duration_seconds; //不足1分钟，按1分钟时长计算
         $duration = round($duration_seconds / 3600, 2);
 
         return round($hour_price * $duration);

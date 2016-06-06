@@ -85,68 +85,68 @@ Class BlackHole extends StaticRepository {
      */
     public static function unblock(){
         //找出未解除，且牵引过期的ids
-        $ids = self::lists([
+        $lists = self::lists([
             'awhere' => ["expire<=".time(), 'is_unblock' => 0],
-            'fields' => 'id',
-            'order'  => ''
+            'fields' => 'id, ip',
+            'order'  => 'id desc'
         ]);
-        if (!$ids) {
+
+        $lists = self::lists([
+            'fields' => 'id, ip',
+            'limit' => 5,
+            'order' => 'id desc'
+        ]);
+
+        if (!$lists) {
             Response::note('#tab未找到牵引过期的记录');
             return [];
         }
 
-        //根据ids更新“未解除”标志为“已解除”
-        $ids = Arr::flat($ids);
-
-        //由事务中更改其值
-        $ips = [];
+        $ips = []; $ids = [];
 
         //事务处理：解除牵引动作入队列、解除牵引更新“标志值为已解除”、实例状态更新为“正常”成功
-        $bool = self::transact(function() use ($ids, &$ips){
-            //解除牵引动作入队列
-            foreach ($ips as $ip) {
-                $ret = self::doUnblock($ip);
-                Response::bool(!!$ret, '#tab解除牵引请求入队%s');
-            }
+        $bool = self::transact(function() use (&$lists, &$ids, &$ips){
 
-            $awhere = ['id' => $ids];
-            Response::note('#tab解除牵引更新“标志值为已解除”...');
-            $bool = self::update(['is_unblock' => 1], $awhere);
+            //解除牵引动作入队列
+            Response::note('#tab解除牵引请求入队...');
+            foreach ($lists as $item) {
+                $queueid = self::doUnblock($item['ip']);
+                if ( !$queueid ) continue;
+
+                $ids[] = $item['id'];
+                $ips[] = $item['ip'];
+            }
+            if (!count($ids)) {
+                Response::bool($bool);
+                return false;
+            }
+            Response::echoSuccess(sprintf('%s 请求入队成功', count($ids)));
+            $ips = array_unique($ips);
+
+            //更新标志
+            Response::note('#tab解除牵引更新“标志值”为已解除...');
+            $bool = parent::update(['is_unblock' => 1], ['id' => $ids]);
             Response::bool($bool);
             if (!$bool) return false;
 
-            //根据ids找出要应的ips
-            $ips = self::lists(['awhere' => $awhere, 'fields' => 'ip']);
-            $ips = array_unique(Arr::flat($ips));
-
             //将牵引过期的ips所在的实例的net_state字段为正常(0)
-            Response::note('#tab%s 个IP状态更新为“正常”...', count($ips));
+            Response::note('#tab更新实例为“正常”...');
             $bool = Instance::update_net_status($ips, 0);
-            Response::bool( $bool );
-            if ( !$bool ) return $bool;
+            Response::bool($bool);
+            if (!$bool) return false;
 
             //最终返回true
             return true;
         });
 
-        if (!$bool) {
+        if (!$ips) {
             $msg = '事务处理失败：解除牵引更新“标志值为已解除”、实例状态更新为“正常”';
-            Response::error('#tab$msg');
+            Response::error("#tab$msg");
             Notify::developer($msg);
             System::halt();
+        } else {
+            return $ips;
         }
-
-        //给ips解除牵引
-        Response::note('#tab%s 个IP解除牵引任务入队...', count($ips));
-        $success_count = 0;
-        foreach ($ips as $ip) {
-            if (self::doUnblock($ip)) {
-                $success_count++;
-            }
-        }
-        Response::echoSuccess('%s 入队成功', $success_count);
-
-        return $ips;
     }
 }
 BlackHole::init();

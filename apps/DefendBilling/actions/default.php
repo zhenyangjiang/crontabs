@@ -18,7 +18,6 @@ Response::note('正在从防火墙上获取了攻击信息...');
 $pack_attack = Firewall::get_attack();
 if (ENV_debug == true) $pack_attack = Firewall::make_attacks($pack_attack);
 
-
 //对攻击数据进行分组
 $pack_attack = Firewall::groupBy($pack_attack);
 Response::bool($pack_attack);
@@ -115,7 +114,8 @@ Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击
 DDoSHistory::save_start_attack($all_ips);
 
 //攻击中的数据处理
-Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击的数组中心的被攻击IP操作 ------------']);
+Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击的数据中心的被攻击IP操作 ------------']);
+
 
 foreach ($pack_attack as $dc_id => $group) {
     Response::note('#blank');

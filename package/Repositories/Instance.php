@@ -268,16 +268,10 @@ class Instance extends StaticRepository {
         $instance_ip = $instance['mainipaddress'];
 
         $relates = [
-            // 'instance_ip' => [
-            //     'match' => $instance_ip,
-            //     'models' => [
-            //         FirewallRule::class,
-            //     ],
-            // ],
             'ip' => [
                 'match' => $instance_ip,
                 'models' => [
-                    // Mitigation::class,
+                    Mitigation::class,
                     BlackHole::class,
                     DDoSHistory::class,
                     BlockLog::class,
@@ -296,12 +290,12 @@ class Instance extends StaticRepository {
                     DDoSInfo::class,
                 ]
             ],
-            // 'id' => [
-            //     'match' => $instance_id,
-            //     'models' => [
-            //         self::class,
-            //     ]
-            // ]
+            'id' => [
+                'match' => $instance_id,
+                'models' => [
+                    self::class,
+                ]
+            ]
         ];
 
         $unions = [
@@ -343,7 +337,7 @@ class Instance extends StaticRepository {
                     }
                 }
 
-                // 由collectid 中 Mitigation::class 找出FirewallRule
+                // 由 collectid 中 Mitigation::class 找出FirewallRule
                 if ( $mitigation_ids = $collectid[Mitigation::class] ) {
                     Response::note('#tab正在向接口提交删除防火墙规则...');
                     $FwRuleModel = FirewallRule::class;
@@ -353,10 +347,18 @@ class Instance extends StaticRepository {
                     Response::bool($bool);
                 }
 
+                //删除 cc 防护规则
+                Response::note('#tab正在向接口提交删除CC防护...');
+                $apiurl = Config::get('hosts', 'api') . '/intranet/firewall/close-cc-defend';
+                $result = OAuthHttp::post($apiurl, ['ip' => '123.1.1.6']);
+                Response::echoBool($result['success'], $result['message']);
+                if ( !$result['success'] ) return false;
+
                 // 执行删除实例主机
                 Response::note('#tab销毁虚拟机...');
                 $ret = Virt::delete_vs($instance['vpsid']);
                 Response::bool($ret['done']);
+                if ( !$ret['done'] ) return false;
 
                 return true;
             });

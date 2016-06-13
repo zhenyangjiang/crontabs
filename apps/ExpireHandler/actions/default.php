@@ -83,7 +83,7 @@ foreach ($instances as $instance) {
         //过期天数是否超过系统允许
         if ( $retain_days < 0 ) {
             //执行删除操作
-            destroy_instance($instace, $some_days);
+            destroy_instance($instance, $some_days);
         } else {
             //挂起实例、强制降级云盾
             $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){

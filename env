@@ -2,7 +2,7 @@
 error_reporting(E_ALL & ~E_NOTICE);
 date_default_timezone_set('PRC');
 $_SERVER['DOCUMENT_ROOT'] = __DIR__;
-define('ENV_debug'              , true);
+define('ENV_debug'              , false);
 define('ENV_charset'            , 'utf-8');
 define('ENV_system_name'        , 'SEEDMSSP Crontabs');
 define('ENV_sleep_time'         , 5);

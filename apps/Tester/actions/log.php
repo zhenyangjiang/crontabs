@@ -9,10 +9,8 @@ $file = Log::info('kkkkkkkk', [
     'aaaa' => '111111111',
     'bbb' => '222222222222222'
 ]);
-if ($file) {
-    Response::echoSuccess($file . '追加成功');
-} else {
-    Response::bool(false);
-}
+
+Response::echoSuccess(!!$file, '追加%s');
+
 Response::note('#line');
 System::complete();

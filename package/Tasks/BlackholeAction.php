@@ -16,14 +16,21 @@ class BlackholeAction implements TaskInterface {
         self::$apiurl = Config::get('hosts', 'api') . '/blackhole/action';
     }
 
-    public function block(){
-        $ret = Http::post(self::$apiurl.'/block', $this->params);
-        return strtolower(trim($ret)) === 'true';
+    private function parse_result($ret) {
+        if ( !$ret ) return false;
+        $ret = json_decode($ret, true);
+        if ( !$ret ) return false;
+        return $ret['success'];
     }
 
-    public function unblock(){
+    private function block(){
+        $ret = Http::post(self::$apiurl.'/block', $this->params);
+        return $this->parse_result($ret);
+    }
+
+    private function unblock(){
         $ret = Http::post(self::$apiurl.'/unblock', $this->params);
-        return strtolower(trim($ret)) === 'true';
+        return $this->parse_result($ret);
     }
 
     public function execute(&$retmsg = NULL) {

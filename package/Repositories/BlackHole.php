@@ -16,11 +16,14 @@ Class BlackHole extends StaticRepository {
         return self::count(['ip' => $ip, 'is_unblock' => 0, 'expire > '.time()]);
     }
 
-    public static function doBlock($ip, $bps) {
-        //牵引动作入队列
-        $task = new BlackholeAction('block', [
+    public static function doBlock($ip, $bps, $is_force) {
+        $opts = [
             'ip' => $ip, 'bps' => $bps, 'from' => 'Crontab'
-        ]);
+        ];
+        if ($is_force) $opts['blockway'] = 'force';
+
+        //牵引动作入队列
+        $task = new BlackholeAction('block', $opts);
         return Queue::singleton('blackhole')->push($task);
     }
 
@@ -29,18 +32,18 @@ Class BlackHole extends StaticRepository {
      * @param  array        $ips        ip数组
      * @return array                    成功牵引的ip数组
      */
-    public static function block($ip, $bps){
+    public static function block($ip, $bps, $is_force){
         if (self::exists($ip)) {
             Response::note('#tab该IP尚处于牵引中，无需再次牵引', $ip);
             return;
         }
 
         Response::note('事务处理：牵引动作入队列、插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”');
-        return self::transact(function() use ($ip, $bps){
-            return Instance::transact(function() use ($ip, $bps){
+        return self::transact(function() use ($ip, $bps, $is_force){
+            return Instance::transact(function() use ($ip, $bps, $is_force){
                 //牵引动作入队列
                 Response::note('#tab牵引请求入队...');
-                $ret = self::doBlock($ip, $bps);
+                $ret = self::doBlock($ip, $bps, $is_force);
                 Response::bool(!!$ret);
                 if (!$ret) return false;
 
@@ -89,12 +92,6 @@ Class BlackHole extends StaticRepository {
             'awhere' => ["expire<=".time(), 'is_unblock' => 0],
             'fields' => 'id, ip',
             'order'  => 'id desc'
-        ]);
-
-        $lists = self::lists([
-            'fields' => 'id, ip',
-            'limit' => 5,
-            'order' => 'id desc'
         ]);
 
         if (!$lists) {

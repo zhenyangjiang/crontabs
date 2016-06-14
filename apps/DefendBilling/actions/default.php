@@ -16,7 +16,7 @@ Response::note('#line');
 //读取防火墙数据
 Response::note('正在从防火墙上获取了攻击信息...');
 $pack_attack = Firewall::get_attack();
-if (ENV_debug == true) $pack_attack = Firewall::make_attacks($pack_attack);
+// if (ENV_debug == true) $pack_attack = Firewall::make_attacks($pack_attack);
 
 //对攻击数据进行分组
 $pack_attack = Firewall::groupBy($pack_attack);
@@ -136,7 +136,7 @@ foreach ($pack_attack as $dc_id => $group) {
             Response::note('#line');
             if ($item['mbps'] >= $threshold) {
                 Response::note('IP：%s，当前攻击值：%sMbps / %spps，正在牵引...',  $dest_ip, $item['mbps'], $item['pps']);
-                BlackHole::block($dest_ip, $item['mbps']);
+                BlackHole::block($dest_ip, $item['mbps'], false);
             } else {
                 Response::note('IP：%s，当前攻击值：%sMbps / %spps，忽略之...',  $dest_ip, $item['mbps'], $item['pps']);
             }
@@ -178,13 +178,13 @@ foreach ($pack_attack as $dc_id => $group) {
 
                 if ( $group_threat ) {
                     Response::note('存在大网安全问题需立即牵引');
-                    if (BlackHole::block($dest_ip, $item['mbps'])) {
+                    if (BlackHole::block($dest_ip, $item['mbps'], true)) {
                         $total_mbps -= $item['mbps'];
                     }
                 } else {
                     if ($item['mbps'] >= 100 || $item['pps'] >= 100000) {
                         Response::note('当前攻击值：%sMbps / %spps，正在牵引...', $item['mbps'], $item['pps']);
-                        BlackHole::block($dest_ip, $item['mbps']);
+                        BlackHole::block($dest_ip, $item['mbps'], false);
                     } else {
                         Response::note('当前攻击值：%sMbps/%spps，继续清洗...', $item['mbps'], $item['pps']);
                     }
@@ -206,16 +206,16 @@ foreach ($pack_attack as $dc_id => $group) {
                         if ( $is_free && $group_threat ) {
                             //免费版在大网受到威胁时，立即牵引
                             Response::note('存在大网安全问题需立即牵引');
-                            if (BlackHole::block($dest_ip, $item['mbps'])) {
+                            if (BlackHole::block($dest_ip, $item['mbps'], true)) {
                                 $total_mbps -= $item['mbps'];
                             }
                         } else {
                             if ($item['mbps'] >= $max_mbps) {
                                 Response::note('当前攻击速率%sMbps到达所购买防护阈值，正在牵引...', $item['mbps']);
-                                BlackHole::block($dest_ip, $item['mbps']);
+                                BlackHole::block($dest_ip, $item['mbps'], false);
                             } else if ($item['pps'] >= $max_pps) {
                                 Response::note('当前攻击包数%spps到达所购买防护阈值，正在牵引...', $item['pps']);
-                                BlackHole::block($dest_ip, $item['mbps']);
+                                BlackHole::block($dest_ip, $item['mbps'], false);
                             } else {
                                 Response::note('当前攻击值：%sMbps/%spps 未达到购买防护阈值，继续清洗...', $item['mbps'], $item['pps']);
                             }
@@ -229,7 +229,7 @@ foreach ($pack_attack as $dc_id => $group) {
                         if ( $total_mbps >= $max_mbps ) {
                             //经过不断对 $total_mbps 做减算，还是超过了最高防护，继续牵引
                             Response::note('存在大网安全问题需立即牵引');
-                            if (BlackHole::block($dest_ip, $item['mbps'])) {
+                            if (BlackHole::block($dest_ip, $item['mbps'], true)) {
                                 $total_mbps -= $item['mbps'];
                             }
                         } else {
@@ -272,7 +272,7 @@ foreach ($pack_attack as $dc_id => $group) {
                                         //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
                                     } else {
                                         Response::note('需要对IP：%s作强制牵引处理', $dest_ip);
-                                        BlackHole::block($dest_ip, $item['mbps']);
+                                        BlackHole::block($dest_ip, $item['mbps'], false);
 
                                         //计费扣费
                                         DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
@@ -287,7 +287,7 @@ foreach ($pack_attack as $dc_id => $group) {
                                         Response::note('模拟总计费用：%s，已超出用户余额：%s，需立即处理：', $fee, $user['money']);
 
                                         //产生的总费用超过用户余额，强制牵引
-                                        BlackHole::block($dest_ip, $item['mbps']);
+                                        BlackHole::block($dest_ip, $item['mbps'], false);
 
                                         //计费扣费
                                         DDoSHistory::billing($uid, $DDoSHistory, $price_rules);

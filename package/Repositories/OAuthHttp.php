@@ -22,8 +22,33 @@ Class OAuthHttp {
         return $oauth;
     }
 
-    private static function parse($content) {
+    public static function parse($ret) {
+        if ( !$ret ) return false;
 
+        if ( is_numeric($ret)) {
+            return (float)$ret;
+        }
+
+        if (is_string($ret)) {
+            if ( $ret === 'true' ) return true;
+            $ret = json_decode($ret, true);
+            if ( !$ret ) return false;
+            return $ret['success'];
+        }
+
+        if (is_bool($ret)) {
+            return $ret;
+        }
+
+        if (is_array($ret)) {
+            return $ret['success'];
+        }
+
+        if (is_object($ret)) {
+            return $ret->success;
+        }
+
+        return $ret;
     }
 
     public static function post( $url, $data, Array $header = [] ) {

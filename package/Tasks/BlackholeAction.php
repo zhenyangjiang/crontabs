@@ -8,29 +8,26 @@ use Landers\Framework\Core\Config;
 class BlackholeAction implements TaskInterface {
     private $action;
     private $params;
-    private static $apiurl;
 
     function __construct($action, $params) {
         $this->action = $action;
         $this->params = $params;
-        self::$apiurl = Config::get('hosts', 'api') . '/blackhole/action';
     }
 
-    private function parse_result($ret) {
-        if ( !$ret ) return false;
-        $ret = json_decode($ret, true);
-        if ( !$ret ) return false;
-        return $ret['success'];
+    private static function apiurl($path) {
+        return Config::get('hosts', 'api') . '/intranet/blackhole'. $path;
     }
 
     private function block(){
-        $ret = Http::post(self::$apiurl.'/block', $this->params);
-        return $this->parse_result($ret);
+        $apiurl = self::apiurl('/block');
+        $ret = \OAuthHttp::post($apiurl, $this->params);
+        return \OAuthHttp::parse($ret);
     }
 
     private function unblock(){
-        $ret = Http::post(self::$apiurl.'/unblock', $this->params);
-        return $this->parse_result($ret);
+        $apiurl = self::apiurl('/unblock');
+        $ret = \OAuthHttp::post($apiurl, $this->params);
+        return \OAuthHttp::parse($ret);
     }
 
     public function execute(&$retmsg = NULL) {

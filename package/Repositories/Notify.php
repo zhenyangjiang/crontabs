@@ -10,6 +10,8 @@ use Landers\Substrate\Apps\Tasks\SendEmailNotify;
 use Landers\Substrate\Apps\Tasks\SendSmsNotify;
 use Landers\Substrate\Classes\Tpl;
 use Ender\YunPianSms\SMS\YunPianSms;
+use Landers\Substrate\Classes\EMail;
+use Landers\Substrate\Apps\ThirdApis\SendCloud;
 
 class Notify {
     private static $mail_suffix = '<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>';
@@ -40,7 +42,7 @@ class Notify {
             }
             $contents = implode('<hr/>', $contents);
             $title = System::app('name').($title ? '：'.$title : '');
-            $bool = self::send_email([
+            $bool = self::send_email('phpmailer', [
                 'tos'       => $developers,
                 'subject'   => $title,
                 'content'   => $contents.$mail_suffix
@@ -88,7 +90,7 @@ class Notify {
             if ($uinfo['email']) {
                 $email['content'] = Tpl::replace($email['content'], $data);
                 $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
-                $bool2 = self::send_email([
+                $bool2 = self::send_email('sendcloud', [
                     'to'        => $to,
                     'content'   => $email['content'],
                     'subject'   => $email['title']
@@ -144,77 +146,36 @@ class Notify {
      * @param  [type] $opts to, content, subject, is_queue
      * @return [type]       [description]
      */
-    public static function send_email(array $opts = array(), &$retdat = NULL) {
-        $to = Arr::get($opts, 'to');
-        $tos = Arr::get($opts, 'tos', []);
-        if ($to) $tos[] = $to;
-        if (!$tos) {
-            $retdat = '缺少收件人';
-            return false;
-        }
-        foreach ($tos as &$to) {
-            if (is_string($to)) $to = array('email' => $to, 'name' => '');
-        }; unset($to);
-
-        $opts['subject'] or $opts['subject'] = '【无标题邮件】';
-        $opts['content'] or $opts['content'] = '【无内容邮件】';
-
+    public static function send_email($driver = 'phpemail', array $opts = array(), &$retdat = NULL) {
         //读取配置
         $configs = Config::get('notify');
-        $config = $configs['email'];
+        $config = $configs['email'][$driver];
 
-        //实例化对象
-        $o = new \PHPMailer();
-        $o->IsSMTP();                           // 启用SMTP
-        $o->Host        = $config['host'];    // SMTP服务器
-        $o->SMTPAuth    = true;                 // 开启SMTP认证
-        $o->Username    = $config['username'];     // SMTP用户名
-        $o->Password    = $config['password'];     // SMTP密码
-
-        $o->From        = $config['from_email'];    //发件人地址
-        $o->FromName    = $config['from_name'];     //发件人
-        $o->WordWrap    = 50;                    //设置每行字符长度
-        $o->IsHTML(true);                       // 是否HTML格式邮件
-        $o->SetLanguage('ch');
-
-
-        //发送邮件
-        foreach ($tos as $to) {
-            $o->AddAddress($to['email'], $to['name']);     //添加收件人
+        //创建任务
+        switch ($driver) {
+            case 'phpmailer' :
+                $mailer = new EMail($config, $opts);
+                break;
+            case 'sendcloud' :
+                $mailer = new sendcloud($config, $opts);
+                break;
         }
-        $o->Subject = $opts['subject'].' - '.ENV_system_name;        //邮件主题
-        $o->Body    = str_replace(PHP_EOL, '<br/>', $opts['content']);        //邮件内容
 
-        $opts['is_queue'] = Arr::get($opts, 'is_queue', true);
-        if (!$opts['is_queue']) {
-            if($o->Send()) {
-                Response::note('实时邮件通知成功。');
-                return true;
-            } else {
-                $retdat = ob_get_contents();
-                $retdat or $retdat = $o->ErrorInfo.'！';
-                Response::error('实时邮件通知失败：'.$retdat);
-                return false;
-            }
-        } else {
-            if ($retdat = $o->ErrorInfo) {
-                return false;
-            } else {
-                try {
-                    $retdat = Queue::singleton('notify')->push(new SendEmailNotify($o));
-                    return true;
-                } catch (\Exception $e) {
-                    $uniq_key = md5(serialize($opts));
-                    $retry = self::retry($uniq_key);
-                    $reties = $config['retries'];
-                    if ( $retry <= $reties) {
-                        Response::warn('入队失败，第%s次重试中...', $retry);
-                        sleep(1);
-                        self::send_email($opts);
-                    }
-                }
+        $job = new SendEmailNotify($mailer);
+
+        //入队
+        try {
+            $retdat = Queue::singleton('notify')->push($job);
+            return true;
+        } catch (\Exception $e) {
+            $uniq_key = md5(serialize($opts));
+            $retry = self::retry($uniq_key);
+            $reties = $config['retries'];
+            if ( $retry <= $reties) {
+                Response::warn('入队失败，第%s次重试中...', $retry);
+                sleep(1);
+                self::send_email($driver, $optsm, $retdat);
             }
         }
     }
-
 }

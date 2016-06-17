@@ -117,7 +117,7 @@ Class BlackHole extends StaticRepository {
                 Response::bool($bool);
                 return false;
             }
-            Response::echoSuccess(sprintf('%s 请求入队成功', count($ids)));
+            Response::echoSuccess('%s 请求入队成功', count($ids));
             $ips = array_unique($ips);
 
             //更新标志

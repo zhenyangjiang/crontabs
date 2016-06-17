@@ -9,8 +9,7 @@ $file = Log::info('kkkkkkkk', [
     'aaaa' => '111111111',
     'bbb' => '222222222222222'
 ]);
-
-Response::echoSuccess(!!$file, '追加%s');
+Response::bool( true, '测试%s');
 
 Response::note('#line');
 System::complete();

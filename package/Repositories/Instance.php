@@ -350,7 +350,7 @@ class Instance extends StaticRepository {
                 //删除 cc 防护规则
                 Response::note('#tab正在向接口提交删除CC防护...');
                 $apiurl = Config::get('hosts', 'api') . '/intranet/firewall/close-cc-defend';
-                $result = OAuthHttp::post($apiurl, ['ip' => '123.1.1.6']);
+                $result = OAuthHttp::post($apiurl, ['ip' => $instance_ip]);
                 Response::echoBool($result['success'], $result['message']);
                 if ( !$result['success'] ) return false;
 

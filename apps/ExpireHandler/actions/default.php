@@ -20,12 +20,12 @@ foreach ($instances as $instance) {
     Response::note('#line');
     $instance_ip = $instance['mainipaddress'];
 
-    Response::instance_detail($instance);
+    response_instance_detail($instance);
 
     //确定实例所属用户
     $uid = $instance['uid'];
     $user = User::get($uid);
-    Response::user_detail($user);
+    response_user_detail($user);
 
     //过期天数
     $expire_days = -Instance::expireDays($instance);

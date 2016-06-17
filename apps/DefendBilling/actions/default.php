@@ -71,7 +71,7 @@ if ($attaching_ips) {
                     //由IP确定用户
                     $uid = $mitigation['uid'];
                     $user = User::find($uid);
-                    Response::user_detail($user);
+                    response_user_detail($user);
 
                     //由IP确定攻击历史记录
                     $DDoSHistory = DDoSHistory::find_ip_attacking($ip);
@@ -237,7 +237,7 @@ foreach ($pack_attack as $dc_id => $group) {
                             //由实例确定用户余额
                             $uid = $mitigation['uid'];
                             $user = User::find($uid);
-                            Response::user_detail($user);
+                            response_user_detail($user);
 
                             //获取当前ip所在的数据中心的价格规则(元/小时)的数组
                             $price_rules = DataCenter::price_rules($datacenter, 'hour');

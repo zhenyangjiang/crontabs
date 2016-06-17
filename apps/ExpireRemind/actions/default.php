@@ -16,13 +16,13 @@ foreach ($instances as $instance) {
     Response::note('#line');
     $instance_ip = $instance['mainipaddress'];
     $is_auto_renew = $instance['is_auto_renew'];
-    Response::instance_detail($instance);
+    response_instance_detail($instance);
 
     //确定实例所属用户
     $uid = $instance['uid'];
     $user = User::get($uid);
     $user_moeny = $user['money'];
-    Response::user_detail($user);
+    response_user_detail($user);
 
     //检查是否已经通知过了
     if (Instance::check_is_notified($instance)) continue;

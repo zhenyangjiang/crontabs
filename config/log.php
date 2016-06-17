@@ -1,5 +1,7 @@
 <?php
 return [
     'path' => dirname(__DIR__) . '/storage/logs/',
+
+    'hook' => 'reportDevException'
 ];
 ?>

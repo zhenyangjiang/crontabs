@@ -47,8 +47,10 @@ class DDoSHistory extends StaticRepository {
             foreach ($pack as $item) $data[] = ['ip' => $item['ip'], 'begin_time' => time()];
 
             //事务处理：写入攻击开始、更新实列表为被攻击中
-            $bool = self::transact(function() use ($data) {
-                if (!$bool = self::import($data)) {
+            $transacter = '写入攻击开始、更新实列表状态';
+            Response::transactBegin($transacter);
+            $result = self::transact(function() use ($data) {
+                if (!self::import($data)) {
                     Response::note('#tab写入“攻击开始”失败');
                     return false;
                 }
@@ -62,16 +64,16 @@ class DDoSHistory extends StaticRepository {
                 return true;
             });
 
-            if ($bool) {
+            if ($result) {
                 $ret_ips = Arr::clone_inner($pack, 'ip');
                 foreach ($ret_ips as $ip) Response::note('#tab%s ', $ip);
-                Response::note('#tab共计%sIP正在开始被攻击，开始时间已存入攻击历史', colorize(count($ret_ips), 'yellow', 1));
             } else {
-                $msg = '事务处理失败: “写入攻击开始、更新实列表状态” ';
-                Response::error('#tab'.$msg);
-                Notify::developer($msg);
+                Notify::developer(sprintf('事务处理失败：%s', $transacter));
                 System::halt();
             }
+
+            Response::transactEnd($result);
+
         } else {
             Response::note('#tab所有IP实例均%s或%s，无需记录攻击开始', colorize('攻击中', 'yellow'), colorize('牵引中', 'yellow'));
         }
@@ -106,7 +108,7 @@ class DDoSHistory extends StaticRepository {
                 'history' => $history,
                 'peak' => $peak
             ]);
-            Response::warn($message);
+            Response::warn("#tab$message");
         }
 
         $peak or $peak = [];
@@ -117,9 +119,7 @@ class DDoSHistory extends StaticRepository {
             'on_event' => $on_event,
         ];
         $awhere = ['id' => $history['id']];
-        Response::note('#tab更新“攻击结束的相关信息”...');
         $bool = self::update($data, $awhere);
-        Response::bool($bool);
         if (!$bool) {
             Notify::developer('更新攻击结束信息失败');
             return false;
@@ -236,7 +236,7 @@ class DDoSHistory extends StaticRepository {
             'uid' => $uid,
             'amount' => $fee,
             'description' => sprintf(
-                'IP：%s 按需防护费用, 持续%s小时, 峰值：%sMbps/%spps',
+                '支付按需防护费用：IP：%s, 持续%s小时, 峰值：%sMbps/%spps',
                 $ip, $duration, $peak_info['mbps']['value'], $peak_info['pps']['value']
             ),
         ];

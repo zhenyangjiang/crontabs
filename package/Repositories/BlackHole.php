@@ -33,18 +33,19 @@ Class BlackHole extends StaticRepository {
      * @return array                    成功牵引的ip数组
      */
     public static function block($ip, $bps, $is_force){
-        if (self::exists($ip)) {
+        if (!$is_force && self::exists($ip)) {
             Response::note('#tab该IP尚处于牵引中，无需再次牵引', $ip);
             return;
         }
 
-        Response::note('事务处理：牵引动作入队列、插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”');
-        return self::transact(function() use ($ip, $bps, $is_force){
+        $transacter = '牵引动作入队列、插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”';
+        Response::note('事务处理：%s', $transacter);
+        $result = self::transact(function() use ($ip, $bps, $is_force){
             return Instance::transact(function() use ($ip, $bps, $is_force){
                 //牵引动作入队列
                 Response::note('#tab牵引请求入队...');
                 $ret = self::doBlock($ip, $bps, $is_force);
-                Response::bool(!!$ret);
+                Response::echoBool(!!$ret);
                 if (!$ret) return false;
 
                 //确定牵引时长
@@ -55,23 +56,26 @@ Class BlackHole extends StaticRepository {
                 $hours = $block_duration;
                 $data = ['ip' => $ip, 'expire' => strtotime("+$hours hours"), 'bps' => $bps];
                 $bool = self::insert($data);
-                Response::bool($bool);
+                Response::echoBool($bool);
                 if (!$bool) return false;
 
                 //更新ip的攻击历史为结束攻击
                 Response::note('#tab写入由牵引所致的攻击结束...');
                 $bool = DDoSHistory::save_end_attack($ip, 'block');
+                Response::echoBool($bool);
                 if (!$bool) return false;
 
                 //更新实例的网络状态为2（牵引中）
                 Response::note('#tab更新实例的网络状态为“牵引中”...');
                 $bool = Instance::update_net_status($ip, 2, true);
-                Response::bool($bool);
+                Response::echoBool($bool);
                 if (!$bool) return false;
 
                 return true;
             });
         });
+
+        return Response::transactEnd($result);
     }
 
     public static function doUnblock($ip) {
@@ -102,7 +106,8 @@ Class BlackHole extends StaticRepository {
         $ips = []; $ids = [];
 
         //事务处理：解除牵引动作入队列、解除牵引更新“标志值为已解除”、实例状态更新为“正常”成功
-        $bool = self::transact(function() use (&$lists, &$ids, &$ips){
+        $transacter = '解除牵引更新“标志值为已解除”、实例状态更新为“正常';
+        $result = self::transact(function() use (&$lists, &$ids, &$ips){
 
             //解除牵引动作入队列
             Response::note('#tab解除牵引请求入队...');
@@ -114,7 +119,7 @@ Class BlackHole extends StaticRepository {
                 $ips[] = $item['ip'];
             }
             if (!count($ids)) {
-                Response::bool($bool);
+                Response::echoBool($bool);
                 return false;
             }
             Response::echoSuccess('%s 请求入队成功', count($ids));
@@ -123,23 +128,23 @@ Class BlackHole extends StaticRepository {
             //更新标志
             Response::note('#tab解除牵引更新“标志值”为已解除...');
             $bool = parent::update(['is_unblock' => 1], ['id' => $ids]);
-            Response::bool($bool);
+            Response::echoBool($bool);
             if (!$bool) return false;
 
             //将牵引过期的ips所在的实例的net_state字段为正常(0)
             Response::note('#tab更新实例为“正常”...');
             $bool = Instance::update_net_status($ips, 0);
-            Response::bool($bool);
+            Response::echoBool($bool);
             if (!$bool) return false;
 
             //最终返回true
             return true;
         });
 
+        Response::transactEnd($result);
+
         if (!$ips) {
-            $msg = '事务处理失败：解除牵引更新“标志值为已解除”、实例状态更新为“正常”';
-            Response::error("#tab$msg");
-            Notify::developer($msg);
+            Notify::developer(sprintf('事务处理失败：%s', $transacter));
             System::halt();
         } else {
             return $ips;

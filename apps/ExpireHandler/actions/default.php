@@ -172,7 +172,7 @@ foreach ($instances as $instance) {
         }
 
         if ( $bool_transact ) {
-            Response::note('#tab事务成功完成');
+            Response::transactEnd(true);
         } else {
             if (!is_null($bool_transact )) {
                 if ($feelog_data) {

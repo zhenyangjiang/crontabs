@@ -20,12 +20,12 @@ $pack_attack = Firewall::get_attack();
 
 //对攻击数据进行分组
 $pack_attack = Firewall::groupBy($pack_attack);
-Response::bool($pack_attack);
+if ($pack_attack) Response::echoBool($pack_attack);
 
 //保存攻击数据
 Response::note(['#line', '保存攻击数到DDoSInfo...']);
 $all_ips = DDoSInfo::save_attack($pack_attack);
-Response::echoSuccess('成功导入%s条数据', count($all_ips));
+if ($all_ips) Response::echoSuccess('成功导入%s条数据', count($all_ips));
 Response::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
@@ -86,7 +86,7 @@ if ($attaching_ips) {
             }
 
             //写入攻击自然结束
-            Response::note('#tab写入自然攻击结束...');
+            Response::note('#tab写入自然攻击结束...：');
             DDoSHistory::save_end_attack($ip, 'stop');
 
             //更新实例网络状态为正常

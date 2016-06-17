@@ -309,7 +309,7 @@ class Instance extends StaticRepository {
         $results = [];
 
         //事务嵌套处理
-        return Instance::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
+        $result = Instance::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
             return DDoSInfo::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
 
                 // 执行删除关联模型数据
@@ -363,6 +363,8 @@ class Instance extends StaticRepository {
                 return true;
             });
         });
+
+        return Response::transactEnd($result);
     }
 }
 Instance::init();

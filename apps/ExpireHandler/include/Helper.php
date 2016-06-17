@@ -3,7 +3,7 @@ use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Response;
 
 function renew_transact($uid, $instance, $instance_update, $feelog_data, $callbacks = array()) {
-    return User::transact(function() use ($uid, $instance, $instance_update, $feelog_data, $callbacks) {
+    $result = User::transact(function() use ($uid, $instance, $instance_update, $feelog_data, $callbacks) {
         //用户扣费
         Response::note('#tab实例扣费...');
         $balance_instance = $feelog_data['balance'];
@@ -52,19 +52,19 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
             return true;
         });
     });
+
+    return Response::transactEnd($result);
 }
 
 
 function suspend_transact($instance, $user, $some_days, $callback) {
     Response::note('#tab已过期第%s天，尚处于系统允许值%s天内，相关数据将继续保留%s天', $some_days['expire'], $some_days['allow'], $some_days['retain']);
 
-    $bool_transact = NULL;
-
     //执行挂起实例
     $status_text = Instance::status($instance);
     if ($instance['status'] !== 'SUSPENDED') {
         Response::note('#tab当前为%s状态，需执行云盾降级和挂起操作', colorize($status_text, 'yellow'));
-        $bool_transact = Mitigation::transact( function() use ( $instance, $user ) {
+        $result = Mitigation::transact( function() use ( $instance, $user ) {
             //降级云盾
             Response::note('#tab强制降级云盾为免费方案...');
             $bool = Mitigation::down_grade($instance);
@@ -97,10 +97,12 @@ function suspend_transact($instance, $user, $some_days, $callback) {
 
             return true;
         });
+
+        return Response::transactEnd($result);
     } else {
         Response::note('#tab当前为%s状态，无需执行挂起操作', colorize($status_text, 'yellow'));
+        return NULL;
     }
-    return $bool_transact;
 }
 
 function destroy_instance($instance, $some_days) {

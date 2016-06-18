@@ -86,7 +86,7 @@ class DDoSHistory extends StaticRepository {
      * @param  array|string   $ips      ip
      * @return bool                     数据更新成功否
      */
-    public static function save_end_attack($ip, $on_event) {
+    public static function save_end_attack($ip, $on_event, &$message = NULL) {
         $net_state_updtime = Instance::find_ip($ip, 'net_state_updtime');
 
         $history = self::find([
@@ -94,7 +94,7 @@ class DDoSHistory extends StaticRepository {
             'order'  => 'id desc',
         ]);
         if (!$history) {
-            Response::note('#tabIP：%s 原本已经攻击结束', $ip);
+            $message = sprintf('IP：%s 原本已经攻击结束', $ip);
             return true;
         }
 
@@ -103,28 +103,27 @@ class DDoSHistory extends StaticRepository {
         $peak = DDoSInfo::get_attack_peak($history['ip'], $history['begin_time'], $end_time);
         if ( !$peak ) {
             $messsage = sprintf('攻击结束时发现%s ~ %s找不到峰值', $history['begin_time'], $end_time);
-            reportDevException($message, [
+            Notify::developer($message, [
                 'ip' => $ip,
                 'history' => $history,
                 'peak' => $peak
             ]);
-            Response::warn("#tab$message");
-        }
-
-        $peak or $peak = [];
-        $data = [
-            'end_time' => time(),
-            'bps_peak' => Arr::get($peak, 'mbps.value'),
-            'pps_peak' => Arr::get($peak, 'pps.value'),
-            'on_event' => $on_event,
-        ];
-        $awhere = ['id' => $history['id']];
-        $bool = self::update($data, $awhere);
-        if (!$bool) {
-            Notify::developer('更新攻击结束信息失败');
             return false;
         } else {
-            return true;
+            $data = [
+                'end_time' => time(),
+                'bps_peak' => Arr::get($peak, 'mbps.value'),
+                'pps_peak' => Arr::get($peak, 'pps.value'),
+                'on_event' => $on_event,
+            ];
+            $awhere = ['id' => $history['id']];
+            $bool = self::update($data, $awhere);
+            if (!$bool) {
+                Notify::developer('更新攻击结束信息失败');
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
@@ -150,12 +149,12 @@ class DDoSHistory extends StaticRepository {
      * @return float
      */
     private static function hour_price($ip, $price_rules, $begin_time, $end_time, &$peak_info = array()) {
-        Response::note('#tab确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
+        Response::note('确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
 
         //确定[begin_time]和[end_time]之间的峰值
         $peak_info = DDoSInfo::get_attack_peak($ip, $begin_time, $end_time);
         if ( !$peak_info ) {
-            $echo = Response::warn('未找到峰值或峰值为0');
+            $echo = Response::warn('#tab未找到峰值或峰值为0');
             reportDevException($echo, compact('ip', 'price_rules', 'begin_time', 'end_time'));
             return 0;
         }
@@ -219,17 +218,18 @@ class DDoSHistory extends StaticRepository {
      * @return [type] [description]
      */
     public static function billing($uid, $history, $price_rules) {
+
         $ip = $history['ip'];
 
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
 
         if (!$fee) {
-            Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
+            Response::note('#tab未产生费用，无需扣费');
             return true;
         }
 
         //按需防护扣费日志数据包
-        $feelog_mitigation_data = [
+        $feelog_data = [
             'typekey' => 'pay_mitigation_hour',
             'balance' => User::get_money($uid) - $fee,
             'instance_ip' => $ip,
@@ -241,11 +241,26 @@ class DDoSHistory extends StaticRepository {
             ),
         ];
 
-        //写入总计费用日志
-        $bool = !!Feelog::create($feelog_mitigation_data);
+        Response::transactBegin('用户扣费、写入扣费日志');
         Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
-        Response::bool($bool, '#tab云盾合计扣费日志写入%s');
-        return $bool;
+        $result = User::transact(function() use ($uid, $feelog_data, $duration) {
+            Response::note('#tab向用户扣除费用：%s...', $feelog_data['amount']);
+            $bool = User::set_money($uid, $feelog_data['balance']);
+            Response::echoBool($bool);
+            if (!$bool) return false;
+
+            return Feelog::transact(function() use ($uid, $feelog_data, $duration) {
+                // 写入总计费用日志
+                Response::note('#tab写入云盾费用日志...');
+                $bool = !!Feelog::create($feelog_data);
+                Response::echoBool($bool);
+
+                return $bool;
+            });
+        });
+
+        return Response::transactEnd($result);
+
     }
 }
 DDoSHistory::init();

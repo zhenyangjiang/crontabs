@@ -13,7 +13,7 @@ Class Firewall {
     public static function get_attack() {
         $fwurl = Config::get('fwurl');
 
-        // $content = '{"123.1.1.6":{"src":["74.156.179.21","175.211.37.169","59.87.157.192"],"types":["SYN","ACK"],"syn":{"bps":[5541.41,0],"pps":[5811169,0]},"ack":{"bps":[4122.53,0.56],"pps":[4269565,839]},"udp":{"bps":[0,0],"pps":[0,0]},"icmp":{"bps":[0,0],"pps":[0,0]},"frag":{"bps":[0,0],"pps":[0,0]},"other":{"bps":[0,0],"pps":[0,0]},"dns":{"bps":[0,0],"pps":[0,0]},"bps":[9663.94,0.56],"pps":[10080735,839],"links":[34122,0],"tcplinks":[34122,0],"udplinks":[0,0],"time":1464422713}}';
+        $content = '{"123.1.1.14":{"src":["74.156.179.21","175.211.37.169","59.87.157.192"],"types":["SYN","ACK"],"syn":{"bps":[5541.41,0],"pps":[5811169,0]},"ack":{"bps":[4122.53,0.56],"pps":[4269565,839]},"udp":{"bps":[0,0],"pps":[0,0]},"icmp":{"bps":[0,0],"pps":[0,0]},"frag":{"bps":[0,0],"pps":[0,0]},"other":{"bps":[0,0],"pps":[0,0]},"dns":{"bps":[0,0],"pps":[0,0]},"bps":[90663.94,0.56],"pps":[10080735,839],"links":[34122,0],"tcplinks":[34122,0],"udplinks":[0,0],"time":1464422713}}';
 
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('防火墙数据读取失败！');
@@ -34,14 +34,12 @@ Class Firewall {
 
         $ret = [];
         foreach ($data as $dest_ip => &$item) {
-
-
-            // if ($item['bps'][0] <= 1 ||
-            //     $item['pps'][0] <= 1
-            // ) {
-            //     unset($data[$dest_ip]);
-            //     continue;
-            // }
+            if ($item['bps'][0] <= 1 ||
+                $item['pps'][0] <= 1
+            ) {
+                unset($data[$dest_ip]);
+                continue;
+            }
             $item = [
                 'dest'      => $dest_ip,
                 'bps0'      => $item['bps'][0],

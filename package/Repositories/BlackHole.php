@@ -39,7 +39,7 @@ Class BlackHole extends StaticRepository {
         }
 
         $transacter = '牵引动作入队列、插入牵引记录、写入攻击结束、更新实例网络状态为“牵引中”';
-        Response::note('事务处理：%s', $transacter);
+        Response::transactBegin($transacter);
         $result = self::transact(function() use ($ip, $bps, $is_force){
             return Instance::transact(function() use ($ip, $bps, $is_force){
                 //牵引动作入队列

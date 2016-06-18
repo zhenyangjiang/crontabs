@@ -191,8 +191,8 @@ foreach ($pack_attack as $dc_id => $group) {
                 }
             } else {
                 //当前IP的云盾配额
-                $max_mbps = $mitigation['ability_mbps'];
-                $max_pps = $mitigation['ability_pps'];
+                $ability_mbps = $mitigation['ability_mbps'];
+                $ability_pps = $mitigation['ability_pps'];
 
                 switch ($mitigation['billing']) {
                     case 'month' :
@@ -200,8 +200,7 @@ foreach ($pack_attack as $dc_id => $group) {
                         $is_free = (float)$mitigation['price'] == 0;
 
                         //按月计费：仅防护，由ExpireHandler进行到期扣取次月
-                        Response::note('IP：%s，计费方案：按月计费', $dest_ip);
-                        Response::note('当前购买防护阈值：%sMbps / %spps', $max_mbps, $max_pps);
+                        Response::note('IP：%s，计费方案：按月计费, 防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
 
                         if ( $is_free && $group_threat ) {
                             //免费版在大网受到威胁时，立即牵引
@@ -210,10 +209,10 @@ foreach ($pack_attack as $dc_id => $group) {
                                 $total_mbps -= $item['mbps'];
                             }
                         } else {
-                            if ($item['mbps'] >= $max_mbps) {
+                            if ($item['mbps'] >= $ability_mbps) {
                                 Response::note('当前攻击速率%sMbps到达所购买防护阈值，正在牵引...', $item['mbps']);
                                 BlackHole::block($dest_ip, $item['mbps'], false);
-                            } else if ($item['pps'] >= $max_pps) {
+                            } else if ($item['pps'] >= $ability_pps) {
                                 Response::note('当前攻击包数%spps到达所购买防护阈值，正在牵引...', $item['pps']);
                                 BlackHole::block($dest_ip, $item['mbps'], false);
                             } else {
@@ -232,6 +231,9 @@ foreach ($pack_attack as $dc_id => $group) {
                             if (BlackHole::block($dest_ip, $item['mbps'], true)) {
                                 $total_mbps -= $item['mbps'];
                             }
+
+                            //计费扣费
+                            DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                         } else {
 
                             //由实例确定用户余额
@@ -252,17 +254,15 @@ foreach ($pack_attack as $dc_id => $group) {
                                 $DDoSHistory_id = $DDoSHistory['id'];
                                 Response::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
 
-                                //当前攻击是否超过用户设定的最高防护能力
-                                if ($item['mbps'] > $max_mbps || $item['pps'] > $max_pps) {
+                                //当前攻击是否超过用户购买的最高防护能力
+                                if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
                                     //超过?是
-                                    if ($item['mbps'] > $max_mbps) {
+                                    if ($item['mbps'] > $ability_mbps) {
                                         Response::note('当前攻击速率：%sMbps', $item['mbps']);
-                                        //Response::note('到达数据中心%s最高防护值：%sMbps', $datacenter['name'], $max_mbps);
-                                        Response::note('到达用户最高承受支付能力防护值：%sMbps', $max_mbps);
+                                        Response::note('到达用户最高承受支付能力防护值：%sMbps', $ability_mbps);
                                     } else {
                                         Response::note('当前攻击包率：%spps', $item['pps']);
-                                        //Response::note('到达数据中心%s最高防护值：%spps', $datacenter['name'], $max_pps);
-                                        Response::note('到达用户最高承受支付能力防护值：%spps', $max_pps);
+                                        Response::note('到达用户最高承受支付能力防护值：%spps', $ability_pps);
                                     }
 
                                     //强制牵引
@@ -292,7 +292,7 @@ foreach ($pack_attack as $dc_id => $group) {
                                         //计费扣费
                                         DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                                     } else {
-                                        Response::note('当前余额足够支付%s，继续清洗中...', $fee);
+                                        Response::note('当前余额足够支付：￥%s，继续清洗中...', $fee);
                                     }
                                 }
                             }

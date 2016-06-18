@@ -88,12 +88,12 @@ class DDoSInfo extends StaticRepository {
         $info_pps = self::find([
             'unions' => [$begin, $end],
             'awhere' => $awhere,
-            'order'  => 'pps1 desc'
+            'order'  => 'pps0 desc'
         ]);
         if (!$info_pps) return NULL;
         $info_pps = [
             'time'  => date('Y-m-d H:i:s', $info_pps['created_at']),
-            'value' => (int)$info_pps['pps1']
+            'value' => (int)$info_pps['pps0']
         ];
 
         return [

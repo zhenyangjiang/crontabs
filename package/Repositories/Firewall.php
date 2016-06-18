@@ -36,12 +36,12 @@ Class Firewall {
         foreach ($data as $dest_ip => &$item) {
 
 
-            if ($item['bps'][0] <= 1 ||
-                $item['pps'][0] <= 1
-            ) {
-                unset($data[$dest_ip]);
-                continue;
-            }
+            // if ($item['bps'][0] <= 1 ||
+            //     $item['pps'][0] <= 1
+            // ) {
+            //     unset($data[$dest_ip]);
+            //     continue;
+            // }
             $item = [
                 'dest'      => $dest_ip,
                 'bps0'      => $item['bps'][0],
@@ -52,7 +52,7 @@ Class Firewall {
             // $ret[$dc_id][$dest_ip] = $item;
         }
 
-        unset($data['123.1.1.2']);
+        // unset($data['123.1.1.2']);
 
         return $data;
     }

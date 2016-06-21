@@ -63,7 +63,7 @@ class Notify {
         return $bool;
     }
 
-    public static function client($content_key, $uid, array $data) {
+    public static function client($content_key, $uid, array $data, array $ways = []) {
         if (self::isDoneToday($content_key, $uid)) {
             // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
             // return false;
@@ -76,17 +76,23 @@ class Notify {
         $email = $notify_contents['email'];
         $sms = $notify_contents['sms'];
 
+        $ways = array_merge([
+            'insite' => true,
+            'email' => false,
+            'sms' => false,
+        ], $ways);
+
         // 发送站内消息
         $bool1 = true;
-        if ($message && $message['content']) {
+        if ($ways['insite'] && $message && $message['content']) {
             $message['content'] = Tpl::replace($message['content'], $data);
             $bool1 = Message::sendTo($uid, $message['title'], $message['content']);
-            if (!$bool1) Response::warn('#tab站内消息通知失败');
+            // Response::bool($bool1, '#tab站内消息通知%s！');
         }
 
         // 发送邮件
         $bool2 = true;
-        if ($email && $email['content']) {
+        if ($ways['email'] && $email && $email['content']) {
             if ($uinfo['email']) {
                 $email['content'] = Tpl::replace($email['content'], $data);
                 $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
@@ -95,19 +101,18 @@ class Notify {
                     'content'   => $email['content'],
                     'subject'   => $email['title']
                 ]);
-                if (!$bool2) Response::warn('#tab客户邮件通知失败！');
+                // Response::bool($bool2, '#tab客户邮件通知%s！');
             }
         }
 
         //发送短信
         $bool3 = true;
-        if ($sms) {
+        if ($ways['sms'] && $sms) {
             $sms = Tpl::replace($sms, $data);
             $mobile = $uinfo['mobile'];
             $bool3 = Notify::send_sms($mobile, $sms);
-            if (!$bool3) Response::warn('#tab客户短信通知失败！');
+            // Response::bool($bool3, '#tab客户短信通知%s！');
         }
-
 
         return $bool1 && $bool2 && $bool3;
     }

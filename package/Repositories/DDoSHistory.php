@@ -42,31 +42,47 @@ class DDoSHistory extends StaticRepository {
 
         $ret_ips = [];
         if ($pack) {
-            //准备导入history表
-            $data = [];
-            foreach ($pack as $item) $data[] = ['ip' => $item['ip'], 'begin_time' => time()];
-
             //事务处理：写入攻击开始、更新实列表为被攻击中
             $transacter = '写入攻击开始、更新实列表状态';
             Response::transactBegin($transacter);
-            $result = self::transact(function() use ($data) {
-                if (!self::import($data)) {
-                    Response::note('#tab写入“攻击开始”失败');
-                    return false;
-                }
+            $result = self::transact(function() use ($pack, &$ret_ips) {
+                //准备导入history表
+                $data = [];
+                foreach ($pack as $item) $data[] = ['ip' => $item['ip'], 'begin_time' => time()];
 
+                Response::note('#tab即将对以下IP写入攻击历史：');
+                $ret_ips = Arr::clone_inner($pack, 'ip');
+                Response::echo(implode('，', $ret_ips));
+
+                Response::note('#tab写入“攻击开始”...');
+                $bool = self::import($data);
+                Response::echoBool($bool);
+                if (!$bool) return false;
+
+                Response::note('#tab更新“实列表为被攻击中”...');
                 $ips = Arr::clone_inner($data, 'ip');
-                if ( !Instance::update_net_status($ips, 1, true) ) {
-                    Response::note('更新“实列表为被攻击中”失败');
-                    return false;
-                }
+                $bool = Instance::update_net_status($ips, 1, true);
+                Response::echoBool($bool);
+                if (!$bool) return false;
 
                 return true;
             });
 
             if ($result) {
-                $ret_ips = Arr::clone_inner($pack, 'ip');
-                foreach ($ret_ips as $ip) Response::note('#tab%s ', $ip);
+
+                //对IP进行按用户分组
+                $mitigations = Mitigation::lists([
+                    'awhere' => ['ip' => $ret_ips]
+                ]);
+                $mitigations = Arr::groupBy($mitigations, 'uid');
+
+                //告警通知
+                $alertsIp = [];
+                foreach ($mitigations as $uid => $items) {
+                    $alertsIp[$uid] = Arr::pick($items, 'ip');
+                };
+                Alert::beginDDoS($alertsIp);
+
             } else {
                 Notify::developer(sprintf('事务处理失败：%s', $transacter));
                 System::halt();

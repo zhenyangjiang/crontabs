@@ -179,137 +179,120 @@ foreach ($pack_attack as $dc_id => $group) {
             //读取云盾表中该ip的云盾配置
             $mitigation = $item['mitigation'];
 
-            if ( !$mitigation ) {
-                pause();
-                //找不到记录：（可能是第二IP，暂属异常），超100Mbps即牵引
-                // $echo = Response::note('IP：%s，未知的异常IP地址', $dest_ip);
-                // reportOptException($echo, array('context' => $item));
+            //当前IP的云盾配额
+            $ability_mbps = $mitigation['ability_mbps'];
+            $ability_pps = $mitigation['ability_pps'];
 
-                // if ( $group_threat ) {
-                //     Response::note('存在大网安全问题需立即牵引');
-                //     if (BlackHole::block($dest_ip, $item['mbps'], true)) {
-                //         $total_mbps -= $item['mbps'];
-                //     }
-                // } else {
-                //     if ($item['mbps'] >= 100 || $item['pps'] >= 100000) {
-                //         Response::note('当前攻击值：%sMbps / %spps，正在牵引...', $item['mbps'], $item['pps']);
-                //         BlackHole::block($dest_ip, $item['mbps'], false);
-                //     } else {
-                //         Response::note('当前攻击值：%sMbps/%spps，继续清洗...', $item['mbps'], $item['pps']);
-                //     }
-                // }
-            } else {
-                //当前IP的云盾配额
-                $ability_mbps = $mitigation['ability_mbps'];
-                $ability_pps = $mitigation['ability_pps'];
+            switch ($mitigation['billing']) {
+                case 'month' :
+                    //是否免费版云盾
+                    $is_free = (float)$mitigation['price'] == 0;
 
-                switch ($mitigation['billing']) {
-                    case 'month' :
-                        //是否免费版云盾
-                        $is_free = (float)$mitigation['price'] == 0;
+                    //按月计费：仅防护，由ExpireHandler进行到期扣取次月
+                    Response::note('IP：%s，计费方案：按月计费， 防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
 
-                        //按月计费：仅防护，由ExpireHandler进行到期扣取次月
-                        Response::note('IP：%s，计费方案：按月计费， 防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
+                    Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
 
-                        Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
-
-                        if ( $is_free && $group_threat ) {
-                            //免费版在大网受到威胁时，立即牵引
-                            Response::note('存在大网安全问题需立即牵引');
-                            if (BlackHole::block($dest_ip, $item['mbps'], true)) {
-                                $total_mbps -= $item['mbps'];
-                            }
-                        } else {
-                            if ($item['mbps'] >= $ability_mbps) {
-                                Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
-                                BlackHole::block($dest_ip, $item['mbps'], false);
-                            } else if ($item['pps'] >= $ability_pps) {
-                                Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
-                                BlackHole::block($dest_ip, $item['mbps'], false);
-                            } else {
-                                Response::note('当前攻击值：%sMbps/%spps 未达到购买防护阈值，继续清洗...', $item['mbps'], $item['pps']);
-                            }
+                    if ( $is_free && $group_threat ) {
+                        //免费版在大网受到威胁时，立即牵引
+                        Response::note('存在大网安全问题需立即牵引');
+                        if (BlackHole::block($dest_ip, $item['mbps'], true)) {
+                            $total_mbps -= $item['mbps'];
                         }
-                        break;
-
-                    case 'hour' :
-                        //按需计费：先防护后计前1小时的费用，单价采用所属数据中心中的价格
-                        Response::note('IP：%s，计费方案：按需计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
-
-                        Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
-
-                        if ( $total_mbps >= $max_mbps ) {
-                            //经过不断对 $total_mbps 做减算，还是超过了最高防护，继续牵引
-                            Response::note('存在大网安全问题需立即牵引');
-                            if (BlackHole::block($dest_ip, $item['mbps'], true)) {
-                                $total_mbps -= $item['mbps'];
-                            }
-
-                            //计费扣费
-                            DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                    } else {
+                        if ($item['mbps'] >= $ability_mbps) {
+                            Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
+                            BlackHole::block($dest_ip, $item['mbps'], false);
+                        } else if ($item['pps'] >= $ability_pps) {
+                            Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
+                            BlackHole::block($dest_ip, $item['mbps'], false);
                         } else {
+                            Response::note('当前攻击值：%sMbps/%spps 未达到购买防护阈值，继续清洗...', $item['mbps'], $item['pps']);
+                        }
+                    }
+                    break;
 
-                            //由实例确定用户余额
-                            $uid = $mitigation['uid'];
-                            $user = User::find($uid);
-                            response_user_detail($user);
+                case 'hour' :
+                    //按需计费：先防护后计前1小时的费用，单价采用所属数据中心中的价格
+                    Response::note('IP：%s，计费方案：按需计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
 
-                            //获取当前ip所在的数据中心的价格规则(元/小时)的数组
-                            $price_rules = DataCenter::price_rules($datacenter, 'hour');
+                    Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
 
-                            //由IP确定攻击历史记录
-                            Response::note('由IP确定攻击历史记录：');
-                            $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
-                            if (!$DDoSHistory) {
-                                $msg = '未找到该IP正在被攻击中的历史记录';
-                                Notify::developer($msg);
-                            } else {
-                                $DDoSHistory_id = $DDoSHistory['id'];
-                                Response::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
+                    if ( $total_mbps >= $max_mbps ) {
+                        //经过不断对 $total_mbps 做减算，还是超过了最高防护，继续牵引
+                        Response::note('存在大网安全问题需立即牵引');
+                        if (BlackHole::block($dest_ip, $item['mbps'], true)) {
+                            $total_mbps -= $item['mbps'];
+                        }
 
-                                //当前攻击是否超过用户购买的最高防护能力
-                                if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
-                                    //超过?是
-                                    if ($item['mbps'] > $ability_mbps) {
-                                        Response::note('到达用户最高承受支付能力防护值：%sMbps', $ability_mbps);
-                                    } else {
-                                        Response::note('到达用户最高承受支付能力防护值：%spps', $ability_pps);
-                                    }
+                        //计费扣费
+                        DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                    } else {
 
-                                    //强制牵引
-                                    if (BlackHole::exists($ip)) {
-                                        $echo = Response::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
-                                        reportDevException($echo);
-                                        //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
-                                    } else {
-                                        Response::note('需要对IP：%s作强制牵引处理', $dest_ip);
-                                        BlackHole::block($dest_ip, $item['mbps'], false);
+                        //由实例确定用户余额
+                        $uid = $mitigation['uid'];
+                        $user = User::find($uid);
+                        response_user_detail($user);
 
-                                        //计费扣费
-                                        DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
-                                    }
+                        //获取当前ip所在的数据中心的价格规则(元/小时)的数组
+                        $price_rules = DataCenter::price_rules($datacenter, 'hour');
+
+                        //由IP确定攻击历史记录
+                        Response::note('由IP确定攻击历史记录：');
+                        $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
+                        if (!$DDoSHistory) {
+                            $msg = '未找到该IP正在被攻击中的历史记录';
+                            Notify::developer($msg);
+                        } else {
+                            $DDoSHistory_id = $DDoSHistory['id'];
+                            Response::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
+
+                            //当前攻击是否超过用户购买的最高防护能力
+                            if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
+                                //超过?是
+                                if ($item['mbps'] > $ability_mbps) {
+                                    Response::note('到达用户最高承受支付能力防护值：%sMbps', $ability_mbps);
                                 } else {
-                                    //超过?否
-                                    //模拟本次攻击总计，检查余额是否足以支付
-                                    $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules);
+                                    Response::note('到达用户最高承受支付能力防护值：%spps', $ability_pps);
+                                }
 
-                                    if ( $fee > $user['money'] ) {
-                                        Response::note('模拟总计费用：￥%s，已超出用户余额：%s，需立即处理：', $fee, $user['money']);
+                                //强制牵引
+                                if (BlackHole::exists($ip)) {
+                                    $echo = Response::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
+                                    reportDevException($echo);
+                                    //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
+                                } else {
+                                    Response::note('需要对IP：%s作强制牵引处理', $dest_ip);
+                                    BlackHole::block($dest_ip, $item['mbps'], false);
 
-                                        //产生的总费用超过用户余额，强制牵引
-                                        BlackHole::block($dest_ip, $item['mbps'], false);
+                                    //计费扣费
+                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                                }
+                            } else {
+                                //超过?否
+                                //模拟本次攻击总计，检查余额是否足以支付
+                                $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules);
 
-                                        //计费扣费
-                                        DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
-                                    } else {
-                                        Response::note('模拟总计费用：￥%s，当前余额：￥%s 足以支付，继续清洗中...', $fee, $user['money']);
-                                    }
+                                if ( $fee > $user['money'] ) {
+                                    Response::note('模拟总计费用：￥%s，已超出用户余额：%s，需立即处理：', $fee, $user['money']);
+
+                                    //产生的总费用超过用户余额，强制牵引
+                                    BlackHole::block($dest_ip, $item['mbps'], false);
+
+                                    //计费扣费
+                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                                } else {
+                                    Response::note('模拟总计费用：￥%s，当前余额：￥%s 足以支付，继续清洗中...', $fee, $user['money']);
                                 }
                             }
                         }
-                        break;
-                }
+                    }
+                    break;
             }
+
+
+
+
         }
     }
 }

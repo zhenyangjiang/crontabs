@@ -48,7 +48,7 @@ class DDoSHistory extends StaticRepository {
             $result = self::transact(function() use ($pack, &$ret_ips) {
                 //准备导入history表
                 $data = [];
-                foreach ($pack as $item) $data[] = ['ip' => $item['ip'], 'begin_time' => time()];
+                foreach ($pack as $item) $data[] = ['ip' => $item['ip'], 'begin_time' => System::nowTime()];
 
                 Response::note('#tab即将对以下IP写入攻击历史：');
                 $ret_ips = Arr::clone_inner($pack, 'ip');
@@ -115,7 +115,7 @@ class DDoSHistory extends StaticRepository {
         }
 
         //更新历史记录的结束相关信息
-        $end_time = time();
+        $end_time = System::nowTime();
         $peak = DDoSInfo::get_attack_peak($history['ip'], $history['begin_time'], $end_time);
         if ( !$peak ) {
             $messsage = sprintf('攻击结束时发现%s ~ %s找不到峰值', $history['begin_time'], $end_time);
@@ -127,7 +127,7 @@ class DDoSHistory extends StaticRepository {
             return false;
         } else {
             $data = [
-                'end_time' => time(),
+                'end_time' => $end_time,
                 'bps_peak' => Arr::get($peak, 'mbps.value'),
                 'pps_peak' => Arr::get($peak, 'pps.value'),
                 'on_event' => $on_event,
@@ -240,7 +240,7 @@ class DDoSHistory extends StaticRepository {
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
 
         if (!$fee) {
-            Response::note('#tab未产生费用，无需扣费');
+            Response::note('未产生费用，无需扣费');
             return true;
         }
 

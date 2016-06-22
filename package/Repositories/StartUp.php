@@ -31,8 +31,8 @@ class StartUp {
         socket_close($socket);
 
         if (!(int)$result) {
-            Response::warn('同类脚本已启动，无需执行');
-            exit();
+            Response::error('同类脚本已启动，无需执行');
+            System::complete();
         }
 
         return $result;

@@ -18,6 +18,11 @@ class BlackholeAction implements TaskInterface {
         return Config::get('hosts', 'api') . '/intranet/blackhole'. $path;
     }
 
+    private function formatMessage($success, $message) {
+        $message or $message = sprintf('ip“%s”解除牵引%s', $this->params['ip'], $success ? '成功' : '失败');
+        return colorize($message, $bool ? 'green' : 'yellow');
+    }
+
     private function block(){
         $apiurl = self::apiurl('/block');
         $ret = \OAuthHttp::post($apiurl, $this->params);
@@ -32,14 +37,16 @@ class BlackholeAction implements TaskInterface {
 
     public function execute(&$retmsg = NULL) {
         if ( $this->action == 'block') {
-            $bool = $this->block();
-            $retmsg = sprintf('ip“%s”牵引%s', $this->params['ip'], $bool ? '成功' : '失败');
+            $result = $this->block();
+            $bool = $result->success;
+            $retmsg = self::formatMessage($bool, $result->message);
             return $bool;
         }
 
         if ( $this->action == 'unblock') {
-            $bool = $this->unblock();
-            $retmsg = sprintf('ip“%s”解除牵引%s', $this->params['ip'], $bool ? '成功' : '失败');
+            $result = $this->unblock();
+            $bool = $result->success;
+            $retmsg = self::formatMessage($bool, $result->message);
             return $bool;
         }
     }

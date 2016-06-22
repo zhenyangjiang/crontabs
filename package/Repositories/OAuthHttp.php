@@ -33,22 +33,19 @@ Class OAuthHttp {
             if ( $ret === 'true' ) return true;
             $ret = json_decode($ret, true);
             if ( !$ret ) return false;
-            return $ret['success'];
         }
 
         if (is_bool($ret)) {
-            return $ret;
+            return ApiResult::make()->bool();
         }
 
         if (is_array($ret)) {
-            return $ret['success'];
+            return (object)$ret;
         }
 
         if (is_object($ret)) {
-            return $ret->success;
+            return $ret;
         }
-
-        return $ret;
     }
 
     public static function post( $url, $data, Array $header = [] ) {

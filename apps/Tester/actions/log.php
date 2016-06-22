@@ -8,8 +8,8 @@ Response::note('测试写日志...');
 $file = Log::info('kkkkkkkk', [
     'aaaa' => '111111111',
     'bbb' => '222222222222222'
-]);
-Response::bool( true, '测试%s');
+], true);
+Response::bool( !!$file, '测试%s');
 
 Response::note('#line');
 System::complete();

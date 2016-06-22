@@ -4,16 +4,19 @@ use Landers\Substrate\Utils\Http;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
+use Landers\Framework\Modules\Log;
 
 
         //$content = '[{"123.1.1.6": {"src": ["110.61.224.49", "242.204.209.124", "65.186.42.191"], "types": ["SYN", "ACK"], "syn": {"bps": [7034.32, 0 ], "pps": [7374170, 0 ] }, "ack": {"bps": [5387.41, 0.56 ], "pps": [5565760, 835 ] }, "udp": {"bps": [0, 0 ], "pps": [0, 0 ] }, "icmp": {"bps": [0, 0 ], "pps": [0, 0 ] }, "frag": {"bps": [0, 0 ], "pps": [0, 0 ] }, "other": {"bps": [0, 0 ], "pps": [0, 0 ] }, "dns": {"bps": [0, 0 ], "pps": [0, 0 ] }, "bps": [12421.74, 0.56 ], "pps": [12939931, 835 ], "links": [34496, 0 ], "tcplinks": [34496, 0 ], "udplinks": [0, 0 ], "time": 1464401143 } } ]';
+
+
 
 
 Class Firewall {
     public static function get_attack() {
         $fwurl = Config::get('fwurl');
 
-        $content = '{"123.1.1.13":{"src":["74.156.179.21","175.211.37.169","59.87.157.192"],"types":["SYN","ACK"],"syn":{"bps":[5541.41,0],"pps":[5811169,0]},"ack":{"bps":[4122.53,0.56],"pps":[4269565,839]},"udp":{"bps":[0,0],"pps":[0,0]},"icmp":{"bps":[0,0],"pps":[0,0]},"frag":{"bps":[0,0],"pps":[0,0]},"other":{"bps":[0,0],"pps":[0,0]},"dns":{"bps":[0,0],"pps":[0,0]},"bps":[25597.65,0.56],"pps":[26442700,839],"links":[34122,0],"tcplinks":[34122,0],"udplinks":[0,0],"time":1464422713}}';
+        $content = include( __DIR__ . '/Firewall-data3.php');
 
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('防火墙数据读取失败！');
@@ -25,19 +28,19 @@ Class Firewall {
             } else {
                 System::halt('读取无法解析的防火墙数据错误: '.$content);
             }
+        } else {
+            Response::note('#tab截取防火墙数据到日志中...');
+            $file = Log::trace('防火墙数据', $data);
+            Response::echoBool( !!$file );
         }
 
-        // $mitigations = Mitigation::lists([
-        //     'awhere' => ['ip' => array_keys($data)],
-        //     'askey' => 'ip'
-        // ]);
-
-        $ret = [];
+        $ret = []; $filte_count = 0;
         foreach ($data as $dest_ip => &$item) {
             if ($item['bps'][0] <= 1 ||
                 $item['pps'][0] <= 1
             ) {
                 unset($data[$dest_ip]);
+                $filte_count++;
                 continue;
             }
             $item = [
@@ -48,6 +51,10 @@ Class Firewall {
                 'pps1'      => $item['pps'][1],
             ];
             // $ret[$dc_id][$dest_ip] = $item;
+        }
+
+        if ( $data ) {
+            Response::note('#tab已忽略 %s 项攻击数据', $filte_count);
         }
 
         // unset($data['123.1.1.2']);

@@ -56,7 +56,8 @@ class Notify {
                 Response::error("#tab$log_content");
             }
         } else {
-            Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
+            $text = sprintf('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
+            Response::note(colorize($text, 'yellow'));
             $bool = true;
         }
 

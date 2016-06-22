@@ -5,7 +5,6 @@ use Landers\Framework\Core\Config;
 use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 use Landers\Substrate\Classes\StatusCtrl;
-use ULan\SolusVM\Solusvm;
 
 class Instance extends StaticRepository {
     protected static $connection = 'main';
@@ -78,7 +77,7 @@ class Instance extends StaticRepository {
      * @return [type] [description]
      */
     public static function timeout_expire(){
-        $time = time();
+        $time = System::nowTime();
         return self::lists([
             'awhere' => ["expire<$time"]
         ]);
@@ -89,16 +88,7 @@ class Instance extends StaticRepository {
      * @return [type] [description]
      */
     public static function be_about_to_expire($days){
-        /*
-        $now = time(); $now = strtotime('2015-10-6 20:20:20');
-        $begin = sprintf('`expire`-%s', $days * 3600 * 24);
-        $end = '`expire`';
-        return self::lists([
-            'awhere' => ["$begin<=$now", "$end>=$now"]
-        ]);
-        */
-
-        $begin = time(); $end = Datetime::add('days', $days, $begin);
+        $begin = System::nowTime(); $end = Datetime::add('days', $days, $begin);
         return self::lists([
             'awhere' => ["`expire` between $begin and $end"]
         ]);

@@ -13,7 +13,7 @@ Class BlackHole extends StaticRepository {
     protected static $DAO;
 
     public static function exists($ip) {
-        return self::count(['ip' => $ip, 'is_unblock' => 0, 'expire > '.time()]);
+        return self::count(['ip' => $ip, 'is_unblock' => 0, 'expire > '.System::nowTime()]);
     }
 
     public static function doBlock($ip, $bps, $is_force) {
@@ -93,7 +93,7 @@ Class BlackHole extends StaticRepository {
     public static function unblock(){
         //找出未解除，且牵引过期的ids
         $lists = self::lists([
-            'awhere' => ["expire<=".time(), 'is_unblock' => 0],
+            'awhere' => ["expire<=".System::nowTime(), 'is_unblock' => 0],
             'fields' => 'id, ip',
             'order'  => 'id desc'
         ]);

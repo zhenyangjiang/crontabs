@@ -45,7 +45,6 @@ class DDoSInfo extends StaticRepository {
         if ($pack) { //确定是二维数组列表
             foreach ($pack as $group) {
                 //存储数据
-                // self::debug();
                 $data = Arr::pick($group, ['dest', 'bps0', 'bps1', 'pps0', 'pps1']);
                 $bool = self::import($data);
                 if (!$bool) {

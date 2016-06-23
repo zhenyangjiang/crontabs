@@ -266,8 +266,19 @@ foreach ($pack_attack as $dc_id => $group) {
                     $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
 
                     if (!$DDoSHistory) {
-                        $msg = '未找到该IP正在被攻击中的历史记录';
-                        Notify::developer($msg);
+                        if ( $total_mbps >= $max_mbps ) {
+                            $echo = Response::warn('有待考证#1');
+                            Notify::developer($echo);
+                            //经过不断对 $total_mbps 做减算，还是超过了最高防护，继续牵引
+                            // $text = sprintf('当前总流量 %s >= 大网安全流量 %s，超大网安全，需立即强制牵引 >>>', $total_mbps, $max_mbps);
+                            // Response::note(colorize($text, 'yellow',  'flash'));
+                            // if (BlackHole::block($dest_ip, $item['mbps'], true)) {
+                            //     $total_mbps -= $item['mbps'];
+                            // }
+                        } else  {
+                            $msg = '未找到该IP正在被攻击中的历史记录';
+                            Notify::developer($msg);
+                        }
                     } else {
                         $DDoSHistory_id = $DDoSHistory['id'];
                         Response::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);

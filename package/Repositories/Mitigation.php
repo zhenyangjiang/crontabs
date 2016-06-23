@@ -99,20 +99,21 @@ class Mitigation extends StaticRepository {
      * @param  Array  $ips [description]
      * @return [type]      [description]
      */
-    public static function filteFree(Array $ips) {
-        $lists = parent::lists([
-            'fields' => 'ip',
-            'awhere' => [
-                'ip' => $ips,
-                'price' => 0,
-                'billing' => 'month'
-            ]
-        ]);
-        if ($lists) {
-            $lists = Arr::pick($lists, 'ip');
-        }
-        return $lists;
-    }
+    // 暂用不上
+    // public static function filteFree(Array $ips) {
+    //     $lists = parent::lists([
+    //         'fields' => 'ip',
+    //         'awhere' => [
+    //             'ip' => $ips,
+    //             'price' => 0,
+    //             'billing' => 'month'
+    //         ]
+    //     ]);
+    //     if ($lists) {
+    //         $lists = Arr::pick($lists, 'ip');
+    //     }
+    //     return $lists;
+    // }
 }
 Mitigation::init();
 ?>

@@ -260,8 +260,9 @@ class DDoSHistory extends StaticRepository {
         Response::transactBegin('用户扣费、写入扣费日志');
         Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
         $result = User::transact(function() use ($uid, $feelog_data, $duration) {
-            Response::note('#tab向用户扣除费用：%s...', $feelog_data['amount']);
-            $bool = User::set_money($uid, $feelog_data['balance']);
+            $fee_amount = $feelog_data['amount'];
+            Response::note('#tab向用户扣除费用：%s...', $fee_amount);
+            $bool = User::pay_money($uid, $fee_amount);
             Response::echoBool($bool);
             if (!$bool) return false;
 
@@ -270,6 +271,7 @@ class DDoSHistory extends StaticRepository {
                 Response::note('#tab写入云盾费用日志...');
                 $bool = !!Feelog::create($feelog_data);
                 Response::echoBool($bool);
+                if (!$bool) return false;
 
                 return $bool;
             });

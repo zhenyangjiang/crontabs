@@ -6,8 +6,7 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
     $result = User::transact(function() use ($uid, $instance, $instance_update, $feelog_data, $callbacks) {
         //用户扣费
         Response::note('#tab实例扣费...');
-        $balance = $feelog_data['balance'];
-        $bool = User::set_money($uid, $balance);
+        $bool = User::pay_money($uid, $feelog_data['amount']);
         if ($bool) {
             Response::echoSuccess('成功扣费 %s', $feelog_data['amount']);
         } else {

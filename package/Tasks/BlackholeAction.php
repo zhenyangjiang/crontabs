@@ -20,7 +20,7 @@ class BlackholeAction implements TaskInterface {
 
     private function formatMessage($success, $message) {
         $message or $message = sprintf('ip“%s”解除牵引%s', $this->params['ip'], $success ? '成功' : '失败');
-        return colorize($message, $bool ? 'green' : 'yellow');
+        return colorize($message, $success ? 'green' : 'yellow');
     }
 
     private function block(){

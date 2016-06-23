@@ -16,7 +16,7 @@ Class Firewall {
     public static function get_attack() {
         $fwurl = Config::get('fwurl');
 
-        $content = include( __DIR__ . '/Firewall-data3.php');
+        $content = include( __DIR__ . '/Firewall-data1.php');
 
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('防火墙数据读取失败！');
@@ -34,13 +34,14 @@ Class Firewall {
             Response::echoBool( !!$file );
         }
 
-        $ret = []; $filte_count = 0;
+        $ret = []; $filte1_count = 0;
         foreach ($data as $dest_ip => &$item) {
+            // 过滤掉 小于1 的攻击数据
             if ($item['bps'][0] <= 1 ||
                 $item['pps'][0] <= 1
             ) {
                 unset($data[$dest_ip]);
-                $filte_count++;
+                $filte1_count++;
                 continue;
             }
             $item = [
@@ -53,11 +54,11 @@ Class Firewall {
             // $ret[$dc_id][$dest_ip] = $item;
         }
 
-        if ( $data ) {
-            Response::note('#tab已忽略 %s 项攻击数据', $filte_count);
+        if ( $filte1_count ) {
+            Response::note('#tab已忽略 %s 项攻击数据', $filte1_count);
         }
 
-        // unset($data['123.1.1.2']);
+
 
         return $data;
     }

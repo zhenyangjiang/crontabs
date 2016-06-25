@@ -83,7 +83,7 @@ Class Firewall {
             $mitigation = $mitigations[$dest_ip];
             if ( $mitigation ) {
                 $dc_id = $mitigation['datacenter_id'];
-                $mitigation = Arr::remove_keys($mitigation, 'created_at, updated_at, fw_sets, alert_sets');
+                $mitigation = Arr::remove_keys($mitigation, 'created_at, updated_at, fw_sets');
                 $mitigation = Mitigation::attachs($mitigation);
                 $dc_ids[] = $dc_id;
             } else {

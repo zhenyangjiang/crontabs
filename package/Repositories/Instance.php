@@ -12,33 +12,6 @@ class Instance extends StaticRepository {
     protected static $DAO;
 
     /**
-     * 指定的IP更新到指定状态码
-     * @param  String / Array   $ips 要修改的IP集合或单IP
-     * @param  Int $status   状态代码：０(正常)  1(被攻击)  2(被牵引)
-     * @param  Boolean $is_force 是否强制修改
-     * @return Boolean 是否【更新成功且有记录被更新】
-     */
-    public static function update_net_status($ips, $status, $is_force = false) {
-        $ips = (array)$ips;
-        $status = (string)$status;
-        $updata = ['net_state' => $status, 'net_state_updtime' => date('Y-m-d H:i:s')];
-        $awhere = ['mainipaddress' => $ips];
-
-        $statuses = [
-            '1' => ['0'],
-            '2' => ['1'],
-            '0' => ['2', '1']
-        ];
-        if (!$is_force) {
-            if (!$ori_statuses = $statuses[$status]) return false;
-            if ( count($ori_statuses) == 1 ) $ori_statuses = pos($ori_statuses);
-            $awhere['net_state'] = $ori_statuses;
-        }
-
-        return self::update($updata, $awhere);
-    }
-
-    /**
      * 由实例确定其所在数据中心
      * @param  array    $instance   实例
      * @return array                数据中心
@@ -262,7 +235,6 @@ class Instance extends StaticRepository {
                 'match' => $instance_ip,
                 'models' => [
                     Mitigation::class,
-                    BlackHole::class,
                     DDoSHistory::class,
                     BlockLog::class,
                     TopCountry::class,
@@ -299,7 +271,7 @@ class Instance extends StaticRepository {
         $results = [];
 
         //事务嵌套处理
-        $result = Instance::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
+        $result = self::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
             return DDoSInfo::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
 
                 // 执行删除关联模型数据

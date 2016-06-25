@@ -11,11 +11,11 @@ foreach ($modules as $module) {
 }
 Response::note('%s清空完成', implode('、', $modules));
 
-$ret = Instance::update(['net_state' => 0, 'net_state_updtime' => NULL], true);
+$ret = Mitigation::update(['status' => 0], true);
 if ( $ret ){
-    Response::note('所有实列的net_state被更新为正常（0）');
+    Response::note('所有云盾的status被更新为正常（NORMAL）');
 } else {
-    Response::note('实例的net_state更新失败');
+    Response::note('所有云盾的status更新失败');
 }
 
 

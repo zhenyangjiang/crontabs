@@ -77,7 +77,6 @@ class Mitigation extends StaticRepository {
                 'ip' => $instance['mainipaddress'],
                 'ability' => $case['ability'],
                 'price' => $case['price'],
-                'alert_sets' => '[]',
                 'fw_sets' => '{}'
             ]);
         } else {
@@ -92,6 +91,46 @@ class Mitigation extends StaticRepository {
                 return true;
             }
         }
+    }
+
+    /**
+     * 取得指定状态的ips
+     * @param  String $status
+     * @return Array 被攻中的或被牵引中（攻击未结束）的ip集合
+     */
+    public static function get_ips_by_status($status) {
+        $ret = parent::lists([
+            'fields' => 'ip',
+            'awhere' => ['status' => $status]
+        ]);
+        if ($ret) $ret = Arr::flat($ret);
+
+        return $ret;
+    }
+
+    /**
+     * 设定云盾状态
+     * @param  String / Array   $ips 要修改的IP集合或单IP
+     * @param  String $status
+     * @param  Boolean $is_force 是否强制修改
+     * @return Boolean 是否【更新成功且有记录被更新】
+     **/
+    public static function setStatus($ips, $status = NULL, $is_force = NULL) {
+        $ips = (array)$ips;
+        $status = (string)$status;
+        $updata = ['status' => $status];
+        $awhere = ['ip' => $ips];
+
+        $statuses = [
+            'ATTACK' => ['NORMAL'],
+            'BLOCK' => ['ATTACK'],
+            'NORMAL' => ['ATTACK', 'BLOCK']
+        ];
+        if (!$is_force) {
+            $awhere['status'] = $statuses[$status];
+        }
+
+        return self::update($updata, $awhere);
     }
 
     /**

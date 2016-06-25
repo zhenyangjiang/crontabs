@@ -11,36 +11,31 @@ class DDoSInfo extends StaticRepository {
     protected static $dt_parter = ['type' => 'datetime', 'mode' => 'ymd'];
     // protected static $dt_parter = 'special';
 
-    public static function filte_blocked_attack($pack) {
+    public static function filte_blocked($pack) {
         if (!$pack) return array();
-        foreach ($pack as $i => &$group) {
-            $ips = array_keys($group);
-            $lists = Instance::lists([
-                'fields' => 'mainipaddress as ip',
-                'awhere' => ['net_state' => 2, 'mainipaddress' => $ips]
-            ]);
-            if ($lists) {
-                $exception_ips = [];
-                foreach ($lists as $item) {
-                    $exception_ips[] = $item['ip'];
-                    unset($group[$item['ip']]);
-                }
 
-                //已被牵引的IP还存在防火墙被攻击列表中
-                if ($exception_ips) {
-                    $message = sprintf('已被牵引的IP："%s"，还存在防火墙被攻击列表中', implode(', ', $exception_ips));
-                    reportOptException($message);
-                }
-            } else {
-                Response::note('#tab没有IP存在于牵引中...');
+        $blocked_ips = Mitigation::get_ips_by_status('BLOCK');
+
+        if ($blocked_ips) {
+            $filte_ips = [];
+            foreach ($pack as $dest_ip => $item) {
+                $filte_ips[] = $dest_ip;
+                unset($pack[$dest_ip]);
             }
-            if (count($group) == 0) unset($pack[$i]);
+
+            //已被牵引的IP还存在防火墙被攻击列表中
+            if ($filte_ips) {
+                $message = sprintf('#tab以下IP还处于牵引中，却还在流量，已被过滤掉：%s', implode(', ', $filte_ips));
+            }
+        } else {
+            Response::note('#tab没有IP存在于牵引中，无需过滤');
         }
+
         return $pack;
     }
 
     //保存来自防火墙的源数据
-    public static function save_attack($pack) {
+    public static function save($pack) {
         $ret = []; //返回合所有组的包
         if ($pack) { //确定是二维数组列表
             foreach ($pack as $group) {
@@ -70,7 +65,7 @@ class DDoSInfo extends StaticRepository {
      * @param  [type] $in_hours [description]
      * @return [type]           [description]
      */
-    public static function get_attack_peak($dest_ip, $begin, $end) {
+    public static function peak($dest_ip, $begin, $end) {
         $awhere = ['dest' => $dest_ip, "created_at between $begin and $end"];
 
         $info_bps = self::find([

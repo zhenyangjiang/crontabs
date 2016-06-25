@@ -5,6 +5,8 @@ use Landers\Substrate\Utils\Datetime;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Queue;
 
+// dp(System::db('mitigation')->execute('drop table ddosinfo_160625'), false);
+
 echo PHP_EOL;
 Response::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
@@ -17,11 +19,10 @@ Response::note('#line');
 Response::note('正在从防火墙上获取了攻击信息...');
 $pack_attack = Firewall::get_attack();
 Response::note('#line');
-// dp($pack_attack);
-// if (ENV_debug == true) $pack_attack = Firewall::make_attacks($pack_attack);
 
-// Response::note('过滤掉已被牵引的IP...');
-// $pack_attack =
+Response::note('过滤掉已被牵引的IP...');
+$pack_attack = DDoSInfo::filte_blocked($pack_attack);
+#Response::note('#line');
 
 if ( $pack_attack ) {
     Response::note('正在对攻击数据进行分组...');
@@ -31,13 +32,13 @@ if ( $pack_attack ) {
 }
 
 Response::note('保存攻击数到DDoSInfo...');
-$all_ips = DDoSInfo::save_attack($pack_attack);
+$all_ips = DDoSInfo::save($pack_attack);
 if ($all_ips) Response::echoSuccess('共计%s条数据', count($all_ips));
 Response::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
 Response::note('正在查询被攻击中、且本次未被攻击的IP作攻击自然结束：');
-$attaching_ips = DDoSHistory::get_attacking_ips();
+$attaching_ips = Mitigation::get_ips_by_status('ATTACK');
 
 if ($attaching_ips) {
     // foreach ($attaching_ips as $ip) Response::note('#tab%s', $ip);
@@ -46,7 +47,7 @@ if ($attaching_ips) {
     // $diff_ips = ['172.31.52.244'];
 
     if ($diff_ips) {
-        Response::note(['#blank', '#blank', '------------ 逐一对以上IP作攻击自然结束：------------']);
+        Response::note(['#blank', '#blank', '---------------- 逐一对以上IP作攻击自然结束：----------------']);
 
         // 一次性取得所有需要自然结束的IP的云盾
         $mitigations = Mitigation::lists([
@@ -103,9 +104,8 @@ if ($attaching_ips) {
                 Response::echoWarn($retMsg);
             }
 
-
             //更新实例网络状态为正常
-            Instance::update_net_status($ip, 0);
+            Mitigation::setStatus($ip, 'NORMAL');
         }
     } else {
         Response::note('#tab攻击历史中的IP全部存在于当前被攻击IP中，没有IP需要作攻击结束');
@@ -266,7 +266,6 @@ foreach ($pack_attack as $dc_id => $group) {
 
                     Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
 
-                    //由IP确定攻击历史记录
                     Response::note('由IP确定攻击历史记录：');
                     $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
 

@@ -103,7 +103,7 @@ class DataCenter extends StaticRepository {
      * @param  array   $datacenter     数据中心数据
      * @return [type]     [description]
      */
-    public static function block_duration($datacenter) {
+    public static function blockDuration($datacenter) {
         //读取数据中心全部套餐的牵引时长
         $block_duration = $datacenter['block_duration'];
 

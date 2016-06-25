@@ -81,7 +81,7 @@ Class BlackHole {
     public static function unblock(){
         //找出未解除，且牵引过期的ids
         $lists = Mitigation::lists([
-            'awhere' => ["block_expire<=".System::nowTime(), 'status' => 'BLOCK'],
+            'awhere' => ["block_expire<=".time(), 'status' => 'BLOCK'],
             'fields' => 'ip',
             'order'  => 'block_expire asc'
         ]);

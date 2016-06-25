@@ -6,8 +6,12 @@ use Landers\Framework\Core\Response;
 Response::note(['【实例即将到期提醒】（'.System::app('name').'）开始工作','#dbline']);
 
 $before_days = Settings::get('instance_expire_before_days');
-$instances = Instance::be_about_to_expire($before_days);
-if (!$instances) {
+
+$begin = time();
+$end = Datetime::add('days', $before_days, $begin);
+$instances = self::lists([
+    'awhere' => [sprintf('`expire` between %s and %s', $begin, $end)]
+]);
     Response::note('暂无%s天内到期在实例', $before_days);
     System::continues();
 }

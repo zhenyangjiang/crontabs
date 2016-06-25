@@ -46,28 +46,6 @@ class Instance extends StaticRepository {
     }
 
     /**
-     * 取得已过期的实例列表
-     * @return [type] [description]
-     */
-    public static function timeout_expire(){
-        $time = System::nowTime();
-        return self::lists([
-            'awhere' => ["expire<$time"]
-        ]);
-    }
-
-    /**
-     * 取将即将到期的实例列表
-     * @return [type] [description]
-     */
-    public static function be_about_to_expire($days){
-        $begin = System::nowTime(); $end = Datetime::add('days', $days, $begin);
-        return self::lists([
-            'awhere' => ["`expire` between $begin and $end"]
-        ]);
-    }
-
-    /**
      * 挂起主机
      * @param  array      $instance    实例
      * @return booean

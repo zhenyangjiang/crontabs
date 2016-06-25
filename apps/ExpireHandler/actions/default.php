@@ -7,7 +7,10 @@ require __DIR__.'/../include/Helper.php';
 
 Response::note(['【实例到期后，挂起、待删除、自动续费后反挂起】（'.System::app('name').'）开始工作','#dbline']);
 
-$instances = Instance::timeout_expire();
+//取得过期的实例列表
+$instances = Instance::lists([
+    'awhere' => ['expire<' . time()]
+]);
 if ($instances) {
     Response::note('共找到期的实例：%s台', count($instances));
 } else {

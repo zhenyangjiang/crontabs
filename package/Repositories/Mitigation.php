@@ -130,6 +130,14 @@ class Mitigation extends StaticRepository {
             $awhere['status'] = $statuses[$status];
         }
 
+        if ( $status == 'BLOCK' ) {
+            //确定牵引时长，并更新牵引过期时间
+            $block_duration_hours = DataCenter::blockDuration(DataCenter::find_ip($ip));
+            $updata['block_expire'] = strtotime("+$block_duration_hours hours");
+        } else {
+            $updata['block_expire'] = NULL;
+        }
+
         return self::update($updata, $awhere);
     }
 

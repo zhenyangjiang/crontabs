@@ -48,20 +48,14 @@ Class BlackHole {
             Response::echoBool(!!$ret);
             if (!$ret) return false;
 
-            //确定牵引时长，并更新牵引过期时间
-            $block_duration_hours = DataCenter::blockDuration(DataCenter::find_ip($ip));
-            $bool = Mitigation::update(['block_expire' => strtotime("+$block_duration_hours hours")], ['ip' => $ip]);
-            Response::echoBool($bool);
-            if (!$bool) return false;
-
             //更新ip的攻击历史为结束攻击
             Response::note('#tab写入由牵引所致的攻击结束...');
-            $bool = DDoSHistory::save_end_attack($ip, 'block');
+            $bool = DDoSHistory::save_end_attack($ip, 'BLOCK');
             Response::echoBool($bool);
             if (!$bool) return false;
 
-            //更新实例的网络状态为2（牵引中）
-            Response::note('#tab更新实例的网络状态为“已牵引”...');
+            //更新云盾IP状态为（牵引中）
+            Response::note('#tab更新云盾IP状态为“已牵引”...');
             $bool = Mitigation::setStatus($ip, 'BLOCK', true);
             Response::echoBool($bool);
             if (!$bool) return false;

@@ -30,7 +30,7 @@ class Notify {
     public static function developer($title, $content = '', $context = NULL) {
         $is_sended = self::isDoneToday(md5($title), 'developer');
         $title_bak = $title;
-        Response::note('#tab'.$title_bak.'，需电邮开发者');
+        Response::note('#tab'.$title.'，需电邮开发者');
         if (!$is_sended) {
             $developers = Config::get('developer'); $contents = [];
             $contents[] = Response::export();

@@ -5,8 +5,6 @@ use Landers\Substrate\Utils\Datetime;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Queue;
 
-// dp(System::db('mitigation')->execute('drop table ddosinfo_160625'), false);
-
 echo PHP_EOL;
 Response::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
@@ -97,12 +95,8 @@ if ($attaching_ips) {
 
             //写入攻击自然结束
             Response::note('写入自然攻击结束...：');
-            $bool = DDoSHistory::save_end_attack($ip, 'stop', $retMsg);
-            if ($bool) {
-                Response::echoBool(true);
-            } else {
-                Response::echoWarn($retMsg);
-            }
+            $bool = DDoSHistory::save_end_attack($ip, 'STOP');
+            if ($bool) Response::echoBool(true);
 
             //更新实例网络状态为正常
             Mitigation::setStatus($ip, 'NORMAL');

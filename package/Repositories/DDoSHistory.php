@@ -84,26 +84,22 @@ class DDoSHistory extends StaticRepository {
      * @param  array|string   $ips      ip
      * @return bool                     数据更新成功否
      */
-    public static function save_end_attack($ip, $on_event, &$message = NULL) {
+    public static function save_end_attack($ip, $on_event) {
         $history = self::find([
             'awhere' => ['ip' => $ip, 'end_time' => NULL],
             'order'  => 'id desc',
         ]);
         if (!$history) {
-            $message = sprintf('IP：%s 原本已经攻击结束', $ip);
+            Response::note('#tabIP：%s 原本已经攻击结束', $ip);
             return true;
         }
 
         //更新历史记录的结束相关信息
-        $end_time = System::nowTime();
+        $end_time = time();
         $peak = DDoSInfo::peak($history['ip'], $history['begin_time'], $end_time);
         if ( !$peak ) {
-            $messsage = sprintf('攻击结束时发现%s ~ %s找不到峰值', $history['begin_time'], $end_time);
-            Notify::developer($message, [
-                'ip' => $ip,
-                'history' => $history,
-                'peak' => $peak
-            ]);
+            $echo = Response::warn(sprintf('#tab攻击结束时发现%s ~ %s找不到峰值', $history['begin_time'], $end_time));
+            Notify::developer($echo, compact('ip', 'history', 'peak'));
             return false;
         } else {
             $data = [
@@ -115,7 +111,8 @@ class DDoSHistory extends StaticRepository {
             $awhere = ['id' => $history['id']];
             $bool = self::update($data, $awhere);
             if (!$bool) {
-                Notify::developer('更新攻击结束信息失败');
+                $echo = Response::warn('#tab更新攻击结束信息失败');
+                Notify::developer($echo, compact('data', 'awhere'));
                 return false;
             } else {
                 return true;

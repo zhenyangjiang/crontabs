@@ -30,6 +30,7 @@ class Alert extends StaticRepository {
         $uids = array_keys($alertsIp);
 
         //读取用户告警设置
+        Alert::debug();
         $alerts = Alert::lists([
             'awhere' => ['uid' => $uids, 'event' => $event]
         ]);

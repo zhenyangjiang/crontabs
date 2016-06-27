@@ -23,7 +23,7 @@ class DDoSHistory extends StaticRepository {
         //获取实例表中：1)在ips范围内的IP， 2)标为“正常”的IP
         $mitigations = Mitigation::lists([
             'fields' => 'ip, uid',
-            'awhere' => ['ip' => $ips, 'status' => 'NORMAL']
+            'awhere' => ['ip' => $ips]//, 'status' => 'NORMAL']
         ]);
 
         $ret_ips = [];
@@ -63,7 +63,9 @@ class DDoSHistory extends StaticRepository {
                 foreach ($mitigations as $uid => $items) {
                     $alertsIp[$uid] = Arr::pick($items, 'ip');
                 };
+
                 Alert::beginDDoS($alertsIp);
+                pause();
 
             } else {
                 Notify::developer(sprintf('事务处理失败：%s', $transacter));

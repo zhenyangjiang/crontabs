@@ -234,6 +234,9 @@ foreach ($pack_attack as $dc_id => $group) {
                     $text1 = sprintf('IP：%s，计费方案：按月计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
                     $text2 = sprintf('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']) ;
 
+                    //是否免费版云盾
+                    $is_free = (float)$mitigation['price'] == 0;
+
                     if ( $is_free && $group_threat ) {
                         Response::note([
                             colorize($text1, 'gray'),

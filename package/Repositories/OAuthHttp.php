@@ -15,11 +15,14 @@ Class OAuthHttp {
         self::$config = Config::get('oauth');
     }
 
-    private static function oauth() {
+    private static function getHeader($refresh = false){
         $oauth = &self::$oauth;
         $apiurl = self::$config['apiurl'];
         $oauth or $oauth = new OAuthService( $apiurl );
-        return $oauth;
+
+        $client_id = self::$config['client_id'];
+        $client_secret = self::$config['client_secret'];
+        return $oauth->getAccessTokenHeader($client_id, $client_secret, $refresh);
     }
 
     public static function parse($ret) {
@@ -48,15 +51,16 @@ Class OAuthHttp {
         }
     }
 
-    public static function post( $url, $data, Array $header = [] ) {
-        $client_id = self::$config['client_id'];
-        $client_secret = self::$config['client_secret'];
-        $auth_header = self::oauth()->getAccessTokenHeader($client_id, $client_secret);
-        $content = Http::post($url, $data, [
-            'header' => array_merge($auth_header, $header, [
-                'X-Requested-With' => 'XMLHttpRequest'
-            ])
+    private static $request_count = 0;
+    public static function post($url, Array $data = [], Array $auth_header = [] ) {
+        $auth_header or $auth_header = self::getHeader();
+        $header = array_merge($auth_header, [
+            'X-Requested-With' => 'XMLHttpRequest'
         ]);
+        $content = Http::post($url, $data, [
+            'header' => $header
+        ]);
+
         if (is_array($content)) {
             return $ret;
         } else {
@@ -76,16 +80,16 @@ Class OAuthHttp {
                  $ret['error'] == 'invalid_token' ||
                  $ret['error'] == 'access_denied'
             ) {
-                $auth_header = self::oauth()->getAccessTokenHeader($client_id, $client_secret, true);
-                return self::post( $url, $data, $auth_header);
+                if ( ++self::$request_count <= 2 ) {
+                    $auth_header = self::getHeader(true);
+                    return self::post($url, $data, $auth_header);
+                } else {
+                    throw new \Exception('OAuth 尝试私有登录次数过多！');
+                }
             } else {
                 return $ret;
             }
-
         }
-
-
-
     }
 }
 OAuthHttp::init();

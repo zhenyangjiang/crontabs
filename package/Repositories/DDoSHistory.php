@@ -65,7 +65,6 @@ class DDoSHistory extends StaticRepository {
                 };
 
                 Alert::beginDDoS($alertsIp);
-                pause();
 
             } else {
                 Notify::developer(sprintf('事务处理失败：%s', $transacter));
@@ -107,7 +106,9 @@ class DDoSHistory extends StaticRepository {
             $data = [
                 'end_time' => $end_time,
                 'bps_peak' => Arr::get($peak, 'mbps.value'),
+                // 'bps_time' => Arr::get($peak, 'mbps.time'),
                 'pps_peak' => Arr::get($peak, 'pps.value'),
+                // 'pps_time' => Arr::get($peak, 'pps.time'),
                 'on_event' => $on_event,
             ];
             $awhere = ['id' => $history['id']];
@@ -117,6 +118,7 @@ class DDoSHistory extends StaticRepository {
                 Notify::developer($echo, compact('data', 'awhere'));
                 return false;
             } else {
+                Alert::endDDoS($ip, $data);
                 return true;
             }
         }

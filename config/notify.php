@@ -11,9 +11,9 @@ return [
             'retries'       => 2, //重试次数
         ],
         'sendcloud' => [
-            'api_user' => 'SeedMssP_test_7atBep',
-            'api_key' => 'IgVG8uKcceFjD22i',
-            'from_email'    => 'notify-server@qq.com',
+            'api_user'      => 'SeedMssP_test_7atBep',
+            'api_key'       => 'IgVG8uKcceFjD22i',
+            'from_email'    => 'seed@send.seedmssp.com',
             'from_name'     => ENV_system_name,
         ],
     ],

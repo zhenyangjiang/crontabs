@@ -20,7 +20,7 @@ Response::note('#line');
 
 Response::note('过滤掉已被牵引的IP...');
 $pack_attack = DDoSInfo::filte_blocked($pack_attack);
-#Response::note('#line');
+Response::note('#line');
 
 if ( $pack_attack ) {
     Response::note('正在对攻击数据进行分组...');
@@ -60,6 +60,10 @@ if ($attaching_ips) {
             $mitigation = $mitigations[$ip];
             $mitigation = Mitigation::attachs($mitigation);
 
+            //确定用户
+            $uid = $mitigation['uid'];
+            $user = User::find($uid);
+
             switch ($mitigation['billing']) {
                 case 'month' :
                     //按月计费
@@ -69,16 +73,13 @@ if ($attaching_ips) {
 
                 case 'hour' :
                     Response::note('IP：%s，计费方案：按需计费，防护阈值：%sMbps / %spps', $ip, $mitigation['ability_mbps'], $mitigation['ability_pps']);
+                    response_user_detail($user);
+
                     //数据中心
                     $datacenter = DataCenter::find($mitigation['datacenter_id']);
 
                     //获取当前ip所在的数据中心的价格规则(元/小时)的数组
                     $price_rules = DataCenter::price_rules($datacenter, 'hour');
-
-                    //由IP确定用户
-                    $uid = $mitigation['uid'];
-                    $user = User::find($uid);
-                    response_user_detail($user);
 
                     //由IP确定攻击历史记录
                     $DDoSHistory = DDoSHistory::find_ip_attacking($ip);
@@ -205,6 +206,9 @@ foreach ($pack_attack as $dc_id => $group) {
                     Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
 
                     if (BlackHole::block($dest_ip, $item['mbps'], true)) {
+                        Alert::ipBlock($dest_ip, [
+                            'reason' => '超大网安全'
+                        ]);
                         $total_mbps -= $item['mbps'];
                     }
                 }
@@ -248,9 +252,15 @@ foreach ($pack_attack as $dc_id => $group) {
                         if ($item['mbps'] >= $ability_mbps) {
                             Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps'], false);
+                            Alert::ipBlock($dest_ip, [
+                                'reason' => '攻击速率到达所购买防护阈值'
+                            ]);
                         } else if ($item['pps'] >= $ability_pps) {
                             Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps'], false);
+                            Alert::ipBlock($dest_ip, [
+                                'reason' => '攻击速率到达所购买防护阈值'
+                            ]);
                         } else {
                             Response::note('当前攻击值：%sMbps/%spps 未达到购买防护阈值，继续清洗...', $item['mbps'], $item['pps']);
                         }
@@ -303,6 +313,9 @@ foreach ($pack_attack as $dc_id => $group) {
                             //强制牵引
                             if (BlackHole::block($dest_ip, $item['mbps'], true)) {
                                 $total_mbps -= $item['mbps'];
+                                Alert::ipBlock($dest_ip, [
+                                    'reason' => '超大网安全且被攻击速率过高'
+                                ]);
                             }
 
                             //计费扣费
@@ -329,7 +342,9 @@ foreach ($pack_attack as $dc_id => $group) {
                                 } else {
                                     Response::note('需要对IP：%s作牵引处理', $dest_ip);
                                     BlackHole::block($dest_ip, $item['mbps'], 御前);
-
+                                    Alert::ipBlock($dest_ip, [
+                                        'reason' => '攻击速率到达所购买防护阈值'
+                                    ]);
                                     //计费扣费
                                     DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                                 }
@@ -343,7 +358,9 @@ foreach ($pack_attack as $dc_id => $group) {
 
                                     //产生的总费用超过用户余额，作牵引处理
                                     BlackHole::block($dest_ip, $item['mbps'], false);
-
+                                    Alert::ipBlock($dest_ip, [
+                                        'reason' => '您的余额不足，无法继续按需防护'
+                                    ]);
                                     //计费扣费
                                     DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                                 } else {

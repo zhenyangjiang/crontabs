@@ -30,7 +30,7 @@ class Notify {
     public static function developer($title, $content = '', $context = NULL) {
         $is_sended = self::isDoneToday(md5($title), 'developer');
         $title_bak = $title;
-        Response::note('#tab'.$title.'，需电邮开发者');
+        Response::note($title.'，需电邮开发者');
         if (!$is_sended) {
             $developers = Config::get('developer'); $contents = [];
             $contents[] = Response::export();
@@ -97,7 +97,7 @@ class Notify {
             if ($uinfo['email']) {
                 $email['content'] = Tpl::replace($email['content'], $data);
                 $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
-                $bool2 = self::send_email('sendcloud', [
+                $bool2 = self::send_email('phpmailer', [ //phpmailer | sendcloud
                     'to'        => $to,
                     'content'   => $email['content'],
                     'subject'   => $email['title']

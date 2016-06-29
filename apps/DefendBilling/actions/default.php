@@ -95,9 +95,8 @@ if ($attaching_ips) {
             }
 
             //写入攻击自然结束
-            Response::note('写入自然攻击结束...：');
-            $bool = DDoSHistory::save_end_attack($ip, 'STOP');
-            if ($bool) Response::echoBool(true);
+            Response::note('写入自然攻击结束...');
+            DDoSHistory::save_end_attack($ip, 'STOP');
 
             //更新实例网络状态为正常
             Mitigation::setStatus($ip, 'NORMAL');
@@ -121,7 +120,9 @@ if (!$all_ips) {
 //记录开始攻击
 Response::note('#line');
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
-DDoSHistory::save_start_attack($all_ips);
+$start_attack_ips = DDoSHistory::save_start_attack($all_ips);
+Alert::beginDDoS($start_attack_ips);
+Response::note('#line');
 
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击的数据中心的被攻击IP操作 ------------']);

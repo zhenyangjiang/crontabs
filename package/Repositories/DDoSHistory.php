@@ -54,19 +54,7 @@ class DDoSHistory extends StaticRepository {
                 return true;
             });
 
-            if ($result) {
-                //对IP进行按用户分组
-                $mitigations = Arr::groupBy($mitigations, 'uid');
-
-                //告警通知
-                $alertsIp = [];
-                foreach ($mitigations as $uid => $items) {
-                    $alertsIp[$uid] = Arr::pick($items, 'ip');
-                };
-
-                Alert::beginDDoS($alertsIp);
-
-            } else {
+            if (!$result) {
                 Notify::developer(sprintf('事务处理失败：%s', $transacter));
                 System::halt();
             }
@@ -118,7 +106,11 @@ class DDoSHistory extends StaticRepository {
                 Notify::developer($echo, compact('data', 'awhere'));
                 return false;
             } else {
-                Alert::endDDoS($ip, $data);
+                Response::echoBool(true);
+
+                // 自然结束时才告警
+                if ($on_event == 'STOP') Alert::endDDoS($ip, $data);
+
                 return true;
             }
         }
@@ -166,17 +158,20 @@ class DDoSHistory extends StaticRepository {
         });
         $price_bps = $price_rules[$price_key_bps];
         $price_pps = $price_rules[$price_key_pps];
+
+        $price_key_bps = Mitigation::Mbps_to_Gbps($price_key_bps);
+
         if ($price_bps == $price_pps) {
             $ret_price = $price_bps;
             if ( $ret_price ) {
-                Response::note('#tab在%s峰值%sMbps/%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
+                Response::note('#tab在%s峰值%sMbps/%spps最接近规格%sGbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
             } else {
                 Response::note('#tab单价为0，免费防护规格');
             }
         } else {
             if ( (int)$price_bps > (int)$price_pps ) {
                 $ret_price = $price_bps;
-                Response::note('#tab在%s峰值%sMbps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
+                Response::note('#tab在%s峰值%sMbps最接近规格%sGbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
             } else {
                 $ret_price = $price_pps;
                 Response::note('#tab在%s峰值%spps最接近规格%sMbps的价格为：%s元/小时', $peak_bps['time'], $peak_pps['value'], $price_key_pps, $ret_price);

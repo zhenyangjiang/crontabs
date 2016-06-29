@@ -14,10 +14,18 @@ class Alert extends StaticRepository {
         $event = $alert['event'];
         $uid = $alert['uid'];
         $ways = Arr::slice($alert, 'sms, email');
-        Response::note('#tab对用户ID:%s 告警通知 %s...', $uid, $event);
-        $bool = Notify::client($event, $uid, $data, $ways);
-        Response::echoBool($bool);
-        return $bool;
+        $bool = true; foreach ($ways as $item) {
+            if (!$item) $bool = false; break;
+        }
+        if ($bool) {
+            Response::note('#tab对用户ID: %s 告警通知%s...', $uid, $event);
+            $bool = Notify::client($event, $uid, $data, $ways);
+            Response::echoBool($bool);
+            return $bool;
+        } else {
+            Response::note('#tab用户ID: %s 关闭了%s告警通知', $uid, $event);
+            return true;
+        }
     }
 
     private static function initUser($uid) {
@@ -49,27 +57,40 @@ class Alert extends StaticRepository {
         return $alerts;
     }
 
+    private static function ip2userip($ips) {
+        $mitigations = Mitigation::lists([
+            'awhere' => ['ip' => $ips]
+        ]);
+        $usersIp = Arr::groupBy($mitigations, 'uid');
+        foreach ($usersIp as $uid => &$items) {
+            $items = Arr::pick($items, 'ip');
+            $items = implode(',', $items);
+        }; unset($items);
+
+        return $usersIp;
+    }
+
     /**
      * 告警通知：DDoS开始
      * @param  [type] $datas : 以uid为key的值为 ips数组  [ $uid1 => ['ip11', 'ip12'], $uid2 => ['ip1', 'ip2']]
      * @return [type]          [description]
      */
-    public static function beginDDoS($datas) {
+    public static function beginDDoS(array $ips) {
         $event = 'DDOS-BEGIN';
 
-        //获取所有用户ids
-        $uids = array_keys($datas);
+        if ($ips) {
+            Response::note('执行DDoS开始告警通知：');
+            $usersIp = self::ip2userip($ips);
 
-        //读取所有用户关于$event的alert设置
-        $alerts = self::getAlerts($uids, $event);
+            //读取所有用户关于$event的alert设置
+            $uids = array_keys($usersIp);
+            $alerts = self::getAlerts($uids, $event);
 
-        //对用户发送通知
-        foreach ($alerts as $alert) {
-            $uid = $alert['uid'];
-            $ips = array_values($datas[$uid]);
-            $ips = implode('，', $ips);
-            self::execute($alert, array('ips' => $ips));
-            unset($datas[$uid]);
+            foreach ($alerts as $alert) {
+                $uid = $alert['uid'];
+                $ips = $usersIp[$uid];
+                self::execute($alert, array('ips' => $ips));
+            }
         }
     }
 
@@ -81,6 +102,8 @@ class Alert extends StaticRepository {
      */
     public static function endDDoS($ip, Array $data) {
         $event = 'DDOS-END';
+
+        Response::note('执行攻击结束告警通知：');
 
         $mitigation = Mitigation::find_ip($ip);
         $uid = $mitigation['uid'];
@@ -103,6 +126,8 @@ class Alert extends StaticRepository {
     public static function ipBlock($ip, $data) {
         $event = 'BLOCKIP';
 
+        Response::note('执行牵引告警通知：');
+
         $mitigation = Mitigation::find_ip($ip);
         $uid = $mitigation['uid'];
 
@@ -124,14 +149,9 @@ class Alert extends StaticRepository {
         $event = 'UNBLOCKIP';
 
         if ($ips) {
-            $mitigations = Mitigation::lists([
-                'awhere' => ['ip' => $ips]
-            ]);
-            $usersIp = Arr::groupBy($mitigations, 'uid');
-            foreach ($usersIp as $uid => &$items) {
-                $items = Arr::pick($items, 'ip');
-                $items = implode(',', $items);
-            }; unset($items);
+            Response::note('执行解牵引告警通知：');
+
+            $usersIp = self::ip2userip($ips);
 
             //读取所有用户关于$event的alert设置
             $uids = array_keys($usersIp);

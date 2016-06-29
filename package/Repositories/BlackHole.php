@@ -81,7 +81,7 @@ Class BlackHole {
     public static function unblock(){
         //找出未解除，且牵引过期的ids
         $lists = Mitigation::lists([
-            'awhere' => ["block_expire<=".time(), 'status' => 'BLOCK'],
+            'awhere' => ['status' => 'BLOCK', "block_expire<=".time()],
             'fields' => 'ip',
             'order'  => 'block_expire asc'
         ]);
@@ -105,7 +105,7 @@ Class BlackHole {
                 $ips[] = $item['ip'];
             }
             if (!count($ips)) {
-                Response::echoBool($bool);
+                Response::echoBool(false);
                 return false;
             }
             Response::echoSuccess('%s 请求入队成功', count($ips));
@@ -120,6 +120,8 @@ Class BlackHole {
             return true;
         });
         Response::transactEnd($result);
+
+        if ($result) Alert::ipUnblock($ips);
 
         return $ips;
     }

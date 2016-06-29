@@ -14,7 +14,7 @@ class Alert extends StaticRepository {
         $event = $alert['event'];
         $uid = $alert['uid'];
         $ways = Arr::slice($alert, 'sms, email');
-        Response::note('#tab正在执行告警通知...');
+        Response::note('#tab对用户ID:%s 告警通知 %s...', $uid, $event);
         $bool = Notify::client($event, $uid, $data, $ways);
         Response::echoBool($bool);
         return $bool;
@@ -117,12 +117,32 @@ class Alert extends StaticRepository {
 
     /**
      * 解除牵引告警通知
-     * @param  [type] $ip   [description]
-     * @param  [type] $data [description]
+     * @param  array $ip    [description]
      * @return [type]       [description]
      */
-    public static function ipUnblock($ips, $data) {
+    public static function ipUnblock(Array $ips) {
+        $event = 'UNBLOCKIP';
 
+        if ($ips) {
+            $mitigations = Mitigation::lists([
+                'awhere' => ['ip' => $ips]
+            ]);
+            $usersIp = Arr::groupBy($mitigations, 'uid');
+            foreach ($usersIp as $uid => &$items) {
+                $items = Arr::pick($items, 'ip');
+                $items = implode(',', $items);
+            }; unset($items);
+
+            //读取所有用户关于$event的alert设置
+            $uids = array_keys($usersIp);
+            $alerts = self::getAlerts($uids, $event);
+
+            foreach ($alerts as $alert) {
+                $uid = $alert['uid'];
+                $ips = $usersIp[$uid];
+                self::execute($alert, array('ips' => $ips));
+            }
+        }
     }
 
 }

@@ -199,7 +199,11 @@ class DDoSHistory extends StaticRepository {
 
         // 确定此时间段的时长，由秒转换成小时
         $duration_seconds = $end_time - $begin_time;
-        $duration_seconds = $duration_seconds < 60 ? 60 : $duration_seconds; //不足1分钟，按1分钟时长计算
+        if ( $duration_seconds < 10 ) {
+            $duration_seconds = 0;
+        } else {
+            $duration_seconds = $duration_seconds < 60 ? 60 : $duration_seconds; //不足1分钟，按1分钟时长计算
+        }
         $duration = round($duration_seconds / 3600, 2);
 
         return round($hour_price * $duration);
@@ -214,6 +218,11 @@ class DDoSHistory extends StaticRepository {
         $ip = $history['ip'];
 
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
+
+        if ( !$duration ) {
+            Response::note('瞬间大流量攻击，时长过短，暂不计费');
+            return true;
+        }
 
         if (!$fee) {
             Response::note('未产生费用，无需扣费');

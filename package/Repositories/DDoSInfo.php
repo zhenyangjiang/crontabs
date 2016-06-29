@@ -18,14 +18,18 @@ class DDoSInfo extends StaticRepository {
 
         if ($blocked_ips) {
             $filte_ips = [];
-            foreach ($pack as $dest_ip => $item) {
-                $filte_ips[] = $dest_ip;
-                unset($pack[$dest_ip]);
+            foreach ($blocked_ips as $ip) {
+                if (array_key_exists($ip, $pack)) {
+                    $filte_ips[] = $ip;
+                    unset($pack[$ip]);
+                }
             }
 
             //已被牵引的IP还存在防火墙被攻击列表中
             if ($filte_ips) {
-                $message = sprintf('#tab以下IP还处于牵引中，却还在流量，已被过滤掉：%s', implode(', ', $filte_ips));
+                Response::note('#tab以下IP还处于牵引中，却还在流量，已被过滤掉：%s', implode(', ', $filte_ips));
+            } else {
+                Response::note('#tab没有IP处于被牵引中，无需过滤');
             }
         } else {
             Response::note('#tab没有IP存在于牵引中，无需过滤');

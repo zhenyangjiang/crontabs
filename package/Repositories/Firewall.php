@@ -16,7 +16,7 @@ Class Firewall {
     public static function get_attack() {
         $fwurl = Config::get('fwurl');
 
-        $content = include( __DIR__ . '/Firewall-data2.php');
+        $content = include( __DIR__ . '/Firewall-data3.php');
 
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('防火墙数据读取失败！');

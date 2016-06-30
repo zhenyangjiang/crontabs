@@ -73,21 +73,21 @@ class Notify {
         $data = array_merge($uinfo, $data);
         $notify_contents = Config::get('notify-content');
         $notify_contents = Arr::get($notify_contents, $content_key);
-        $message = $notify_contents['message'];
+        $inner = $notify_contents['inner'];
         $email = $notify_contents['email'];
         $sms = $notify_contents['sms'];
 
         $ways = array_merge([
-            'insite' => true,
+            'inner' => true,
             'email' => false,
             'sms' => false,
         ], $ways);
 
         // 发送站内消息
         $bool1 = true;
-        if ($ways['insite'] && $message && $message['content']) {
-            $message['content'] = Tpl::replace($message['content'], $data);
-            $bool1 = Message::sendTo($uid, $message['title'], $message['content']);
+        if ($ways['inner'] && $inner && $inner['content']) {
+            $inner['content'] = Tpl::replace($inner['content'], $data);
+            $bool1 = Message::sendTo($uid, $inner['title'], $inner['content']);
             // Response::bool($bool1, '#tab站内消息通知%s！');
         }
 

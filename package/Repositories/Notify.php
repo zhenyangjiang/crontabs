@@ -157,8 +157,8 @@ class Notify {
         $configs = Config::get('notify');
         $config = $configs['email'][$driver];
 
-        if ( $ops['subject'] ) {
-            $ops['subject'] .= ' - ' . ENV_system_name;
+        if ( $opts['subject'] ) {
+            $opts['subject'] .= ' - ' . ENV_system_name;
         }
 
         //创建任务

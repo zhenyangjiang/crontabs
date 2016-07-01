@@ -167,7 +167,7 @@ class Notify {
                 $mailer = new EMail($config, $opts);
                 break;
             case 'sendcloud' :
-                $mailer = new sendcloud($config, $opts);
+                $mailer = new SendCloud($config, $opts);
                 break;
         }
 

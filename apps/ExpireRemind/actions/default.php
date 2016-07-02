@@ -9,9 +9,10 @@ $before_days = Settings::get('instance_expire_before_days');
 
 $begin = time();
 $end = Datetime::add('days', $before_days, $begin);
-$instances = self::lists([
+$instances = Instance::lists([
     'awhere' => [sprintf('`expire` between %s and %s', $begin, $end)]
 ]);
+if (!$instances) {
     Response::note('暂无%s天内到期在实例', $before_days);
     System::continues();
 }

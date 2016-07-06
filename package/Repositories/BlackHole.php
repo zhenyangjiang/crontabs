@@ -39,8 +39,8 @@ Class BlackHole {
             return;
         }
 
-        $transacter = '牵引动作入队列、写入攻击结束、更新实例网络状态为“牵引中”';
-        Response::transactBegin($transacter);
+        // 牵引动作入队列、写入攻击结束、更新实例网络状态为“牵引中”';
+        Response::transactBegin();
         $result = Mitigation::transact(function() use ($ip, $bps, $is_force){
             //牵引动作入队列
             Response::note('#tab牵引请求入队...');
@@ -92,9 +92,8 @@ Class BlackHole {
 
         $ips = [];
 
-        //事务处理：解除牵引动作入队列、解除牵引更新“标志值为已解除”、实例状态更新为“正常”成功
-        $transacter = '解除牵引更新“标志值为已解除”、实例状态更新为“正常';
-        Response::transactBegin($transacter);
+        // 解除牵引更新“标志值为已解除”、实例状态更新为“正常”;
+        Response::transactBegin();
         $result = Mitigation::transact(function() use (&$lists, &$ips){
             //解除牵引动作入队列
             Response::note('#tab解除牵引请求入队...');

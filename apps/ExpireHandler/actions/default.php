@@ -33,11 +33,12 @@ foreach ($instances as $instance) {
     //过期天数
     $expire_days = -Instance::expireDays($instance);
     $expire_date = date('Y-m-d H:i:s', $instance['expire']);
-    Response::note('此实例的过期时间：%s', $expire_date);
 
     //系统允许过期天数、剩余天数
     $allow_days = Settings::get('instance_expire_retain_days');
     $retain_days = $allow_days - $expire_days;
+
+    Response::note('此实例的过期时间：%s, 已过期 %s 天, 数据还能保留 %s 天', $expire_date, $expire_days, $retain_days);
 
     $some_days = [
         'expire' => $expire_days,
@@ -81,7 +82,9 @@ foreach ($instances as $instance) {
     }
 
     $status_text = Instance::status($instance);
-    if (!$instance['is_auto_renew']) {  //未设置自动续费
+    if (!$instance['is_auto_renew']) {
+        //未设置自动续费
+
         Response::note('#tab实例未设置自动续费');
         //过期天数是否超过系统允许
         if ( $retain_days < 0 ) {
@@ -146,8 +149,9 @@ foreach ($instances as $instance) {
             Response::note('执行事务处理：%s：', $transaction_name);
             $bool_transact = renew_transact($uid, $instance, $instance_update, $feelog_data, [
                 function() use ($instance){//强制降级云盾
+                    Response::note('#tab强制降级云盾...');
                     $bool = Mitigation::down_grade($instance);
-                    Response::bool($bool, '#tab云盾强制降级%s');
+                    Response::echoBool($bool);
                     if ( !$bool) return false;
                     return true;
                 }
@@ -174,9 +178,7 @@ foreach ($instances as $instance) {
             }
         }
 
-        if ( $bool_transact ) {
-            Response::transactEnd(true);
-        } else {
+        if ( !$bool_transact ) {
             if (!is_null($bool_transact )) {
                 if ($feelog_data) {
                     $email_content = sprintf('扣费日志数据包：<br>%s', Arr::to_html($feelog_data));

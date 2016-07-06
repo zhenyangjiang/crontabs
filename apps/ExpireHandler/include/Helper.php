@@ -18,7 +18,7 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
             // 实例扣费日志
             Response::note('#tab写入实例扣费日志...');
             $bool = Feelog::create($feelog_data);
-            Response::bool($bool);
+            Response::echoBool($bool);
             if ( !$bool ) return false;
 
             // 更新实例
@@ -26,13 +26,13 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
             if (Instance::update($instance_update, ['id' => $instance['id']])) {
                 Response::echoSuccess(date('Y-m-d H:i:s', $instance_update['expire']));
             } else {
-                Response::bool(false);
+                Response::echoBool(false);
                 return false;
             }
 
             Response::note('#tab反挂起实例...');
             $bool = Instance::unsuspend($instance);
-            Response::bool($bool);
+            Response::echoBool($bool);
             if (!$bool) return false;
 
             Notify::client('instance_auto_renew_success', $uid, [
@@ -67,7 +67,7 @@ function suspend_transact($instance, $user, $some_days, $callback) {
             //降级云盾
             Response::note('#tab强制降级云盾为免费方案...');
             $bool = Mitigation::down_grade($instance);
-            Response::bool($bool);
+            Response::echoBool($bool);
             if ( !$bool) return false;
 
             //取消自动续费
@@ -77,18 +77,18 @@ function suspend_transact($instance, $user, $some_days, $callback) {
                     ['is_auto_renew' => 0 ],
                     ['id' => $instance['id']]
                 );
-                Response::bool($bool);
+                Response::echoBool($bool);
                 if ( !$bool) return false;
             }
 
             //挂起实例
             Response::note('#tab挂起实例...');
             if ( !Instance::suspend($instance) ) {
-                Response::bool(false);
+                Response::echoBool(false);
                 Notify::developer($msg);
                 return false;
             } else {
-                Response::bool(true);
+                Response::echoBool(true);
             }
 
             //执行回调（通常为通知客户充值）

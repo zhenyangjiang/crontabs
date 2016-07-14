@@ -55,7 +55,7 @@ class Instance extends StaticRepository {
         if ($instance['status'] !== 'SUSPENDED') {
             $ret = Virt::suspend($instance['vpsid']);
             if  ( $ret['done'] ) {
-                Instance::change_status($instance, 'suspend', true);
+                Instance::change_status($instance, 'toSuspend', true);
                 return true;
             } else {
                 return false;
@@ -76,7 +76,7 @@ class Instance extends StaticRepository {
         if ($instance['status'] === 'SUSPENDED') {
             $ret = Virt::unsuspend($instance['vpsid']);
             if  ( $ret['done'] ) {
-                Instance::change_status($instance, 'tonormal', true);
+                Instance::change_status($instance, 'toNormal', true);
                 return true;
             } else {
                 return false;
@@ -132,39 +132,26 @@ class Instance extends StaticRepository {
                 'NORMAL'    => [
                     'text'  => '正常',
                     'action'=> [
-                        'action_key1', 'action_key2'
                     ]
                 ],
                 'SUSPENDED'    => [
                     'text'  => '挂起',
                     'action'=> [
-                        'action_key3', 'action_key4'
                     ]
-                ],
-                'TODELETE'    => [
-                    'text'  => '待删除',
-                    'action'=> [
-                        'action_key3', 'action_key4'
-                    ]
-                ],
+                ]
             ];
 
             $actions = [
-                'tonormal'    => [
-                    'verify'    => ['SUSPENDED', 'TODELETE'],
+                'toNormal'    => [
+                    'verify'    => ['SUSPENDED'],
                     'status'    => 'NORMAL',
                     'text'      => '更新为正常',
                 ],
-                'suspend'   => [
+                'toSuspend'   => [
                     'verify'    => 'NORMAL',
                     'status'    => 'SUSPENDED',
                     'text'      => '挂起',
-                ],
-                'delete'    => [
-                    'verify'    => 'SUSPENDED',
-                    'status'    => 'TODELETE',
-                    'text'      => '删除',
-                ],
+                ]
             ];
             $ret = new StatusCtrl(self::$DAO, $statuses, $actions);
         }

@@ -241,7 +241,7 @@ class DDoSHistory extends StaticRepository {
         $feelog_data = [
             'typekey' => 'pay_mitigation_hour',
             'balance' => User::get_money($uid) - $fee,
-            'service_ip' => $ip,
+            // 'service_ip' => $ip,
             'uid' => $uid,
             'amount' => $fee,
             'description' => sprintf(

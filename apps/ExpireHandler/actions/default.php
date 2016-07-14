@@ -112,7 +112,7 @@ foreach ($instances as $instance) {
                 $feelog_data = [
                     'typekey' => 'renew_instance_mitigation',
                     'balance' => $user['money'] - $fee_renew_total,
-                    'service_ip' => $instance_ip,
+                    // 'service_ip' => $instance_ip,
                     'uid' => $uid,
                     'amount' => $fee_renew_total,
                     'description' => sprintf(
@@ -135,7 +135,7 @@ foreach ($instances as $instance) {
             $feelog_data = [
                 'typekey' => 'renew_instance',
                 'balance' => $user['money'] - $fee_renew_insntance,
-                'service_ip' => $instance_ip,
+                // 'service_ip' => $instance_ip,
                 'uid' => $uid,
                 'amount' => $fee_renew_insntance,
                 'description' => sprintf(

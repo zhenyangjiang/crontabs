@@ -33,12 +33,12 @@ class Feelog extends StaticRepository {
      * @param  [type]  $end   [description]
      * @return boolean        [description]
      */
-    public static function has_pay_hour($ip, $begin, $end) {
-        return !!self::count([
-            'service_ip' => $ip,
-            'typekey'  => 'pay_mitigation',
-            "time between $begin and $end"
-        ]);
-    }
+    // public static function has_pay_hour($ip, $begin, $end) {
+    //     return !!self::count([
+    //         'service_ip' => $ip,
+    //         'typekey'  => 'pay_mitigation',
+    //         "time between $begin and $end"
+    //     ]);
+    // }
 }
 Feelog::init();

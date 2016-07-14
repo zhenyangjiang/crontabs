@@ -35,7 +35,7 @@ class BlackholeAction implements TaskInterface {
         return \OAuthHttp::parse($ret);
     }
 
-    public function execute(&$retmsg = NULL) {
+    public function handle(&$retmsg = NULL) {
         if ( $this->action == 'block') {
             $result = $this->block();
             $bool = $result->success;

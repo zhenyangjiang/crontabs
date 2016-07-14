@@ -14,8 +14,8 @@ class Alert extends StaticRepository {
         $event = $alert['event'];
         $uid = $alert['uid'];
         $ways = Arr::slice($alert, 'sms, email');
-        $bool = true; foreach ($ways as $item) {
-            if (!$item) $bool = false; break;
+        $bool = false; foreach ($ways as $item) {
+            if ($item) $bool = true;
         }
         if ($bool) {
             Response::note('#tab对用户ID: %s 告警通知%s...', $uid, $event);

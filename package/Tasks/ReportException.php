@@ -25,7 +25,7 @@ class ReportException implements TaskInterface {
         ), $extra_data);
     }
 
-    public function execute(&$retmsg = NULL) {
+    public function handle(&$retmsg = NULL) {
         $ret = Http::post($this->apiurl, $this->postdata);
         if ( trim($content) == '' ) {
             $retmsg = '异常上报成功';

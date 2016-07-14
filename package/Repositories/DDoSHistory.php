@@ -28,8 +28,7 @@ class DDoSHistory extends StaticRepository {
 
         $ret_ips = [];
         if ($mitigations) {
-            //事务处理：写入攻击开始、更新实列表为被攻击中
-            $transacter = '写入攻击开始、更新实列表状态';
+            $transacter = '写入攻击开始、更新实列状态为被攻击中';
             Response::transactBegin($transacter);
             $result = self::transact(function() use ($mitigations, &$ret_ips) {
                 //准备导入history表
@@ -137,16 +136,12 @@ class DDoSHistory extends StaticRepository {
      * @param  array  &$peak_info  返回峰值信息
      * @return float
      */
-    private static function hour_price($ip, $price_rules, $begin_time, $end_time, &$peak_info = array()) {
-        Response::note('确定%s ~ %s内的每小时单价：', date('Y-m-d H:i:s', $begin_time), date('Y-m-d H:i:s', $end_time));
+    private static function hour_price($ip, $price_rules, &$peak_info = array()) {
+        $begin_time = $peak_info['begin'];
+        $end_time = $peak_info['end'];
 
-        //确定[begin_time]和[end_time]之间的峰值
-        $peak_info = DDoSInfo::peak($ip, $begin_time, $end_time);
-        if ( !$peak_info ) {
-            $echo = Response::warn('#tab未找到峰值或峰值为0');
-            reportDevException($echo, compact('ip', 'price_rules', 'begin_time', 'end_time'));
-            return 0;
-        }
+        Response::note('确定%s ~ %s内的每小时单价：', $begin_time, $end_time);
+
         $peak_bps = $peak_info['mbps'];
         $peak_pps = $peak_info['pps'];
 
@@ -194,8 +189,15 @@ class DDoSHistory extends StaticRepository {
         $begin_time = $history['begin_time'];
         $end_time = time();
 
+        $peak_info or $peak_info = DDoSInfo::peak($ip, $begin_time, $end_time);
+        if ( !$peak_info ) {
+            $echo = Response::warn('#tab未找到峰值或峰值为0');
+            reportDevException($echo, compact('ip', 'price_rules', 'begin_time', 'end_time'));
+            return 0;
+        }
+
         // 确定此时间段内的单价：由此时间段的峰值决定
-        $hour_price = self::hour_price($ip, $price_rules, $begin_time, $end_time, $peak_info);
+        $hour_price = self::hour_price($ip, $price_rules, $peak_info);
 
         // 确定此时间段的时长，由秒转换成小时
         $duration_seconds = $end_time - $begin_time;
@@ -213,9 +215,15 @@ class DDoSHistory extends StaticRepository {
      * 实际计费扣费
      * @return [type] [description]
      */
-    public static function billing($uid, $history, $price_rules) {
-
+    public static function billing($uid, $history, $price_rules, $peak_bps = NULL) {
         $ip = $history['ip'];
+
+        if ( $peak_bps ) {
+            $begin_time = $history['begin_time'];
+            $end_time = time();
+            Response::note('根据峰值bps：%sMbps, 构造峰值信息', $peak_bps);
+            $peak_info = DDoSInfo::genealPeakByMBps($peak_bps, $begin_time, $end_time);
+        }
 
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
 
@@ -233,7 +241,7 @@ class DDoSHistory extends StaticRepository {
         $feelog_data = [
             'typekey' => 'pay_mitigation_hour',
             'balance' => User::get_money($uid) - $fee,
-            'service_ip' => $ip,
+            // 'service_ip' => $ip,
             'uid' => $uid,
             'amount' => $fee,
             'description' => sprintf(

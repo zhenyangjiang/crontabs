@@ -72,26 +72,24 @@ class DDoSInfo extends StaticRepository {
     public static function peak($dest_ip, $begin, $end) {
         $awhere = ['dest' => $dest_ip, "created_at between $begin and $end"];
 
-        $info_bps = self::find([
+        $list = self::lists([
             'unions' => [$begin, $end],
             'awhere' => $awhere,
-            'order'  => 'bps0 desc'
         ]);
-        if (!$info_bps) return NULL;
+        if ( !$list ) return NULL;
+
+        $list = Arr::sort($list, 'bps0');
+        $first = $list[0];
         $info_bps = [
-            'time'  => date('Y-m-d H:i:s', $info_bps['created_at']),
-            'value' => $info_bps['bps0']
+            'time'  => date('Y-m-d H:i:s', $first['created_at']),
+            'value' => $first['bps0']
         ];
 
-        $info_pps = self::find([
-            'unions' => [$begin, $end],
-            'awhere' => $awhere,
-            'order'  => 'pps0 desc'
-        ]);
-        if (!$info_pps) return NULL;
+        $list = Arr::sort($list, 'pps0');
+        $first = $list[0];
         $info_pps = [
-            'time'  => date('Y-m-d H:i:s', $info_pps['created_at']),
-            'value' => (int)$info_pps['pps0']
+            'time'  => date('Y-m-d H:i:s', $first['created_at']),
+            'value' => $first['pps0']
         ];
 
         return [
@@ -99,6 +97,30 @@ class DDoSInfo extends StaticRepository {
             'end'   => date('Y-m-d H:i:s', $end),
             'mbps'  => $info_bps,
             'pps'   => $info_pps
+        ];
+    }
+
+    /**
+     * 根据mbps生成峰值数据包
+     * @param  [type] $mbps  [description]
+     * @param  [type] $begin [description]
+     * @param  [type] $end   [description]
+     * @return [type]        [description]
+     */
+    public static function genealPeakByMBps($mbps, $begin, $end) {
+        $begin = date('Y-m-d H:i:s', $begin);
+        $end = date('Y-m-d H:i:s', $end);
+        return [
+            'begin' => $begin,
+            'end'   => $end,
+            'mbps'  => [
+                'value' => $mbps,
+                'time' => $begin
+            ],
+            'pps'   => [
+                'value' => Mitigation::Mbps_to_pps($mbps),
+                'time' => $begin
+            ]
         ];
     }
 }

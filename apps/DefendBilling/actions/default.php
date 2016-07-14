@@ -323,10 +323,15 @@ foreach ($pack_attack as $dc_id => $group) {
                             if ( $block_exists ) {
                                 Response::note(' 在本次牵引之前，此IP就已被牵引了，无需再计费...');
                             } else {
-                                DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                                //当前攻击是否超过用户购买的最高防护能力
+                                if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
+                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
+                                } else {
+                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                                }
                             }
                         } else {
-                           //当前攻击是否超过用户购买的最高防护能力
+                            //当前攻击是否超过用户购买的最高防护能力
                             if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
                                 //超过?是
                                 if ($item['mbps'] > $ability_mbps) {
@@ -342,12 +347,12 @@ foreach ($pack_attack as $dc_id => $group) {
                                     //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
                                 } else {
                                     Response::note('需要对IP：%s作牵引处理', $dest_ip);
-                                    BlackHole::block($dest_ip, $item['mbps'], 御前);
+                                    BlackHole::block($dest_ip, $item['mbps'], true);
                                     Alert::ipBlock($dest_ip, [
                                         'reason' => '攻击速率到达所购买防护阈值'
                                     ]);
                                     //计费扣费
-                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
                                 }
                             } else {
                                 //超过?否

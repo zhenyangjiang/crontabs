@@ -12,7 +12,7 @@ unset($config['instance_is_about_to_expire_not_enough_balance_for_auto_renew']);
 unset($config['instance_is_about_to_expire_not_enough_balance_for_manual_renew']);
 unset($config['instance_auto_renew_success']);
 unset($config['instance_expire_retain_auto']);
-unset($config['instance_expire_retain_manual']);
+unset($config['INSTANCE_EXPIRE_WITH_RETAIN_DATA']);
 
 foreach ($config as $key => $contents) {
     if ($content = $contents['sms']) {
@@ -23,7 +23,7 @@ foreach ($config as $key => $contents) {
     }
 }
 
-$bool = Notify::client('instance_expire_retain_manual', 1, [
+$bool = Notify::client('INSTANCE_EXPIRE_WITH_RETAIN_DATA', 1, [
     'instance_name' => 'HOSTNAME',
     'instance_ip' => '127.127.127.127',
     'days' => 10,

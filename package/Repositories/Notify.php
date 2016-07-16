@@ -42,7 +42,7 @@ class Notify {
             }
             $contents = implode('<hr/>', $contents);
             $title = System::app('name').($title ? '：'.$title : '');
-            $bool = self::send_email('phpmailer', [
+            $bool = self::sendEmail('phpmailer', [
                 'tos'       => $developers,
                 'subject'   => $title,
                 'content'   => $contents.$mail_suffix
@@ -76,7 +76,6 @@ class Notify {
         $email = $notify_contents['email'];
         $sms = $notify_contents['sms'];
         $inner = $notify_contents['inner'] or $inner = $email;
-        dp($notify_contents);
 
         $ways = array_merge([
             'inner' => true,
@@ -89,7 +88,7 @@ class Notify {
         if ($ways['inner'] && $inner && $inner['content']) {
             $inner['content'] = Tpl::replace($inner['content'], $data);
             $bool1 = Message::sendTo($uid, $inner['title'], $inner['content']);
-            Response::bool($bool1, '#tab站内消息通知%s！');
+            // Response::bool($bool1, '#tab站内消息通知%s！');
         }
 
         // 发送邮件
@@ -98,12 +97,12 @@ class Notify {
             if ($uinfo['email']) {
                 $email['content'] = Tpl::replace($email['content'], $data);
                 $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
-                $bool2 = self::send_email('phpmailer', [ //phpmailer | sendcloud
+                $bool2 = self::sendEmail('phpmailer', [ //phpmailer | sendcloud
                     'to'        => $to,
                     'content'   => $email['content'],
                     'subject'   => $email['title']
                 ]);
-                Response::bool($bool2, '#tab客户邮件通知%s！');
+                // Response::bool($bool2, '#tab客户邮件通知%s！');
             }
         }
 
@@ -112,8 +111,8 @@ class Notify {
         if ($ways['sms'] && $sms) {
             $sms = Tpl::replace($sms, $data);
             $mobile = $uinfo['mobile'];
-            $bool3 = self::send_sms($mobile, $sms);
-            Response::bool($bool3, '#tab客户短信通知%s！');
+            $bool3 = self::sendSms($mobile, $sms);
+            // Response::bool($bool3, '#tab客户短信通知%s！');
         }
 
         return $bool1 && $bool2 && $bool3;
@@ -126,7 +125,7 @@ class Notify {
      * @param  boolean $is_queue [description]
      * @return [type]            [description]
      */
-    public static function send_sms($mobile, $content, $is_queue = true) {
+    public static function sendSms($mobile, $content, $is_queue = true) {
         $config = Config::get('notify');
         $sign = Arr::get($config, 'sms.sign');
         $content = $sign . $content;
@@ -153,7 +152,7 @@ class Notify {
      * @param  [type] $opts to, content, subject, is_queue
      * @return [type]       [description]
      */
-    public static function send_email($driver = 'phpemail', array $opts = array(), &$retdat = NULL) {
+    public static function sendEmail($driver = 'phpemail', array $opts = array(), &$retdat = NULL) {
         //读取配置
         $configs = Config::get('notify');
         $config = $configs['email'][$driver];
@@ -185,7 +184,7 @@ class Notify {
             if ( $retry <= $reties) {
                 Response::warn('入队失败，第%s次重试中...', $retry);
                 sleep(1);
-                self::send_email($driver, $optsm, $retdat);
+                self::sendEmail($driver, $optsm, $retdat);
             }
         }
     }

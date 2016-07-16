@@ -2,6 +2,10 @@
 return [
     //云主机（未设置自动续费）过期，数据仍保留，并尽快手工续费
     'DDOS-BEGIN' => [
+        'inner' => [
+            'title'   => '云盾遭受攻击',
+            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP：“{ips}”开始遭到DDoS攻击',
+        ],
         'email' => [
             'title'   => '云盾遭受攻击',
             'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP：“{ips}”开始遭到DDoS攻击',
@@ -10,6 +14,10 @@ return [
     ],
 
     'DDOS-END' => [
+        'inner' => [
+            'title'   => '云盾被攻击结束',
+            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”已被结束攻击，本次攻击流量峰值：{bps_peak}Mbps / {pps_peak}pps',
+        ],
         'email' => [
             'title'   => '云盾被攻击结束',
             'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”已被结束攻击，本次攻击流量峰值：{bps_peak}Mbps / {pps_peak}pps',
@@ -18,6 +26,10 @@ return [
     ],
 
     'IP-BLOCKED' => [
+        'inner' => [
+            'title'   => '云盾被牵引',
+            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”由于{reason}，被黑洞牵引',
+        ],
         'email' => [
             'title'   => '云盾被牵引',
             'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”由于{reason}，被黑洞牵引',

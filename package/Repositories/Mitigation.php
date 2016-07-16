@@ -142,6 +142,15 @@ class Mitigation extends StaticRepository {
     }
 
     /**
+     * 是否处于试用期
+     * @param  [type]  $mitigation [description]
+     * @return boolean             [description]
+     */
+    public static function isTrial($mitigation) {
+        return $mitigation['trial_expire'] > time();
+    }
+
+    /**
      * 根据所给的ip列表过滤出免费防护的ip
      * @param  Array  $ips [description]
      * @return [type]      [description]

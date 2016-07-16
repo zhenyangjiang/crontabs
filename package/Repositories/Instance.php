@@ -35,6 +35,11 @@ class Instance extends StaticRepository {
         ]);
     }
 
+    /**
+     * 是否处于试用期
+     * @param  [type]  $instance [description]
+     * @return boolean           [description]
+     */
     public static function isTrial($instance) {
         return $instance['trial_expire'] > time();
     }

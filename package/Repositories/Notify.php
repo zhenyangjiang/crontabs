@@ -73,9 +73,10 @@ class Notify {
         $data = array_merge($uinfo, $data);
         $notify_contents = Config::get('notify-content');
         $notify_contents = Arr::get($notify_contents, $content_key);
-        $inner = $notify_contents['inner'];
         $email = $notify_contents['email'];
         $sms = $notify_contents['sms'];
+        $inner = $notify_contents['inner'] or $inner = $email;
+        dp($notify_contents);
 
         $ways = array_merge([
             'inner' => true,
@@ -88,7 +89,7 @@ class Notify {
         if ($ways['inner'] && $inner && $inner['content']) {
             $inner['content'] = Tpl::replace($inner['content'], $data);
             $bool1 = Message::sendTo($uid, $inner['title'], $inner['content']);
-            // Response::bool($bool1, '#tab站内消息通知%s！');
+            Response::bool($bool1, '#tab站内消息通知%s！');
         }
 
         // 发送邮件
@@ -102,7 +103,7 @@ class Notify {
                     'content'   => $email['content'],
                     'subject'   => $email['title']
                 ]);
-                // Response::bool($bool2, '#tab客户邮件通知%s！');
+                Response::bool($bool2, '#tab客户邮件通知%s！');
             }
         }
 
@@ -111,8 +112,8 @@ class Notify {
         if ($ways['sms'] && $sms) {
             $sms = Tpl::replace($sms, $data);
             $mobile = $uinfo['mobile'];
-            $bool3 = Notify::send_sms($mobile, $sms);
-            // Response::bool($bool3, '#tab客户短信通知%s！');
+            $bool3 = self::send_sms($mobile, $sms);
+            Response::bool($bool3, '#tab客户短信通知%s！');
         }
 
         return $bool1 && $bool2 && $bool3;

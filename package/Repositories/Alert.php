@@ -124,7 +124,7 @@ class Alert extends StaticRepository {
      * @return [type]       [description]
      */
     public static function ipBlock($ip, $data) {
-        $event = 'BLOCKIP';
+        $event = 'IP-BLOCKED';
 
         Response::note('执行牵引告警通知：');
 
@@ -146,7 +146,7 @@ class Alert extends StaticRepository {
      * @return [type]       [description]
      */
     public static function ipUnblock(Array $ips) {
-        $event = 'UNBLOCKIP';
+        $event = 'IP-UNBLOCK';
 
         if ($ips) {
             Response::note('执行解牵引告警通知：');

@@ -21,6 +21,7 @@ Response::note(['#blank', '逐一对过期的实例进行相关操作...']);
 
 foreach ($instances as $instance) {
     Response::note('#line');
+
     $instance_ip = $instance['mainipaddress'];
 
     response_instance_detail($instance);
@@ -29,6 +30,12 @@ foreach ($instances as $instance) {
     $uid = $instance['uid'];
     $user = User::get($uid);
     response_user_detail($user);
+
+    //是否试用
+    if ( Instance::isTrial($instance) ) {
+        Response::note('此实例处于试用期：%s，暂不可处理', date('Y-m-d H:i:s', $instance['trial_expire']));
+        continue;
+    }
 
     //过期天数
     $expire_days = -Instance::expireDays($instance);

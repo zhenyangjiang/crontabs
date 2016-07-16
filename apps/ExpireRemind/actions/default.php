@@ -29,6 +29,12 @@ foreach ($instances as $instance) {
     $user_moeny = $user['money'];
     response_user_detail($user);
 
+    //是否试用
+    if ( Instance::isTrial($instance) ) {
+        Response::note('此实例处于试用期：%s，无需通知提醒。', date('Y-m-d H:i:s', $instance['trial_expire']));
+        continue;
+    }
+
     //检查是否已经通知过了
     if (Instance::check_is_notified($instance)) continue;
 

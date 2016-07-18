@@ -17,11 +17,9 @@ class Alert extends StaticRepository {
         $bool = false; foreach ($ways as $item) {
             if ($item) $bool = true;
         }
+
         if ($bool) {
-            Response::note('#tab对用户ID: %s 告警通知%s...', $uid, $event);
-            $bool = Notify::client($event, $uid, $data, $ways);
-            Response::echoBool($bool);
-            return $bool;
+            return Notify::clientApi($uid, $event, $data);
         } else {
             Response::note('#tab用户ID: %s 关闭了%s告警通知', $uid, $event);
             return true;
@@ -124,7 +122,7 @@ class Alert extends StaticRepository {
      * @return [type]       [description]
      */
     public static function ipBlock($ip, $data) {
-        $event = 'BLOCKIP';
+        $event = 'IP-BLOCKED';
 
         Response::note('执行牵引告警通知：');
 
@@ -146,7 +144,7 @@ class Alert extends StaticRepository {
      * @return [type]       [description]
      */
     public static function ipUnblock(Array $ips) {
-        $event = 'UNBLOCKIP';
+        $event = 'IP-UNBLOCK';
 
         if ($ips) {
             Response::note('执行解牵引告警通知：');

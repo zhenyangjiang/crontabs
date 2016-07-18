@@ -6,13 +6,13 @@ include 'inc-headline.php';
 
 Response::note('测试短信发送...');
 
-$config = Config::get('notify-content');
-unset($config['instance_is_about_to_expire_enough_balance_for_manual_renew']);
-unset($config['instance_is_about_to_expire_not_enough_balance_for_auto_renew']);
-unset($config['instance_is_about_to_expire_not_enough_balance_for_manual_renew']);
-unset($config['instance_auto_renew_success']);
-unset($config['instance_expire_retain_auto']);
-unset($config['instance_expire_retain_manual']);
+$config = Config::get('notify-contents');
+unset($config['REMIND-ENOUGH-BALANCE-FOR-MANUAL-RENEW']);
+unset($config['REMIND-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW']);
+unset($config['REMIND-NOT-ENOUGH-BALANCE-FOR-MANUAL-RENEW']);
+unset($config['HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW']);
+unset($config['HANDLE-EXPIRE-ALERT-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW']);
+unset($config['HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW']);
 
 foreach ($config as $key => $contents) {
     if ($content = $contents['sms']) {
@@ -23,7 +23,7 @@ foreach ($config as $key => $contents) {
     }
 }
 
-$bool = Notify::client('instance_expire_retain_manual', 1, [
+$bool = Notify::clientApi(1, 'HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW', [
     'instance_name' => 'HOSTNAME',
     'instance_ip' => '127.127.127.127',
     'days' => 10,

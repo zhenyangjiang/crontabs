@@ -29,6 +29,12 @@ foreach ($instances as $instance) {
     $user_moeny = $user['money'];
     response_user_detail($user);
 
+    //是否试用
+    if ( Instance::isTrial($instance) ) {
+        Response::note('此实例处于试用期：%s，无需通知提醒。', date('Y-m-d H:i:s', $instance['trial_expire']));
+        continue;
+    }
+
     //检查是否已经通知过了
     if (Instance::check_is_notified($instance)) continue;
 
@@ -51,17 +57,17 @@ foreach ($instances as $instance) {
     if ($is_auto_renew) { //自动续费
         if ($user_moeny < $fee_price) {
             Response::note('通知用户“云主机即将%s天后%s到期，余额不足以自动续费下个月”', $days, $expire_date);
-            Notify::client('instance_is_about_to_expire_not_enough_balance_for_auto_renew', $uid, $email_content);
+            Notify::clientApi($uid, 'REMIND-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW', $email_content);
         } else {
             Response::note('余额足矣，无需通知');
         }
     } else { //手工续费
         if ($user_moeny < $fee_price) { //余额不足以支付下个月，需要提醒
             Response::note('通知用户“云主机即将%s天后%s到期，余额不足需充值，并手工续费”', $days, $expire_date);
-            Notify::client('instance_is_about_to_expire_not_enough_balance_for_manual_renew', $uid, $email_content);
+            Notify::clientApi($uid, 'REMIND-NOT-ENOUGH-BALANCE-FOR-MANUAL-RENEW', $email_content);
         } else { //余额足够支付下个月，需要提醒
             Response::note('通知用户“云主机即将%s天后%s到期，余额足够，需手工续费”', $days, $expire_date);
-            Notify::client('instance_is_about_to_expire_enough_balance_for_manual_renew', $uid, $email_content);
+            Notify::clientApi($uid, 'REMIND-ENOUGH-BALANCE-FOR-MANUAL-RENEW', $email_content);
         }
     }
     if (isset($error) && !$error) Instance::update_notify_time($instance);

@@ -1,5 +1,6 @@
 <?php
 use Landers\Substrate\Utils\Arr;
+use Landers\Substrate\Utils\Str;
 use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\StaticRepository;
@@ -37,12 +38,12 @@ class Notify {
             if ($content) $contents[] = $content;
             if ($context) {
                 if ($context === true) $context = debug_backtrace();
-                if (is_array($context)) $context = Arr::to_html($context);
+                if (is_array($context)) $context = sprintf('<pre>%s</pre>', var_export($context, true));
                 if ($context) $contents[] = '上下文数据包：<br/>'.$context;
             }
             $contents = implode('<hr/>', $contents);
             $title = System::app('name').($title ? '：'.$title : '');
-            $bool = self::send_email('phpmailer', [
+            $bool = self::sendEmail('phpmailer', [
                 'tos'       => $developers,
                 'subject'   => $title,
                 'content'   => $contents.$mail_suffix
@@ -64,58 +65,42 @@ class Notify {
         return $bool;
     }
 
-    public static function client($content_key, $uid, array $data, array $ways = []) {
-        if (self::isDoneToday($content_key, $uid)) {
-            // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
-            // return false;
+    public static function clientApi($uid, $event, $data) {
+        if (self::isDoneToday($event, $uid)) {
+            Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
+            return false;
         }
+
+        Response::note('#tab对用户ID:%s 告警通知 %s ... : ', $uid, $event);
         $uinfo = User::get($uid, 'username, mobile, email');
         $data = array_merge($uinfo, $data);
-        $notify_contents = Config::get('notify-content');
-        $notify_contents = Arr::get($notify_contents, $content_key);
-        $inner = $notify_contents['inner'];
-        $email = $notify_contents['email'];
-        $sms = $notify_contents['sms'];
 
-        $ways = array_merge([
-            'inner' => true,
-            'email' => false,
-            'sms' => false,
-        ], $ways);
+        $host = Config::get('hosts', 'api');
+        $apiurl = $host . '/intranet/alert/send';
+        $contents = Config::get('notify-contents', $event);
+        foreach ($contents as $key => &$item) {
+            $content = $item['content'];
+            $content = is_array($content) ? implode('<br/>', $content) : $content;
+            $item['content'] = Str::parse($content, $data);
+        }; unset($item);
 
-        // 发送站内消息
-        $bool1 = true;
-        if ($ways['inner'] && $inner && $inner['content']) {
-            $inner['content'] = Tpl::replace($inner['content'], $data);
-            $bool1 = Message::sendTo($uid, $inner['title'], $inner['content']);
-            // Response::bool($bool1, '#tab站内消息通知%s！');
-        }
+        $result = \OAuthHttp::post($apiurl, [
+            'uid' => $uid,
+            'event' => $event,
+            'msg' => $contents,
+        ]);
+        $result = \OAuthHttp::parse($result);
 
-        // 发送邮件
-        $bool2 = true;
-        if ($ways['email'] && $email && $email['content']) {
-            if ($uinfo['email']) {
-                $email['content'] = Tpl::replace($email['content'], $data);
-                $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
-                $bool2 = self::send_email('phpmailer', [ //phpmailer | sendcloud
-                    'to'        => $to,
-                    'content'   => $email['content'],
-                    'subject'   => $email['title']
-                ]);
-                // Response::bool($bool2, '#tab客户邮件通知%s！');
+        if ($bool = $result->success) {
+            foreach ($result->data as $way => $val) {
+                if (is_null($val)) continue;
+                $way = strtoupper($way);
+                Response::echoBool($val, "$way ");
             }
+        } else {
+            Response::echoBool(false);
         }
-
-        //发送短信
-        $bool3 = true;
-        if ($ways['sms'] && $sms) {
-            $sms = Tpl::replace($sms, $data);
-            $mobile = $uinfo['mobile'];
-            $bool3 = Notify::send_sms($mobile, $sms);
-            // Response::bool($bool3, '#tab客户短信通知%s！');
-        }
-
-        return $bool1 && $bool2 && $bool3;
+        return $bool;
     }
 
     /**
@@ -125,7 +110,7 @@ class Notify {
      * @param  boolean $is_queue [description]
      * @return [type]            [description]
      */
-    public static function send_sms($mobile, $content, $is_queue = true) {
+    public static function sendSms($mobile, $content, $is_queue = true) {
         $config = Config::get('notify');
         $sign = Arr::get($config, 'sms.sign');
         $content = $sign . $content;
@@ -152,7 +137,7 @@ class Notify {
      * @param  [type] $opts to, content, subject, is_queue
      * @return [type]       [description]
      */
-    public static function send_email($driver = 'phpemail', array $opts = array(), &$retdat = NULL) {
+    public static function sendEmail($driver = 'phpemail', array $opts = array(), &$retdat = NULL) {
         //读取配置
         $configs = Config::get('notify');
         $config = $configs['email'][$driver];
@@ -184,8 +169,62 @@ class Notify {
             if ( $retry <= $reties) {
                 Response::warn('入队失败，第%s次重试中...', $retry);
                 sleep(1);
-                self::send_email($driver, $optsm, $retdat);
+                self::sendEmail($driver, $optsm, $retdat);
             }
         }
     }
+
+    // public static function client($content_key, $uid, array $data, array $ways = []) {
+    //     if (self::isDoneToday($content_key, $uid)) {
+    //         // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
+    //         // return false;
+    //     }
+    //     $uinfo = User::get($uid, 'username, mobile, email');
+    //     $data = array_merge($uinfo, $data);
+    //     $notify_contents = Config::get('notify-content');
+    //     $notify_contents = Arr::get($notify_contents, $content_key);
+    //     $email = $notify_contents['email'];
+    //     $sms = $notify_contents['sms'];
+    //     $inner = $notify_contents['inner'] or $inner = $email;
+
+    //     $ways = array_merge([
+    //         'inner' => true,
+    //         'email' => false,
+    //         'sms' => false,
+    //     ], $ways);
+
+    //     // 发送站内消息
+    //     $bool1 = true;
+    //     if ($ways['inner'] && $inner && $inner['content']) {
+    //         $inner['content'] = Tpl::replace($inner['content'], $data);
+    //         $bool1 = Message::sendTo($uid, $inner['title'], $inner['content']);
+    //         // Response::bool($bool1, '#tab站内消息通知%s！');
+    //     }
+
+    //     // 发送邮件
+    //     $bool2 = true;
+    //     if ($ways['email'] && $email && $email['content']) {
+    //         if ($uinfo['email']) {
+    //             $email['content'] = Tpl::replace($email['content'], $data);
+    //             $to = ['name' => $uinfo['user_name'], 'email' => $uinfo['email']];
+    //             $bool2 = self::sendEmail('phpmailer', [ //phpmailer | sendcloud
+    //                 'to'        => $to,
+    //                 'content'   => $email['content'],
+    //                 'subject'   => $email['title']
+    //             ]);
+    //             // Response::bool($bool2, '#tab客户邮件通知%s！');
+    //         }
+    //     }
+
+    //     //发送短信
+    //     $bool3 = true;
+    //     if ($ways['sms'] && $sms) {
+    //         $sms = Tpl::replace($sms, $data);
+    //         $mobile = $uinfo['mobile'];
+    //         $bool3 = self::sendSms($mobile, $sms);
+    //         // Response::bool($bool3, '#tab客户短信通知%s！');
+    //     }
+
+    //     return $bool1 && $bool2 && $bool3;
+    // }
 }

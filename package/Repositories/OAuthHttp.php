@@ -66,15 +66,20 @@ Class OAuthHttp {
         } else {
             if ($content) {
                 $ret = json_decode($content, true);
+                $ret or $ret = [
+                    'error' => 'parse_error',
+                    'message' => $content,
+                    'status_code' => 400,
+                    'success' => false,
+                ];
             } else {
-                $ret = NULL;
+                $ret = [
+                    'error' => 'invalid_access',
+                    'message' => 'cannot connect remote host',
+                    'status_code' => 400,
+                    'success' => false,
+                ];
             }
-            $ret or $ret = [
-                'error' => 'invalid_access',
-                'message' => 'cannot connect remote host',
-                'status_code' => 400,
-                'success' => false,
-            ];
 
             if ( $ret['error'] == 'invalid_request' ||
                  $ret['error'] == 'invalid_token' ||

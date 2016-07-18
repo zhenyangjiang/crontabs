@@ -35,7 +35,7 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
             Response::echoBool($bool);
             if (!$bool) return false;
 
-            Notify::client('instance_auto_renew_success', $uid, [
+            Notify::clientApi($uid, 'HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW', [
                 'instance_name' => $instance['hostname'],
                 'old_expire'    => date('Y-m-d H:i:s', $instance['expire']),
                 'new_expire'    => date('Y-m-d H:i:s', $instance_update['expire']),
@@ -63,7 +63,7 @@ function suspend_transact($instance, $user, $some_days, $callback) {
     $status_text = Instance::status($instance);
     if ($instance['status'] !== 'SUSPENDED') {
         Response::note('#tab当前为%s状态，需执行云盾降级和挂起操作', colorize($status_text, 'yellow'));
-        $result = Mitigation::transact( function() use ( $instance, $user ) {
+        $result = Mitigation::transact( function() use ( $instance, $user, $callback ) {
             //降级云盾
             Response::note('#tab强制降级云盾为免费方案...');
             $bool = Mitigation::down_grade($instance);
@@ -112,7 +112,7 @@ function destroy_instance($instance, $some_days) {
         $bool = Instance::destroy($instance);
         Response::bool($bool, '#tab实例销毁%s！');
         if (!$bool) {
-            Notify::developer('实例销毁失败', Arr::to_html($instance));
+            Notify::developer('实例销毁失败', sprintf('<pre>%s</pre>', var_export($instance, true)));
         }
     }
 }

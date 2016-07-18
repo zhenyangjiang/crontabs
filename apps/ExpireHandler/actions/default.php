@@ -9,15 +9,17 @@ Response::note(['【实例到期后，挂起、待删除、自动续费后反挂
 
 //取得过期的实例列表
 $instances = Instance::lists([
-    // 'awhere' => ['expire<' . time()]
+    'awhere' => ['expire<' . time()]
     'awhere' => ['mainipaddress' => '123.1.1.8']
 ]);
+
 if ($instances) {
     Response::note('共找到期的实例：%s台', count($instances));
 } else {
     Response::note('当前暂无过期的实例主机');
     System::continues();
 }
+
 Response::note(['#blank', '逐一对过期的实例进行相关操作...']);
 
 foreach ($instances as $instance) {

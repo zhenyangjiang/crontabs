@@ -10,7 +10,8 @@ $before_days = Settings::get('instance_expire_before_days');
 $begin = time();
 $end = Datetime::add('days', $before_days, $begin);
 $instances = Instance::lists([
-    'awhere' => [sprintf('`expire` between %s and %s', $begin, $end)]
+    'awhere' => [sprintf('`expire` between %s and %s', $begin, $end)],
+    'awhere' => ['mainipaddress' => '123.1.1.8']
 ]);
 if (!$instances) {
     Response::note('暂无%s天内到期在实例', $before_days);
@@ -22,6 +23,14 @@ foreach ($instances as $instance) {
     $instance_ip = $instance['mainipaddress'];
     $is_auto_renew = $instance['is_auto_renew'];
     response_instance_detail($instance);
+
+    // dp(System::isDoneToday($instance['id']));
+
+    if ( System::isDoneToday($instance['id']) ) {
+        Response::note('此实例今天 (%s) 已通知提醒过。', date('Y-m-d'));
+        continue;
+    }
+
 
     //确定实例所属用户
     $uid = $instance['uid'];

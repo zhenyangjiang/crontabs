@@ -6,7 +6,6 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Queue;
-use Landers\Framework\Core\Redis;
 use Landers\Substrate\Apps\Tasks\SendEmailNotify;
 use Landers\Substrate\Apps\Tasks\SendSmsNotify;
 use Landers\Substrate\Classes\Tpl;
@@ -17,19 +16,8 @@ use Landers\Substrate\Apps\ThirdApis\SendCloud;
 class Notify {
     private static $mail_suffix = '<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>';
 
-    private static function isDoneToday($uid, $content_key) {
-        $key = $content_key . $uid. date('Y-m-d');
-        $md5_key = md5($key);
-        if ( Redis::get($md5_key) ) {
-            return true;
-        } else {
-            Redis::set($md5_key, $key);
-            return false;
-        }
-    }
-
     public static function developer($title, $content = '', $context = NULL) {
-        $is_sended = self::isDoneToday(md5($title), 'developer');
+        $is_sended = System::isDoneToday($title, 'developer');
         $title_bak = $title;
         Response::note($title.'，需电邮开发者');
         if (!$is_sended) {
@@ -66,7 +54,7 @@ class Notify {
     }
 
     public static function clientApi($uid, $event, $data) {
-        if (self::isDoneToday($event, $uid)) {
+        if (System::isDoneToday($event, $uid)) {
             Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
             return false;
         }
@@ -175,7 +163,7 @@ class Notify {
     }
 
     // public static function client($content_key, $uid, array $data, array $ways = []) {
-    //     if (self::isDoneToday($content_key, $uid)) {
+    //     if (System::isDoneToday($content_key, $uid)) {
     //         // Response::note('#tab今天（%s）已经发过邮件通知了', date('Y-m-d'));
     //         // return false;
     //     }

@@ -9,7 +9,8 @@ Response::note(['【实例到期后，挂起、待删除、自动续费后反挂
 
 //取得过期的实例列表
 $instances = Instance::lists([
-    'awhere' => ['expire<' . time()]
+    // 'awhere' => ['expire<' . time()]
+    'awhere' => ['mainipaddress' => '123.1.1.8']
 ]);
 if ($instances) {
     Response::note('共找到期的实例：%s台', count($instances));
@@ -71,7 +72,6 @@ foreach ($instances as $instance) {
     if ($mitigation_info) {
         $mitigation_price = $mitigation_info['price'];
         $mitigation_ability = $mitigation_info['ability'];
-
         $fee_renew_mitigation = $mitigation_price;
     } else {
         $msg = '实例到期自动续费发现无云盾记录';
@@ -101,7 +101,7 @@ foreach ($instances as $instance) {
             //挂起实例、强制降级云盾
             $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
                 Response::note('#tab将通知客户实例已被挂起，需充值后并手工续费');
-                Notify::client('INSTANCE_EXPIRE_WITH_RETAIN_DATA', $uid, [
+                Notify::clientApi($uid, 'HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW', [
                     'instance_name' => $instance['hostname'],
                     'instance_ip'   => $instance['mainipaddress'],
                     'expire_days'   => $some_days['expire'],
@@ -174,7 +174,7 @@ foreach ($instances as $instance) {
                 $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
                     Response::note('将通知客户实例已被挂起，需充值后并手工续费');
                     if (!Instance::check_is_notified($instance)) {
-                        Notify::client('instance_expire_retain_auto', $uid, [
+                        Notify::clientApi($uid, 'HANDLE-EXPIRE-ALERT-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW', [
                             'instance_name' => $instance['hostname'],
                             'instance_ip'   => $instance['mainipaddress'],
                             'expire_days'   => $some_days['expire'],
@@ -188,7 +188,7 @@ foreach ($instances as $instance) {
         if ( !$bool_transact ) {
             if (!is_null($bool_transact )) {
                 if ($feelog_data) {
-                    $email_content = sprintf('扣费日志数据包：<br>%s', Arr::to_html($feelog_data));
+                    $email_content = sprintf('扣费日志数据包：<br>%s', sprintf('<pre>%s</pre>', var_export($feelog_data, true)));
                     Notify::developer(sprintf('事务【%s】处理失败', $transaction_name), $email_content);
                 } else {
                     Notify::developer(sprintf('事务【%s】处理失败', $transaction_name));

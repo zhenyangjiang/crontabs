@@ -4,7 +4,7 @@ use Landers\Framework\Core\Response;
 include 'inc-headline.php';
 
 Response::note('测试客户通知发送...');
-$bool = Notify::client('test', 1, [
+$bool = Notify::clientApi(1, 'test', [
     'instance_name' => '云主机名称',
     'instance_ip'   => '192.168.0.0',
     'days'   => 3,

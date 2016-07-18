@@ -4,45 +4,81 @@ return [
     'DDOS-BEGIN' => [
         'inner' => [
             'title'   => '云盾遭受攻击',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP：“{ips}”开始遭到DDoS攻击',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ips} 开始遭到DDoS攻击',
+            ],
         ],
         'email' => [
             'title'   => '云盾遭受攻击',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP：“{ips}”开始遭到DDoS攻击',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ips} 开始遭到DDoS攻击',
+            ],
         ],
-        'sms' => '尊敬的用户{user_name}：您的IP“{ips}”正在遭受DDoS攻击',
+        'sms' => [
+            'content' => '尊敬的用户{$user_name}：您的IP：{$ips} 正在遭受DDoS攻击',
+        ]
     ],
 
     'DDOS-END' => [
         'inner' => [
             'title'   => '云盾被攻击结束',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”已被结束攻击，本次攻击流量峰值：{bps_peak}Mbps / {pps_peak}pps',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ip} 已被结束攻击，本次攻击流量峰值：{$bps_peak}Mbps / {$pps_peak}pps',
+            ],
         ],
         'email' => [
             'title'   => '云盾被攻击结束',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”已被结束攻击，本次攻击流量峰值：{bps_peak}Mbps / {pps_peak}pps',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ip} 已被结束攻击，本次攻击流量峰值：{$bps_peak}Mbps / {$pps_peak}pps',
+            ],
         ],
-        'sms' => '尊敬的用户{user_name}：您的IP“{ip}”已被结束攻击，本次攻击流量峰值：{bps_peak}Mbps / {pps_peak}pps',
+        'sms' => [
+            'content' => '尊敬的用户{$user_name}：您的IP：{$ip} 已被结束攻击，本次攻击流量峰值：{$bps_peak}Mbps / {$pps_peak}pps',
+        ]
     ],
 
     'IP-BLOCKED' => [
         'inner' => [
             'title'   => '云盾被牵引',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”由于{reason}，被黑洞牵引',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ip} 由于{$reason}，被黑洞牵引',
+            ],
         ],
         'email' => [
             'title'   => '云盾被牵引',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ip}”由于{reason}，被黑洞牵引',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ip} 由于{$reason}，被黑洞牵引',
+            ],
         ],
-        'sms' => '您的IP“{ip}”由于{reason}，被黑洞牵引',
+        'sms' => [
+            'content' => '您的IP：{$ip} 由于{$reason}，被黑洞牵引',
+        ]
     ],
 
     'IP-UNBLOCK' => [
+        'inner' => [
+            'title'   => '云盾被解除牵引',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ips} 被解除牵引',
+            ],
+        ],
         'email' => [
             'title'   => '云盾被解除牵引',
-            'content' => '尊敬的用户{user_name}：'.PHP_EOL.'　　您的IP“{ips}”被解除牵引',
+            'content' => [
+                '尊敬的用户{$user_name}：',
+                '　　您的IP：{$ips} 被解除牵引',
+            ],
         ],
-        'sms' => '您的IP“{ips}”被解除牵引',
+        'sms' => [
+            'content' => '您的IP：{$ips} 被解除牵引',
+        ]
     ],
 ];
 ?>

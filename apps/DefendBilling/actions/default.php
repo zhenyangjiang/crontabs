@@ -13,6 +13,7 @@ Response::note(['【按月防护，按需防护、计费】（'.System::app('nam
 Response::note('正在对牵引过期的IP作解除牵引：');
 BlackHole::unblock(); //解除牵引
 Response::note('#line');
+pause();
 
 Response::note('正在从防火墙上获取了攻击信息...');
 $pack_attack = Firewall::get_attack();
@@ -127,6 +128,7 @@ Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击
 $start_attack_ips = DDoSHistory::save_start_attack($all_ips);
 Alert::beginDDoS($start_attack_ips);
 Response::note('#line');
+
 
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击的数据中心的被攻击IP操作 ------------']);
@@ -264,7 +266,7 @@ foreach ($pack_attack as $dc_id => $group) {
                             Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps'], false);
                             Alert::ipBlock($dest_ip, [
-                                'reason' => '攻击速率到达所购买防护阈值'
+                                'reason' => '攻击报文数量到达所购买防护阈值'
                             ]);
                         } else {
                             Response::note('当前攻击值：%sMbps/%spps 未达到购买防护阈值，继续清洗...', $item['mbps'], $item['pps']);

@@ -12,8 +12,8 @@ class ReportException implements TaskInterface {
     private $postdata = array();
     private $apiurl = '%s/_api/collect';
     function __construct($message, $type, $extra_data = array()) {
-        $hosts = Config::get('hosts', 'collecter');
-        $this->apiurl = sprintf($this->apiurl, $hosts);
+        $host = Config::get('hosts', 'collecter');
+        $this->apiurl = sprintf($this->apiurl, $host);
         $this->postdata = array_merge(Array (
             'from' => 'Crontab.' . System::app('name'),
             'message' => $message,

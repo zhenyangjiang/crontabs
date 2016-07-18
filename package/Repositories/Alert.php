@@ -17,11 +17,9 @@ class Alert extends StaticRepository {
         $bool = false; foreach ($ways as $item) {
             if ($item) $bool = true;
         }
+
         if ($bool) {
-            Response::note('#tab对用户ID: %s 告警通知%s...', $uid, $event);
-            $bool = Notify::client($event, $uid, $data, $ways);
-            Response::echoBool($bool);
-            return $bool;
+            return Notify::clientApi($uid, $event, $data);
         } else {
             Response::note('#tab用户ID: %s 关闭了%s告警通知', $uid, $event);
             return true;

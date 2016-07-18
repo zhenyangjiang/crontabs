@@ -35,9 +35,6 @@ foreach ($instances as $instance) {
         continue;
     }
 
-    //检查是否已经通知过了
-    if (Instance::check_is_notified($instance)) continue;
-
     //确定实例及按月计费云盾每月所需费用
     $mitigation_info = Mitigation::find_ip($instance_ip);
     $price_mitigation = $mitigation_info ? $mitigation_info['price'] : 0;
@@ -70,7 +67,6 @@ foreach ($instances as $instance) {
             Notify::clientApi($uid, 'REMIND-ENOUGH-BALANCE-FOR-MANUAL-RENEW', $email_content);
         }
     }
-    if (isset($error) && !$error) Instance::update_notify_time($instance);
 }
 System::continues();
 

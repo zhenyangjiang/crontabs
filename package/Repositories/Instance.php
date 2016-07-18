@@ -95,41 +95,6 @@ class Instance extends StaticRepository {
         }
     }
 
-
-
-    /**
-     * 检查本次通知是否已经通知过了
-     * @param  [type] $xinstance [description]
-     * @return [type]            [description]
-     */
-    public static function check_is_notified($xinstance) {
-        $notify_at = self::info($xinstance, 'notified_at');
-        if ( $notify_at && !Datetime::diff($notify_at, time()) ) {
-            $begin = Datetime::format($notify_at, 'Y-m-d H:i:s');
-            $end = Datetime::add('days', 1, $notify_at, 'Y-m-d H:i:s');
-            Response::note('此实例在%s ~ %s已通知，已需重复通知', colorize($begin, 'yellow'), colorize($end, 'yellow'));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 更新实例（由于某些原因需要通知时的）通知时间，以便不在某时间段内重复通知
-     * @param  [type]   $xinstance  [description]
-     * @return [type]               [description]
-     */
-    public static function update_notify_time($xinstance) {
-        $id = self::info($xinstance, 'id');
-        $msg = '实例最后通知时间更新';
-        if ($bool = self::update(['notified_at' => time()], ['id' => $id])) {
-            Response::note($msg . '成功。');
-        } else {
-            Response::note($msg . '失败！');
-        }
-        return $bool;
-    }
-
     /**
      * 取得状态控制对象
      * @return [type] [description]

@@ -37,7 +37,7 @@ class DDoSHistory extends StaticRepository {
 
                 Response::note('#tab即将对以下IP写入攻击历史：');
                 $ret_ips = Arr::clone_inner($mitigations, 'ip');
-                Response::echo(implode('，', $ret_ips));
+                Response::echoText(implode('，', $ret_ips));
 
                 Response::note('#tab写入“攻击开始”...');
                 $bool = self::import($data);

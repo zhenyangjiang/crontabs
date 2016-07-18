@@ -173,14 +173,12 @@ foreach ($instances as $instance) {
                 //挂起实例、实例改为非自动续费、强制降级云盾
                 $bool_transact = suspend_transact($instance, $user, $some_days, function() use ($instance, $uid, $some_days){
                     Response::note('将通知客户实例已被挂起，需充值后并手工续费');
-                    if (!Instance::check_is_notified($instance)) {
-                        Notify::clientApi($uid, 'HANDLE-EXPIRE-ALERT-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW', [
-                            'instance_name' => $instance['hostname'],
-                            'instance_ip'   => $instance['mainipaddress'],
-                            'expire_days'   => $some_days['expire'],
-                            'retain_days'   => $some_days['retain'],
-                        ]);
-                    }
+                    Notify::clientApi($uid, 'HANDLE-EXPIRE-ALERT-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW', [
+                        'instance_name' => $instance['hostname'],
+                        'instance_ip'   => $instance['mainipaddress'],
+                        'expire_days'   => $some_days['expire'],
+                        'retain_days'   => $some_days['retain'],
+                    ]);
                 });
             }
         }

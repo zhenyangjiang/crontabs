@@ -11,7 +11,7 @@ $begin = time();
 $end = Datetime::add('days', $before_days, $begin);
 $instances = Instance::lists([
     'awhere' => [sprintf('`expire` between %s and %s', $begin, $end)],
-    'awhere' => ['mainipaddress' => '123.1.1.8']
+    // 'awhere' => ['mainipaddress' => '123.1.1.8']
 ]);
 if (!$instances) {
     Response::note('暂无%s天内到期在实例', $before_days);

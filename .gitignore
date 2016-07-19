@@ -16,3 +16,4 @@
 /xxx-sftp-config.json
 /composer.lock
 /storage/logs
+/apps/ExpireRemind/logs

@@ -53,8 +53,8 @@ class Notify {
 
     public static function clientApi($uid, $event, $data) {
         if (System::isDoneToday($event, $uid)) {
-            // Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
-            // return false;
+            Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
+            return false;
         }
 
         Response::note('#tab对用户ID:%s 告警通知 %s ... : ', $uid, $event);

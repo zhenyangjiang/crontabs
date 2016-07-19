@@ -114,7 +114,6 @@ function destroy_instance($instance, $some_days) {
         Response::note('调试开启：执行虚拟销毁');
     } else {
         $bool = Instance::destroy($instance);
-        Response::bool($bool, '#tab实例销毁%s！');
         if (!$bool) {
             Notify::developer('实例销毁失败', sprintf('<pre>%s</pre>', var_export($instance, true)));
         }

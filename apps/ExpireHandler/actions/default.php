@@ -9,8 +9,8 @@ Response::note(['【实例到期后，挂起、待删除、自动续费后反挂
 
 //取得过期的实例列表
 $instances = Instance::lists([
-    // 'awhere' => ['expire<' . time()]
-    'awhere' => ['mainipaddress' => '123.1.1.8']
+    'awhere' => ['expire<' . time()] //, "mainipaddress <> '123.1.1.11'"
+    // 'awhere' => ['mainipaddress' => '123.1.1.8']
 ]);
 
 if ($instances) {

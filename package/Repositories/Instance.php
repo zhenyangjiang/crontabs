@@ -210,6 +210,7 @@ class Instance extends StaticRepository {
         $results = [];
 
         //事务嵌套处理
+        Response::transactBegin();
         $result = self::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
             return DDoSInfo::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
 
@@ -234,7 +235,7 @@ class Instance extends StaticRepository {
 
                         Response::note('#tab正在删除模型【%s】数据...', $model);
                         $results[$model] = $model::delete($awhere, $opts);
-                        Response::bool(!!$results[$model]);
+                        Response::echoBool(!!$results[$model]);
                     }
                 }
 
@@ -245,20 +246,23 @@ class Instance extends StaticRepository {
                     $bool = $FwRuleModel::delete([
                         'mitigation_id' => $mitigation_ids
                     ]);
-                    Response::bool($bool);
+                    Response::echoBool($bool);
+                    if (!$bool) reportDevException('销毁实例时防火墙规则删除失败', array('context' => compact($mitigation_id)));
                 }
 
                 //删除 cc 防护规则
                 Response::note('#tab正在向接口提交删除CC防护...');
                 $apiurl = Config::get('hosts', 'api') . '/intranet/firewall/close-cc-defend';
-                $result = OAuthHttp::post($apiurl, ['ip' => $instance_ip]);
-                Response::echoBool($result['success'], $result['message']);
-                if ( !$result['success'] ) return false;
+                $ret = OAuthHttp::post($apiurl, ['ip' => $instance_ip]);
+                Response::echoBool($ret['success'], $ret['message']);
+                if (!$ret['success']) {
+                    reportDevException('销毁实例时CC防护删除失败', array('context' => compact($instance)));
+                }
 
                 // 执行删除实例主机
                 Response::note('#tab销毁虚拟机...');
                 $ret = Virt::delete_vs($instance['vpsid']);
-                Response::bool($ret['done']);
+                Response::echoBool($ret['done']);
                 if ( !$ret['done'] ) return false;
 
                 return true;

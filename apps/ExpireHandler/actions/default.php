@@ -9,8 +9,8 @@ Response::note(['【实例到期后，挂起、待删除、自动续费后反挂
 
 //取得过期的实例列表
 $instances = Instance::lists([
-    'awhere' => ['expire<' . time()]
-    // 'awhere' => ['mainipaddress' => '123.1.1.8']
+    // 'awhere' => ['expire<' . time()]
+    'awhere' => ['mainipaddress' => '123.1.1.8']
 ]);
 
 if ($instances) {
@@ -62,7 +62,7 @@ foreach ($instances as $instance) {
     $instance_update['expire'] = strtotime("+1 month", $instance['expire']);
 
     //取消试用期
-    if ( $instance['trial_expire'] ) $instance['trial_expire'] = 0
+    if ( $instance['trial_expire'] ) $instance['trial_expire'] = 0;
 
     //续费后的有效时间段
     $valid_times = [

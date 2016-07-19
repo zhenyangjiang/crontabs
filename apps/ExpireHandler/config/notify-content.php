@@ -6,18 +6,18 @@ return [
             'title'   => '云主机过期续费提醒',
             'content' => [
                 '尊敬的用户{$user_name}：',
-                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，相关数据将继续保留{$retain_days}天后被清空，请您尽快并续费。',
+                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，相关数据将继续保留{$retain_days}天后被清空，请您尽快续费。',
             ],
         ],
         'email' => [
             'title'   => '云主机过期续费提醒',
             'content' => [
                 '尊敬的用户{$user_name}：',
-                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，相关数据将继续保留{$retain_days}天后被清空，请您尽快并续费。',
+                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，相关数据将继续保留{$retain_days}天后被清空，请您尽快续费。',
             ],
         ],
         'sms' => [
-            'content' => '您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，相关数据将继续保留{$retain_days}天后被清空，请您尽快并续费。',
+            'content' => '您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，相关数据将继续保留{$retain_days}天后被清空，请您尽快续费。',
         ]
     ],
 
@@ -27,18 +27,18 @@ return [
             'title'   => '云主机过期续费提醒',
             'content' => [
                 '尊敬的用户{$user_name}：',
-                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，由于余额不足，系统无法为您自动续费，相关数据将将继续保留{$retain_days}天后被清空，请您尽快并充值后续费。',
+                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，由于余额不足，系统无法为您自动续费，相关数据将继续保留{$retain_days}天后被清空，请您尽快充值并续费。',
             ],
         ],
         'email' => [
             'title'   => '云主机过期续费提醒',
             'content' => [
                 '尊敬的用户{$user_name}：',
-                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，由于余额不足，系统无法为您自动续费，相关数据将将继续保留{$retain_days}天后被清空，请您尽快并充值后续费。',
+                '　　您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，由于余额不足，系统无法为您自动续费，相关数据将继续保留{$retain_days}天后被清空，请您尽快充值并续费。',
             ],
         ],
         'sms' => [
-            'content' => '您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，由于余额不足，系统无法为您自动续费，相关数据将将继续保留{$retain_days}天后被清空，请您尽快并充值后续费。'
+            'content' => '您的云主机：{$instance_name}（IP：{$instance_ip}）已过期{$expire_days}天，实例已停机，由于余额不足，系统无法为您自动续费，相关数据将继续保留{$retain_days}天后被清空，请您尽快充值并续费。'
         ]
     ],
 

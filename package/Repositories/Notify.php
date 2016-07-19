@@ -14,8 +14,6 @@ use Landers\Substrate\Classes\EMail;
 use Landers\Substrate\Apps\ThirdApis\SendCloud;
 
 class Notify {
-    private static $mail_suffix = '<br/><div style="color:#cccccc">本邮件由系统自动发送，请勿回复</div>';
-
     public static function developer($title, $content = '', $context = NULL) {
         $is_sended = System::isDoneToday($title, 'developer');
         $title_bak = $title;
@@ -34,7 +32,7 @@ class Notify {
             $bool = self::sendEmail('phpmailer', [
                 'tos'       => $developers,
                 'subject'   => $title,
-                'content'   => $contents.$mail_suffix
+                'content'   => $contents
             ], $retdat);
             if ($bool) {
                 $log_content = sprintf('已电邮开发者，队列ID：'.$retdat);
@@ -55,8 +53,8 @@ class Notify {
 
     public static function clientApi($uid, $event, $data) {
         if (System::isDoneToday($event, $uid)) {
-            Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
-            return false;
+            // Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
+            // return false;
         }
 
         Response::note('#tab对用户ID:%s 告警通知 %s ... : ', $uid, $event);

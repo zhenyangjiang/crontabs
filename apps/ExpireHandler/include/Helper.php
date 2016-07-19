@@ -100,6 +100,10 @@ function suspend_transact($instance, $user, $some_days, $callback) {
         return Response::transactEnd($result);
     } else {
         Response::note('#tab当前为%s状态，无需执行挂起操作', colorize($status_text, 'yellow'));
+
+        //执行回调（通常为通知客户充值）
+        $callback && $callback();
+
         return NULL;
     }
 }

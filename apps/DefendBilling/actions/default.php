@@ -13,7 +13,6 @@ Response::note(['【按月防护，按需防护、计费】（'.System::app('nam
 Response::note('正在对牵引过期的IP作解除牵引：');
 BlackHole::unblock(); //解除牵引
 Response::note('#line');
-pause();
 
 Response::note('正在从防火墙上获取了攻击信息...');
 $pack_attack = Firewall::get_attack();

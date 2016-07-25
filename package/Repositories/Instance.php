@@ -5,6 +5,7 @@ use Landers\Framework\Core\Config;
 use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 use Landers\Substrate\Classes\StatusCtrl;
+use Services\OAuthClientHttp;
 
 class Instance extends StaticRepository {
     protected static $connection = 'main';
@@ -253,7 +254,7 @@ class Instance extends StaticRepository {
                 //删除 cc 防护规则
                 Response::note('#tab正在向接口提交删除CC防护...');
                 $apiurl = Config::get('hosts', 'api') . '/intranet/firewall/close-cc-defend';
-                $ret = OAuthHttp::post($apiurl, ['ip' => $instance_ip]);
+                $ret = OAuthClientHttp::post($apiurl, ['ip' => $instance_ip]);
                 Response::echoBool($ret['success'], $ret['message']);
                 if (!$ret['success']) {
                     reportDevException('销毁实例时CC防护删除失败', array('context' => compact($instance)));

@@ -1,6 +1,7 @@
 <?php
 use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Config;
+use Services\OAuthClientHttp;
 
 class FirewallRule extends StaticRepository {
     protected static $connection = 'main';
@@ -19,7 +20,7 @@ class FirewallRule extends StaticRepository {
 
         $apiurl = self::apiurl('/deletefwrule');
         foreach ( $lists as $item ) {
-            $ret = OAuthHttp::post($apiurl, $item);
+            $ret = OAuthClientHttp::post($apiurl, $item);
             if ( !$ret['success'] ) {
                 reportDevException('删除防火强规失败！', [
                     'ruleData' => $item

@@ -4,6 +4,7 @@ use Landers\Framework\Core\StaticRepository;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Config;
+use Services\OAuthClientHttp;
 
 class Alert extends StaticRepository {
     protected static $connection = 'main';
@@ -28,8 +29,8 @@ class Alert extends StaticRepository {
 
     private static function initUser($uid) {
         $apiurl = Config::get('hosts', 'api').'/intranet/alert/init';
-        $ret = \OAuthHttp::post($apiurl, ['uid' => $uid]);
-        return \OAuthHttp::parse($ret);
+        $ret = OAuthClientHttp::post($apiurl, ['uid' => $uid]);
+        return OAuthClientHttp::parse($ret);
     }
 
     private static function getAlerts($uids, $event) {

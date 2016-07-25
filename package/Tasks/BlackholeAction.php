@@ -4,6 +4,7 @@ namespace Tasks;
 use Landers\Substrate\Interfaces\TaskInterface;
 use Landers\Substrate\Utils\Http;
 use Landers\Framework\Core\Config;
+use Services\OAuthClientHttp;
 
 class BlackholeAction implements TaskInterface {
     private $action;
@@ -25,14 +26,14 @@ class BlackholeAction implements TaskInterface {
 
     private function block(){
         $apiurl = self::apiurl('/block');
-        $ret = \OAuthHttp::post($apiurl, $this->params);
-        return \OAuthHttp::parse($ret);
+        $ret = OAuthClientHttp::post($apiurl, $this->params);
+        return OAuthClientHttp::parse($ret);
     }
 
     private function unblock(){
         $apiurl = self::apiurl('/unblock');
-        $ret = \OAuthHttp::post($apiurl, $this->params);
-        return \OAuthHttp::parse($ret);
+        $ret = OAuthClientHttp::post($apiurl, $this->params);
+        return OAuthClientHttp::parse($ret);
     }
 
     public function handle(&$retmsg = NULL) {

@@ -12,6 +12,7 @@ use Landers\Substrate\Classes\Tpl;
 use Ender\YunPianSms\SMS\YunPianSms;
 use Landers\Substrate\Classes\EMail;
 use Landers\Substrate\Apps\ThirdApis\SendCloud;
+use Services\OAuthClientHttp;
 
 class Notify {
     public static function developer($title, $content = '', $context = NULL) {
@@ -70,12 +71,12 @@ class Notify {
             $item['content'] = Str::parse($content, $data);
         }; unset($item);
 
-        $result = \OAuthHttp::post($apiurl, [
+        $result = OAuthClientHttp::post($apiurl, [
             'uid' => $uid,
             'event' => $event,
             'msg' => $contents,
         ]);
-        $result = \OAuthHttp::parse($result);
+        $result = OAuthClientHttp::parse($result);
 
         if ($bool = $result->success) {
             foreach ($result->data as $way => $val) {

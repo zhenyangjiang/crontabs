@@ -23,7 +23,8 @@
             "package/Repositories"
         ],
         "psr-4": {
-            "Tasks\\" : "package/Tasks/"
+            "Tasks\\" : "package/Tasks/",
+            "Services\\" : "package/Services/"
         },
         "files": [
             "vendor/landers/framework/src/Adapters/Helpers/LcliHelpers.php",

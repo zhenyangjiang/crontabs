@@ -23,7 +23,10 @@ Response::note('当前实例%s的过期时间为：%s', $instance_id, $expire);
 
 $apiurl = 'http://api.ulan.com/instance/renew';
 $ret = $oauthHttp->post($apiurl, ['instance_id' => $instance_id, 'months' => 1]);
-
-Response::note('续费后的过期时间为：%s', $ret['data']['expire']);
+if ( $ret['success'] ) {
+    Response::note('续费后的过期时间为：%s', $ret['data']['expire']);
+} else {
+    Response::note('续费失败:', $ret['message']);
+}
 
 System::complete();

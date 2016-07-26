@@ -26,7 +26,7 @@ $ret = $oauthHttp->post($apiurl, ['instance_id' => $instance_id, 'months' => 1])
 if ( $ret['success'] ) {
     Response::note('续费后的过期时间为：%s', $ret['data']['expire']);
 } else {
-    Response::note('续费失败:', $ret['message']);
+    Response::note('续费失败：%s', $ret['message']);
 }
 
 System::complete();

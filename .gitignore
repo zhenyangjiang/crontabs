@@ -17,3 +17,4 @@
 /composer.lock
 /storage/logs
 /apps/ExpireRemind/logs
+.idea/

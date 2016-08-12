@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a355ff87-e073-4a6a-a3dd-249132560abf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/CheckBalance/actions/default.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/CheckBalance/config/check_balance.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/ExpireRemind/config/notify-content.php" afterPath="$PROJECT_DIR$/apps/ExpireRemind/config/notify-content.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/redis.php" afterPath="$PROJECT_DIR$/config/redis.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package/Repositories/Mitigation.php" afterPath="$PROJECT_DIR$/package/Repositories/Mitigation.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package/Repositories/User.php" afterPath="$PROJECT_DIR$/package/Repositories/User.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Crontabs.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,7 +34,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="default.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="default.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/CheckBalance/actions/default.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="528">
@@ -46,6 +42,16 @@
               <folding>
                 <element signature="e#6#40#0#PHP" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="418">
+              <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -131,6 +137,7 @@
         <option value="$PROJECT_DIR$/package/Repositories/Mitigation.php" />
         <option value="$PROJECT_DIR$/apps/CheckBalance/config/check_balance.php" />
         <option value="$PROJECT_DIR$/apps/CheckBalance/actions/default.php" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -546,12 +553,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1470966493494</updated>
-      <workItem from="1470966494916" duration="6461000" />
+      <workItem from="1470966494916" duration="6516000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6461000" />
+    <option name="totallyTimeSpent" value="6516000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1044" extended-state="1" />
@@ -796,6 +803,14 @@
           <folding>
             <element signature="e#6#40#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>

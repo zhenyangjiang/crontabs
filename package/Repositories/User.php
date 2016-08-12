@@ -51,6 +51,20 @@ class User extends StaticRepository {
         return $info;
     }
 
+    /**
+     * 用户余额
+     * @return array
+     */
+    public static function balance()
+    {
+        $ret = self::listall(['fields' => ['id', 'money']]);
+        $data = [];
+        foreach ($ret as $v) {
+            $data[$v['id']] = $v['money'];
+        }
+        return $data;
+    }
+
 }
 User::init();
 ?>

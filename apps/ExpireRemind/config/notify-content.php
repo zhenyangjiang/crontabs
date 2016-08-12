@@ -63,4 +63,19 @@ return [
             'content' => '您的云主机：{$instance_name}（IP：{$instance_ip}）将于{$days}天后({$expire_date})到期，您的余额足够支付下个月的费用，请尽快登录系统进行续费操作，以免服务受影响。',
         ]
     ],
+    //余额通知
+    'CHECKBALANCE-NOTENOUGH' => [
+        'email' => [
+            'title'   => '余额不足',
+            'content' => '尊敬的用户：您的的余额可能不足以支撑{$hour}个小时',
+        ],
+        'inner' => [
+            'title'   => '余额不足',
+            'content' => '尊敬的用户：您的的余额可能不足以支撑{$hour}个小时',
+            'editor'  => 'SeedMssP运营团队'
+        ],
+        'sms' => [
+            'content' => '尊敬的用户：您的的余额可能不足以支撑{$hour}个小时',
+        ],
+    ],
 ];

@@ -170,6 +170,25 @@ class Mitigation extends StaticRepository {
     //     }
     //     return $lists;
     // }
+
+    public static function hourMits()
+    {
+        $sql = "
+            SELECT
+                m.uid,
+                m.ip,
+                m.ability,
+                d.price_rules
+            FROM
+                ulan_mitigations AS m
+            LEFT JOIN ulan_datacenter AS d ON d.id = m.datacenter_id
+            LEFT JOIN ulan_instances AS i ON i.mainipaddress = m.ip
+            WHERE
+                billing = 'hour'
+            AND i.expire > 
+        " . time();
+        return self::query($sql);
+    }
 }
 Mitigation::init();
 ?>

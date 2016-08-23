@@ -1,6 +1,8 @@
 <?php
 use Landers\Framework\Core\StaticRepository;
 
+use ULan\Repository\Crypt;
+
 class User extends StaticRepository {
     protected static $connection = 'oauth';
     protected static $datatable = 'ulan_users';
@@ -11,8 +13,10 @@ class User extends StaticRepository {
      * @param  int      $uid        用户ID
      * @return float                余额
      */
+    private static $num_crypt;
     public static function get_money($uid) {
-        return self::find($uid, 'money');
+        $money = self::find($uid, 'money');
+        return (float)Crypt::decode($money, $uid);
     }
 
     /**
@@ -22,6 +26,7 @@ class User extends StaticRepository {
      * @param boolean
      */
     public static function set_money($uid, $money) {
+        $money = Crypt::encode($money, $uid);
         return self::update(
             ['money' => $money], ['id' => $uid]
         );
@@ -34,9 +39,12 @@ class User extends StaticRepository {
      * @return [type]         [description]
      */
     public static function pay_money($uid, $amount) {
-        return self::update(
-            ['money' => "`money`-$amount"], ['id' => $uid]
-        );
+        $money = self::get_money($uid);
+        $money -= (float)$amount;
+        return self::set_money($uid, $money);
+        // return self::update(
+        //     ['money' => "`money`-$amount"], ['id' => $uid]
+        // );
     }
 
     /**

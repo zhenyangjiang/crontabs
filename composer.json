@@ -16,7 +16,8 @@
         "landers/framework": "dev-master",
         "landers/laravel": "dev-master",
         "landers/ulan": "dev-master",
-        "ulan/virtsdk" : "dev-master"
+        "ulan/virtsdk" : "dev-master",
+        "ulan/repository" : "dev-master"
     },
     "autoload":{
         "classmap": [
@@ -54,6 +55,10 @@
         "ulan-virtsdk" : {
             "type": "vcs",
             "url": "https://git.ulan.io/ULan/virtsdk.git"
+        },
+        "ulan-repository" : {
+            "type": "vcs",
+            "url": "https://git.ulan.io/ULan/repository.git"
         },
         "packagist": {
             "type": "composer",

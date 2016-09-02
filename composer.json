@@ -16,6 +16,7 @@
         "landers/framework": "dev-master",
         "landers/laravel": "dev-master",
         "landers/ulan": "dev-master",
+        "guzzlehttp/guzzle": "dev-master",
         "ulan/virtsdk" : "dev-master",
         "ulan/repository" : "dev-master"
     },

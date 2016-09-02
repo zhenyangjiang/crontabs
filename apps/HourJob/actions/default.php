@@ -13,8 +13,7 @@ $http = new Http([
     'base_uri' => $config['url'],
     'cookies' => true
 ]);
-
-//login
+Response::note("Logining...");
 $res = $http->request('POST', 'login.cgi', [
     'form_params' => [
         'param_username' => $config['username'],
@@ -22,7 +21,7 @@ $res = $http->request('POST', 'login.cgi', [
     ]
 ]);
 
-//save data
+Response::note("Saving...");
 $res = $http->request('POST', 'setting_config.cgi', [
     'form_params' => [
         'param_submit_type' => 'submit',
@@ -35,8 +34,13 @@ $res = $http->request('POST', 'setting_config.cgi', [
 ]);
 
 $content = $res->getBody()->getContents();
-if (strpos($content, "success") !== false) {
-    Response::note('Done');
+if (preg_match('~<info>([^<]+)</info>~', $content, $match)) {
+    $info = $match[1];
+    if (strpos($content, "success") !== false) {
+        Response::note($info);
+    } else {
+        Response::warn($info);
+    }
 } else {
     Response::warn($content);
 }

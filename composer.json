@@ -30,7 +30,7 @@
         },
         "files": [
             "vendor/landers/framework/src/Adapters/Helpers/LcliHelpers.php",
-            "vendor/landers/ulan/src/Crontabs/helpers.php"
+            "package/helpers.php"
         ]
     },
    "repositories": [

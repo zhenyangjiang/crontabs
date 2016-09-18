@@ -18,7 +18,8 @@
         "landers/ulan": "dev-master",
         "guzzlehttp/guzzle": "dev-master",
         "ulan/virtsdk" : "dev-master",
-        "ulan/repository" : "dev-master"
+        "ulan/repository" : "dev-master",
+        "ulan/hprose": "dev-master"
     },
     "autoload":{
         "classmap": [
@@ -60,6 +61,10 @@
         "ulan-repository" : {
             "type": "vcs",
             "url": "https://git.ulan.io/ULan/repository.git"
+        },
+        "ulan-hprose": {
+          "type": "vcs",
+          "url": "git@git.ulan.io:ULan/hprose.git"
         },
         "packagist": {
             "type": "composer",

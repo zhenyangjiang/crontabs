@@ -88,7 +88,7 @@ function response_user_detail(array $user) {
  * @param  [type] $class [description]
  * @return [type]        [description]
  */
-function app($class) {
-    return \Services\HproseApplication::createObject($class);
+function app($key) {
+    return \Services\HproseApplication::singletonBy($key);
 }
 ?>

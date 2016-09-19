@@ -27,12 +27,6 @@ class Alert extends StaticRepository {
         }
     }
 
-    private static function initUser($uid) {
-        $apiurl = Config::get('hosts', 'api').'/intranet/alert/init';
-        $ret = OAuthClientHttp::post($apiurl, ['uid' => $uid]);
-        return OAuthClientHttp::parse($ret);
-    }
-
     private static function getAlerts($uids, $event) {
         $uids = (array)$uids;
 

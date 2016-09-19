@@ -18,14 +18,17 @@ Class BlackHole {
     }
 
     public static function doBlock($ip, $bps, $is_force) {
-        $opts = [
-            'ip' => $ip, 'bps' => $bps, 'from' => 'Crontab'
-        ];
-        if ($is_force) $opts['blockway'] = 'force';
+        // $opts = [
+        //     'ip' => $ip, 'bps' => $bps, 'from' => 'Crontab'
+        // ];
+        // if ($is_force) $opts['blockway'] = 'force';
 
-        //牵引动作入队列
-        $task = new BlackholeAction('block', $opts);
-        return Queue::singleton('blackhole')->push($task);
+        // //牵引动作入队列
+        // $task = new BlackholeAction('block', $opts);
+        // return Queue::singleton('blackhole')->push($task);
+        $from = 'Crontab';
+        $blockway = $is_force ? 'force' : '';
+        return repository('blackHole')->block($ip, $bps, $from, $blockway);
     }
 
     /**
@@ -43,10 +46,10 @@ Class BlackHole {
         Response::transactBegin();
         $result = Mitigation::transact(function() use ($ip, $bps, $is_force){
             //牵引动作入队列
-            Response::note('#tab牵引请求入队...');
-            $ret = self::doBlock($ip, $bps, $is_force);
-            Response::echoBool(!!$ret);
-            if (!$ret) return false;
+            Response::note('#tab执行牵引动作...');
+            list($bool, $message) = self::doBlock($ip, $bps, $is_force);
+            Response::echoBool(!!$bool);
+            if (!$bool) return false;
 
             //更新ip的攻击历史为结束攻击
             Response::note('#tab写入由牵引所致的攻击结束...');
@@ -66,10 +69,12 @@ Class BlackHole {
     }
 
     public static function doUnblock($ip) {
-        $task = new BlackholeAction('unblock', [
-            'ip' => $ip
-        ]);
-        return Queue::singleton('blackhole')->push($task);
+        // $task = new BlackholeAction('unblock', [
+        //     'ip' => $ip
+        // ]);
+        // return Queue::singleton('blackhole')->push($task);
+
+        return repository('blackHole')->unblock($ip);
     }
 
     /**
@@ -96,10 +101,10 @@ Class BlackHole {
         Response::transactBegin();
         $result = Mitigation::transact(function() use (&$lists, &$ips){
             //解除牵引动作入队列
-            Response::note('#tab解除牵引请求入队...');
+            Response::note('#tab执行解除牵引动作...');
             foreach ($lists as $item) {
-                $queueid = self::doUnblock($item['ip']);
-                if ( !$queueid ) continue;
+                list($bool, $message) = self::doUnblock($item['ip']);
+                if ( !$bool) continue;
                 $ips[] = $item['ip'];
             }
             if (!count($ips)) {

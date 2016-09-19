@@ -22,7 +22,7 @@ foreach ($ips as $ip) {
     $ip = trim($ip);
     Response::note('测试解除牵引IP：%s...', $ip);
 
-    Response::note('#tab解除牵引任务入队...');
+    Response::note('#tab执行解除牵引任务...');
     $bool = !!BlackHole::doUnblock($ip);
     Response::echoBool($bool);
 

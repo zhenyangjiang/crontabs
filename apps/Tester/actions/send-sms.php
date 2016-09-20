@@ -23,7 +23,7 @@ foreach ($config as $key => $contents) {
     }
 }
 
-$bool = Notify::clientApi(1, 'HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW', [
+$bool = Notify::user(1, 'HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW', [
     'instance_name' => 'HOSTNAME',
     'instance_ip' => '127.127.127.127',
     'days' => 10,

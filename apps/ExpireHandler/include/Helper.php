@@ -35,7 +35,7 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
             Response::echoBool($bool);
             if (!$bool) return false;
 
-            Notify::clientApi($uid, 'HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW', [
+            Notify::user($uid, 'HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW', [
                 'instance_name' => $instance['hostname'],
                 'old_expire'    => date('Y-m-d H:i:s', $instance['expire']),
                 'new_expire'    => date('Y-m-d H:i:s', $instance_update['expire']),

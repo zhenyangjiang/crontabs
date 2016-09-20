@@ -20,7 +20,7 @@ class Alert extends StaticRepository {
         }
 
         if ($bool) {
-            return Notify::clientApi($uid, $event, $data);
+            return Notify::user($uid, $event, $data);
         } else {
             Response::note('#tab用户ID: %s 关闭了%s告警通知', $uid, $event);
             return true;

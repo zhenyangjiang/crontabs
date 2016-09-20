@@ -52,18 +52,18 @@ class Notify {
         return $bool;
     }
 
-    public static function clientApi($uid, $event, $data) {
-        if (System::isDoneToday($event, $uid)) {
-            Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
-            return false;
-        }
+    public static function user($uid, $event, $data) {
+        // if (System::isDoneToday($event, $uid)) {
+        //     Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
+        //     return false;
+        // }
 
         Response::note('#tab对用户ID:%s 告警通知 %s ... : ', $uid, $event);
         $uinfo = User::get($uid, 'username, mobile, email');
         $data = array_merge($uinfo, $data);
 
         $host = Config::get('hosts', 'api');
-        $apiurl = $host . '/intranet/alert/send';
+        // $apiurl = $host . '/intranet/alert/send';
         $contents = Config::get('notify-contents', $event);
         foreach ($contents as $key => &$item) {
             $content = $item['content'];
@@ -71,23 +71,36 @@ class Notify {
             $item['content'] = Str::parse($content, $data);
         }; unset($item);
 
-        $result = OAuthClientHttp::post($apiurl, [
-            'uid' => $uid,
-            'event' => $event,
-            'msg' => $contents,
-        ]);
-        $result = OAuthClientHttp::parse($result);
-
-        if ($bool = $result->success) {
-            foreach ($result->data as $way => $val) {
+        $arrResult = repository('alert')->sendTo($uid, $event, $contents);
+        if ($arrResult) {
+            foreach ($arrResult as $way => $val) {
                 if (is_null($val)) continue;
                 $way = strtoupper($way);
                 Response::echoBool($val, "$way ");
             }
+            return true;
         } else {
             Response::echoBool(false);
+            return false;
         }
-        return $bool;
+
+        // $result = OAuthClientHttp::post($apiurl, [
+        //     'uid' => $uid,
+        //     'event' => $event,
+        //     'msg' => $contents,
+        // ]);
+        // $result = OAuthClientHttp::parse($result);
+
+        // if ($bool = $result->success) {
+        //     foreach ($result->data as $way => $val) {
+        //         if (is_null($val)) continue;
+        //         $way = strtoupper($way);
+        //         Response::echoBool($val, "$way ");
+        //     }
+        // } else {
+        //     Response::echoBool(false);
+        // }
+        // return $bool;
     }
 
     /**

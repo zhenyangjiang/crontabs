@@ -31,7 +31,7 @@ foreach ($users as $uid => $mits) {
     Response::note("[{$uid}]:{$total_price}/{$userBalance[$uid]}");
     if ($total_price > $userBalance[$uid]) {
         Response::note("[{$uid}]:余额不足");
-        Notify::clientApi($uid, 'CHECKBALANCE-NOTENOUGH', [
+        Notify::user($uid, 'CHECKBALANCE-NOTENOUGH', [
             'hour' => $hour
         ]);
     }

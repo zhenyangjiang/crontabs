@@ -43,14 +43,14 @@ return [
 
     'IP-BLOCKED' => [
         'inner' => [
-            'title'   => '云盾被牵引',
+            'title'   => '云盾IP被牵引',
             'content' => [
                 '尊敬的用户{$user_name}：',
                 '　　您的IP：{$ip} 由于{$reason}，被黑洞牵引',
             ],
         ],
         'email' => [
-            'title'   => '云盾被牵引',
+            'title'   => '云盾IP被牵引',
             'content' => [
                 '尊敬的用户{$user_name}：',
                 '　　您的IP：{$ip} 由于{$reason}，被黑洞牵引',
@@ -63,14 +63,14 @@ return [
 
     'IP-UNBLOCK' => [
         'inner' => [
-            'title'   => '云盾被解除牵引',
+            'title'   => '云盾IP被解除牵引',
             'content' => [
                 '尊敬的用户{$user_name}：',
                 '　　您的IP：{$ips} 被解除牵引',
             ],
         ],
         'email' => [
-            'title'   => '云盾被解除牵引',
+            'title'   => '云盾IP被解除牵引',
             'content' => [
                 '尊敬的用户{$user_name}：',
                 '　　您的IP：{$ips} 被解除牵引',

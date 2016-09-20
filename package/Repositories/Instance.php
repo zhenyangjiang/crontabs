@@ -164,6 +164,15 @@ class Instance extends StaticRepository {
      * @return [type]            [description]
      */
     public static function destroy($xinstance) {
+        return repository('instance')->destroy($xinstance);
+    }
+
+    /**
+     * 销毁实例
+     * @param  [type] $xinstance [description]
+     * @return [type]            [description]
+     */
+    public static function xxx_destroy($xinstance) {
         $instance = self::info($xinstance);
         if (!$instance) return true;
 
@@ -214,7 +223,6 @@ class Instance extends StaticRepository {
         Response::transactBegin();
         $result = self::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
             return DDoSInfo::transact(function() use ($instance, $relates, $unions, &$collectid, $instance_id, $instance_ip, &$results){
-
                 // 执行删除关联模型数据
                 foreach ($relates as $field => $item) {
                     $match = $item['match'];
@@ -253,12 +261,18 @@ class Instance extends StaticRepository {
 
                 //删除 cc 防护规则
                 Response::note('#tab正在向接口提交删除CC防护...');
-                $apiurl = Config::get('hosts', 'api') . '/intranet/firewall/close-cc-defend';
-                $ret = OAuthClientHttp::post($apiurl, ['ip' => $instance_ip]);
-                Response::echoBool($ret['success'], $ret['message']);
-                if (!$ret['success']) {
+                try {
+                    repository('firewall')->setCcDefendByIp($instance_ip, 'close', 'default');
+                } catch (\Exception $e) {
                     reportDevException('销毁实例时CC防护删除失败', array('context' => compact($instance)));
                 }
+
+                // $apiurl = Config::get('hosts', 'api') . '/intranet/firewall/close-cc-defend';
+                // $ret = OAuthClientHttp::post($apiurl, ['ip' => $instance_ip]);
+                // Response::echoBool($ret['success'], $ret['message']);
+                // if (!$ret['success']) {
+                //     reportDevException('销毁实例时CC防护删除失败', array('context' => compact($instance)));
+                // }
 
                 // 执行删除实例主机
                 Response::note('#tab销毁虚拟机...');

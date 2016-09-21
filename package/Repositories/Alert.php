@@ -11,43 +11,10 @@ class Alert extends StaticRepository {
     protected static $datatable  = 'ulan_alerts';
     protected static $DAO;
 
-    private static function execute(Array $alert, $data) {
-        $event = $alert['event'];
-        $uid = $alert['uid'];
-        $ways = Arr::slice($alert, 'sms, email');
-        $bool = false; foreach ($ways as $item) {
-            if ($item) $bool = true;
-        }
-
-        if ($bool) {
-            return Notify::user($uid, $event, $data);
-        } else {
-            Response::note('#tab用户ID: %s 关闭了%s告警通知', $uid, $event);
-            return true;
-        }
-    }
-
-    private static function getAlerts($uids, $event) {
-        $uids = (array)$uids;
-
-        //读取用户告警设置
-        $alerts = Alert::lists([
-            'awhere' => ['uid' => $uids, 'event' => $event]
-        ]);
-        $alerts_uids = Arr::pick($alerts, 'uid');
-
-
-        //还有哪些用户没有告警设置的进行初始化操作
-        if ( $diff_uids = array_diff($uids, $alerts_uids) ) {
-            foreach ($diff_uids as $uid) self::initUser($uid);
-
-            //重新读取一次
-            $alerts = Alert::lists([
-                'awhere' => ['uid' => $uids, 'event' => $event]
-            ]);
-        }
-
-        return $alerts;
+    private static $repoAlert;
+    public static function init() {
+        self::$repoAlert = repository('alert');
+        parent::init();
     }
 
     private static function ip2userip($ips) {
@@ -75,14 +42,9 @@ class Alert extends StaticRepository {
             Response::note('执行DDoS开始告警通知：');
             $usersIp = self::ip2userip($ips);
 
-            //读取所有用户关于$event的alert设置
-            $uids = array_keys($usersIp);
-            $alerts = self::getAlerts($uids, $event);
-
-            foreach ($alerts as $alert) {
-                $uid = $alert['uid'];
-                $ips = $usersIp[$uid];
-                self::execute($alert, array('ips' => $ips));
+            foreach ($usersIp as $uid => $ips) {
+                if (is_array($ips)) $ips = implode(',', $ips);
+                Notify::user($uid, $event, ['ips' => $ips]);
             }
         }
     }
@@ -101,13 +63,7 @@ class Alert extends StaticRepository {
         $mitigation = Mitigation::findByIp($ip);
         $uid = $mitigation['uid'];
 
-        //读取所有用户关于$event的alert设置
-        $alerts = self::getAlerts($uid, $event);
-        $alert = pos($alerts);
-
-        $data = array_merge($data, ['ip' => $ip]);
-
-        self::execute($alert, $data);
+        Notify::user($uid, $event, ['ip' => $ip]);
     }
 
     /**
@@ -124,13 +80,8 @@ class Alert extends StaticRepository {
         $mitigation = Mitigation::findByIp($ip);
         $uid = $mitigation['uid'];
 
-        //读取所有用户关于$event的alert设置
-        $alerts = self::getAlerts($uid, $event);
-        $alert = pos($alerts);
-
         $data = array_merge($data, ['ip' => $ip]);
-
-        self::execute($alert, $data);
+        Notify::user($uid, $event, $data);
     }
 
     /**
@@ -145,15 +96,9 @@ class Alert extends StaticRepository {
             Response::note('执行解牵引告警通知：');
 
             $usersIp = self::ip2userip($ips);
-
-            //读取所有用户关于$event的alert设置
-            $uids = array_keys($usersIp);
-            $alerts = self::getAlerts($uids, $event);
-
-            foreach ($alerts as $alert) {
-                $uid = $alert['uid'];
-                $ips = $usersIp[$uid];
-                self::execute($alert, array('ips' => $ips));
+            foreach ($usersIp as $uid => $ips) {
+                if (is_array($ips)) $ips = implode(',', $ips);
+                Notify::user($uid, $event, ['ips' => $ips]);
             }
         }
     }

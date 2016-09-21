@@ -83,24 +83,6 @@ class Notify {
             Response::echoBool(false);
             return false;
         }
-
-        // $result = OAuthClientHttp::post($apiurl, [
-        //     'uid' => $uid,
-        //     'event' => $event,
-        //     'msg' => $contents,
-        // ]);
-        // $result = OAuthClientHttp::parse($result);
-
-        // if ($bool = $result->success) {
-        //     foreach ($result->data as $way => $val) {
-        //         if (is_null($val)) continue;
-        //         $way = strtoupper($way);
-        //         Response::echoBool($val, "$way ");
-        //     }
-        // } else {
-        //     Response::echoBool(false);
-        // }
-        // return $bool;
     }
 
     /**

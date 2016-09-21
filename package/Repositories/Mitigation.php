@@ -21,7 +21,7 @@ class Mitigation extends StaticRepository {
      * @return String $fields 字段列表
      * @return Mixed
      */
-    public static function find_ip($ip, $fields = NULL) {
+    public static function findByIp($ip, $fields = NULL) {
         $ret = self::find([
             'awhere' => ['ip' => $ip],
             'fields' => $fields
@@ -66,11 +66,11 @@ class Mitigation extends StaticRepository {
      * @param  [type] $instance [description]
      * @return [type]           [description]
      */
-    public static function down_grade($instance) {
+    public static function downgrade($instance) {
         //找出最低级别的云盾方案
         $datacenter = DataCenter::find($instance['datacenter']);
-        $case = DataCenter::lowest_price_case($datacenter, 'month');
-        $info = self::find_ip($instance['mainipaddress']);
+        $case = DataCenter::lowestPriceCase($datacenter, 'month');
+        $info = self::findByIp($instance['mainipaddress']);
         $case['ability'] = self::Mbps_to_Gbps($case['ability']);
         if (!$info) { //找不到云盾记录
             return self::create([
@@ -98,7 +98,7 @@ class Mitigation extends StaticRepository {
      * @param  String $status
      * @return Array 被攻中的或被牵引中（攻击未结束）的ip集合
      */
-    public static function get_ips_by_status($status) {
+    public static function getIpsByStatus($status) {
         $ret = parent::lists([
             'fields' => 'ip',
             'awhere' => ['status' => $status]
@@ -132,7 +132,7 @@ class Mitigation extends StaticRepository {
 
         if ( $status == 'BLOCK' ) {
             //确定牵引时长，并更新牵引过期时间
-            $block_duration_hours = DataCenter::blockDuration(DataCenter::find_ip($ip));
+            $block_duration_hours = DataCenter::blockDuration(DataCenter::findByIp($ip));
             $updata['block_expire'] = strtotime("+$block_duration_hours hours");
         } else {
             $updata['block_expire'] = NULL;
@@ -185,7 +185,7 @@ class Mitigation extends StaticRepository {
             LEFT JOIN ulan_instances AS i ON i.mainipaddress = m.ip
             WHERE
                 billing = 'hour'
-            AND i.expire > 
+            AND i.expire >
         " . time();
         return self::query($sql);
     }

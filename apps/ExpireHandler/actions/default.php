@@ -75,7 +75,7 @@ foreach ($instances as $instance) {
     $fee_renew_insntance = $instance_price;
 
     //确定实例所绑定的云盾每月费用
-    $mitigation_info = Mitigation::find_ip($instance_ip);
+    $mitigation_info = Mitigation::findByIp($instance_ip);
     if ($mitigation_info) {
         $mitigation_price = $mitigation_info['price'];
         $mitigation_ability = $mitigation_info['ability'];
@@ -164,7 +164,7 @@ foreach ($instances as $instance) {
             $bool_transact = renew_transact($uid, $instance, $instance_update, $feelog_data, [
                 function() use ($instance){//强制降级云盾
                     Response::note('#tab强制降级云盾...');
-                    $bool = Mitigation::down_grade($instance);
+                    $bool = Mitigation::downgrade($instance);
                     Response::echoBool($bool);
                     if ( !$bool) return false;
                     return true;

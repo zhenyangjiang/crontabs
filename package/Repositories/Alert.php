@@ -98,7 +98,7 @@ class Alert extends StaticRepository {
 
         Response::note('执行攻击结束告警通知：');
 
-        $mitigation = Mitigation::find_ip($ip);
+        $mitigation = Mitigation::findByIp($ip);
         $uid = $mitigation['uid'];
 
         //读取所有用户关于$event的alert设置
@@ -121,7 +121,7 @@ class Alert extends StaticRepository {
 
         Response::note('执行牵引告警通知：');
 
-        $mitigation = Mitigation::find_ip($ip);
+        $mitigation = Mitigation::findByIp($ip);
         $uid = $mitigation['uid'];
 
         //读取所有用户关于$event的alert设置

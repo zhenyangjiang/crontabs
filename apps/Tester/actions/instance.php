@@ -14,6 +14,10 @@ if (!$instance_id = (int)System::argv(4)) {
 Response::note('测试操作实例（云主机)...');
 Response::note('操作命令：%s %s', $action, $instance_id);
 
-$bool = call_user_func_array(array('Instance', $action), [$instance_id]);
-Response::bool($bool, '操作%s');
+list($bool, $error) = call_user_func_array(array('Instance', $action), [$instance_id]);
+if ($bool) {
+    Response::bool($bool, '操作%s');
+} else {
+    Response::bool($bool, $error);
+}
 System::complete();

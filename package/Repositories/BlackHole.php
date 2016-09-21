@@ -53,7 +53,7 @@ Class BlackHole {
 
             //更新ip的攻击历史为结束攻击
             Response::note('#tab写入由牵引所致的攻击结束...');
-            $bool = DDoSHistory::save_end_attack($ip, 'BLOCK');
+            $bool = DDoSHistory::saveAttackEnd($ip, 'BLOCK');
             if (!$bool) return false;
 
             //更新云盾IP状态为（牵引中）

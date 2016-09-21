@@ -13,7 +13,7 @@ use Landers\Framework\Modules\Log;
 
 
 Class Firewall {
-    public static function get_attack() {
+    public static function getAttacks() {
         $fwurl = Config::get('fwurl');
 
         // $content = include( __DIR__ . '/Firewall-data3.php');
@@ -98,7 +98,7 @@ Class Firewall {
         return $ret;
     }
 
-    public static function make_attacks($data){
+    public static function makeAttacks($data){
         $ips = [
             ['ip' => '123.1.1.2', 'bps' => 3024.66],
             ['ip' => '123.1.1.254', 'bps' => 3024.66],

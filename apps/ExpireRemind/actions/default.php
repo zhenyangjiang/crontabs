@@ -45,7 +45,7 @@ foreach ($instances as $instance) {
     }
 
     //确定实例及按月计费云盾每月所需费用
-    $mitigation_info = Mitigation::find_ip($instance_ip);
+    $mitigation_info = Mitigation::findByIp($instance_ip);
     $price_mitigation = $mitigation_info ? $mitigation_info['price'] : 0;
     $fee_price = $instance['price'] +  $price_mitigation;
 

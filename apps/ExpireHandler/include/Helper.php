@@ -66,7 +66,7 @@ function suspend_transact($instance, $user, $some_days, $callback) {
         $result = Mitigation::transact( function() use ( $instance, $user, $callback ) {
             //降级云盾
             Response::note('#tab强制降级云盾为免费方案...');
-            $bool = Mitigation::down_grade($instance);
+            $bool = Mitigation::downgrade($instance);
             Response::echoBool($bool);
             if ( !$bool) return false;
 

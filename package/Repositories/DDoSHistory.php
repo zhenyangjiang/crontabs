@@ -17,7 +17,7 @@ class DDoSHistory extends StaticRepository {
      * @param  string   $ip     ip
      * @return array            新增的记录集合
      */
-    public static function save_start_attack($ips) {
+    public static function saveAttackStart($ips) {
         $ips = (array)$ips; if (!$ips) return false;
 
         //获取实例表中：1)在ips范围内的IP， 2)标为“正常”的IP
@@ -72,7 +72,7 @@ class DDoSHistory extends StaticRepository {
      * @param  array|string   $ips      ip
      * @return bool                     数据更新成功否
      */
-    public static function save_end_attack($ip, $on_event) {
+    public static function saveAttackEnd($ip, $on_event) {
         $history = self::find([
             'awhere' => ['ip' => $ip, 'end_time' => NULL],
             'order'  => 'id desc',
@@ -120,7 +120,7 @@ class DDoSHistory extends StaticRepository {
      * @param  [type] $ip [description]
      * @return [type]     [description]
      */
-    public static function find_ip_attacking($ip) {
+    public static function findByAttacking($ip) {
         return self::find([
             'awhere' => ['end_time' => NULL, 'ip' => $ip],
             'order'  => 'begin_time desc',

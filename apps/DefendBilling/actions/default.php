@@ -15,11 +15,11 @@ BlackHole::unblock(); //解除牵引
 Response::note('#line');
 
 Response::note('正在从防火墙上获取了攻击信息...');
-$pack_attack = Firewall::get_attack();
+$pack_attack = Firewall::getAttacks();
 Response::note('#line');
 
 Response::note('过滤掉已被牵引的IP...');
-$pack_attack = DDoSInfo::filte_blocked($pack_attack);
+$pack_attack = DDoSInfo::filteBlocked($pack_attack);
 Response::note('#line');
 
 if ( $pack_attack ) {
@@ -36,7 +36,7 @@ Response::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
 Response::note('正在查询被攻击中、且本次未被攻击的IP作攻击自然结束：');
-$attaching_ips = Mitigation::get_ips_by_status('ATTACK');
+$attaching_ips = Mitigation::getIpsByStatus('ATTACK');
 
 if ($attaching_ips) {
     // foreach ($attaching_ips as $ip) Response::note('#tab%s', $ip);
@@ -79,10 +79,10 @@ if ($attaching_ips) {
                     $datacenter = DataCenter::find($mitigation['datacenter_id']);
 
                     //获取当前ip所在的数据中心的价格规则(元/小时)的数组
-                    $price_rules = DataCenter::price_rules($datacenter, 'hour');
+                    $price_rules = DataCenter::priceRules($datacenter, 'hour');
 
                     //由IP确定攻击历史记录
-                    $DDoSHistory = DDoSHistory::find_ip_attacking($ip);
+                    $DDoSHistory = DDoSHistory::findByAttacking($ip);
                     if ($DDoSHistory) {
                         Response::note('对此云盾IP进行结算费用：');
                         if ( Mitigation::isTrial($mitigation) ) {
@@ -100,7 +100,7 @@ if ($attaching_ips) {
 
             //写入攻击自然结束
             Response::note('写入自然攻击结束...');
-            DDoSHistory::save_end_attack($ip, 'STOP');
+            DDoSHistory::saveAttackEnd($ip, 'STOP');
 
             //更新实例网络状态为正常
             Mitigation::setStatus($ip, 'NORMAL');
@@ -124,7 +124,7 @@ if (!$all_ips) {
 //记录开始攻击
 Response::note('#line');
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
-$start_attack_ips = DDoSHistory::save_start_attack($all_ips);
+$start_attack_ips = DDoSHistory::saveAttackStart($all_ips);
 Alert::beginDDoS($start_attack_ips);
 Response::note('#line');
 
@@ -280,7 +280,7 @@ foreach ($pack_attack as $dc_id => $group) {
                     Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
 
                     Response::note('由IP确定攻击历史记录：');
-                    $DDoSHistory = DDoSHistory::find_ip_attacking($dest_ip);
+                    $DDoSHistory = DDoSHistory::findByAttacking($dest_ip);
 
                     if (!$DDoSHistory) {
                         if ( $total_mbps >= $max_mbps ) {
@@ -301,7 +301,7 @@ foreach ($pack_attack as $dc_id => $group) {
                         Response::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
 
                         //获取当前ip所在的数据中心的价格规则(元/小时)的数组
-                        $price_rules = DataCenter::price_rules($datacenter, 'hour');
+                        $price_rules = DataCenter::priceRules($datacenter, 'hour');
 
                         //由云盾->用户->余额
                         $uid = $mitigation['uid'];

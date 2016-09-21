@@ -62,9 +62,9 @@ class DataCenter extends StaticRepository {
      * @param  string   $ip             IP
      * @return mixed
      */
-    public static function find_ip($ip) {
+    public static function findByIp($ip) {
         //由ip确定实例记录
-        if (!$instance = Instance::find_ip($ip)) return NULL;
+        if (!$instance = Instance::findByIp($ip)) return NULL;
 
         //由实例记录确数据中心
         if (!$datacenter = self::find($instance['datacenter_id'])) return NULL;
@@ -77,7 +77,7 @@ class DataCenter extends StaticRepository {
      * @param  array   $datacenter     数据中心数据
      * @return [type]                   description]
      */
-    public static function price_rules($datacenter, $billing) {
+    public static function priceRules($datacenter, $billing) {
         $price_rules = $datacenter['price_rules'];
         $ret = $price_rules["mitigation-$billing"];
         return $ret;
@@ -88,7 +88,7 @@ class DataCenter extends StaticRepository {
      * @param  array   $datacenter     数据中心数据
      * @return [type]                   description]
      */
-    public static function lowest_price_case($datacenter, $billing) {
+    public static function lowestPriceCase($datacenter, $billing) {
         $price_rules = $datacenter['price_rules'];
         $ret = $price_rules["mitigation-$billing"];
         ksort($ret);
@@ -115,7 +115,7 @@ class DataCenter extends StaticRepository {
         }
 
         //读取当前IP所购买的防护能力值
-        $ability = Mitigation::find_ip($ip, 'ability');
+        $ability = Mitigation::findByIp($ip, 'ability');
         if ( !$ability ) {
             //此IP为免费防护，未找到云盾记录，采用最低护规格的所对应的值
             ksort($block_duration);

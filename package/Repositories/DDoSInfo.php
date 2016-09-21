@@ -11,10 +11,10 @@ class DDoSInfo extends StaticRepository {
     protected static $dt_parter = ['type' => 'datetime', 'mode' => 'ymd'];
     // protected static $dt_parter = 'special';
 
-    public static function filte_blocked($pack) {
+    public static function filteBlocked($pack) {
         if (!$pack) return array();
 
-        $blocked_ips = Mitigation::get_ips_by_status('BLOCK');
+        $blocked_ips = Mitigation::getIpsByStatus('BLOCK');
 
         if ($blocked_ips) {
             $filte_ips = [];

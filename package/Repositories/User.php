@@ -2,49 +2,17 @@
 use Landers\Framework\Core\StaticRepository;
 
 use ULan\Repository\Crypt;
+use Landers\Substrate\Utils\Arr;
 
-class User extends StaticRepository {
-    protected static $connection = 'oauth';
-    protected static $datatable = 'ulan_users';
-    protected static $DAO;
+// class User extends StaticRepository {
+    // protected static $connection = 'oauth';
+    // protected static $datatable = 'ulan_users';
+    // protected static $DAO;
 
-    /**
-     * 取得用户余额
-     * @param  int      $uid        用户ID
-     * @return float                余额
-     */
-    private static $num_crypt;
-    public static function get_money($uid) {
-        $money = self::find($uid, 'money');
-        return (float)Crypt::decode($money, $uid);
-    }
-
-    /**
-     * 设置用户余额
-     * @param int       $uid        用户ID
-     * @param [type]   $money     [description]
-     * @param boolean
-     */
-    public static function set_money($uid, $money) {
-        $money = Crypt::encode($money, $uid);
-        return self::update(
-            ['money' => $money], ['id' => $uid]
-        );
-    }
-
-    /**
-     * 支付
-     * @param  [type] $uid    [description]
-     * @param  [type] $amount [description]
-     * @return [type]         [description]
-     */
-    public static function pay_money($uid, $amount) {
-        $money = self::get_money($uid);
-        $money -= (float)$amount;
-        return self::set_money($uid, $money);
-        // return self::update(
-        //     ['money' => "`money`-$amount"], ['id' => $uid]
-        // );
+class User {
+    private static $repoUser;
+    public static function init() {
+        self::$repoUser = repository('user');
     }
 
     /**
@@ -52,27 +20,34 @@ class User extends StaticRepository {
      * @param  [type] $uid [description]
      * @return [type]      [description]
      */
-    public static function get($uid, $fields = NULL) {
-        $info = self::find($uid, $fields);
-        $name = $info['realname'] or $name = $info['username'];
-        $info['user_name'] = $name;
-        return $info;
+    public static function find($uid, $fields = NULL) {
+        return self::$repoUser->closure(function($q) use ($uid, $fields){
+            $user = $q->find($uid)->toArray();
+            return Arr::slice($user, $fields);
+        });
     }
 
     /**
-     * 用户余额
-     * @return array
+     * 用户支出
+     * @param  [type] $uid    [description]
+     * @param  [type] $money  [description]
+     * @param  [type] $feelog [description]
+     * @return [type]         [description]
      */
-    public static function balance()
-    {
-        $ret = self::listall(['fields' => ['id', 'money']]);
-        $data = [];
-        foreach ($ret as $v) {
-            $data[$v['id']] = $v['money'];
-        }
-        return $data;
+    public static function expend($uid, $money, $feelog) {
+        return self::$repoUser->lockAndExpend($uid, $money, $feelog);
     }
 
+    /**
+     * 取得用户可用余额
+     * @param  [type] $uid [description]
+     * @return [type]      [description]
+     */
+    public static function money($uid) {
+        return self::$repoUser->closure(function($q) use ($uid){
+            return $q->find($uid)->money;
+        });
+    }
 }
 User::init();
 ?>

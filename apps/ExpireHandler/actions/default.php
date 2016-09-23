@@ -31,7 +31,7 @@ foreach ($instances as $instance) {
 
     //确定实例所属用户
     $uid = $instance['uid'];
-    $user = User::get($uid);
+    $user = User::find($uid);
     response_user_detail($user);
 
     //是否试用

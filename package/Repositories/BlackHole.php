@@ -18,14 +18,6 @@ Class BlackHole {
     }
 
     public static function doBlock($ip, $bps, $is_force) {
-        // $opts = [
-        //     'ip' => $ip, 'bps' => $bps, 'from' => 'Crontab'
-        // ];
-        // if ($is_force) $opts['blockway'] = 'force';
-
-        // //牵引动作入队列
-        // $task = new BlackholeAction('block', $opts);
-        // return Queue::singleton('blackhole')->push($task);
         $from = 'Crontab';
         $blockway = $is_force ? 'force' : '';
         return repository('blackHole')->block($ip, $bps, $from, $blockway);
@@ -69,11 +61,6 @@ Class BlackHole {
     }
 
     public static function doUnblock($ip) {
-        // $task = new BlackholeAction('unblock', [
-        //     'ip' => $ip
-        // ]);
-        // return Queue::singleton('blackhole')->push($task);
-
         return repository('blackHole')->unblock($ip);
     }
 

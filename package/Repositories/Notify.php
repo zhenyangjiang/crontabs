@@ -53,16 +53,16 @@ class Notify {
     }
 
     public static function user($uid, $event, $data) {
-        // if (System::isDoneToday($event, $uid)) {
-        //     Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
-        //     return false;
-        // }
+        if (System::isDoneToday($event, $uid)) {
+            Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
+            return false;
+        }
 
         Response::note('#tab对用户ID:%s 告警通知 %s ... : ', $uid, $event);
-        $uinfo = User::get($uid, 'username, mobile, email');
+        $uinfo = User::find($uid, 'username, mobile, email');
         $data = array_merge($uinfo, $data);
 
-        $host = Config::get('hosts', 'api');
+        // $host = Config::get('hosts', 'api');
         // $apiurl = $host . '/intranet/alert/send';
         $contents = Config::get('notify-contents', $event);
         foreach ($contents as $key => &$item) {
@@ -71,6 +71,7 @@ class Notify {
             $item['content'] = Str::parse($content, $data);
         }; unset($item);
 
+        //回显结果
         $arrResult = repository('alert')->sendTo($uid, $event, $contents);
         if ($arrResult) {
             foreach ($arrResult as $way => $val) {

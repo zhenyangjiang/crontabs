@@ -239,39 +239,21 @@ class DDoSHistory extends StaticRepository {
 
         //按需防护扣费日志数据包
         $feelog_data = [
-            'typekey' => 'pay_mitigation_hour',
-            'balance' => User::get_money($uid) - $fee,
-            // 'service_ip' => $ip,
-            'uid' => $uid,
-            'amount' => $fee,
             'description' => sprintf(
                 '支付按需防护费用：IP：%s, 持续%s小时, 峰值：%sMbps/%spps',
                 $ip, $duration, $peak_info['mbps']['value'], $peak_info['pps']['value']
             ),
+            'amount' => $fee,
+            'privilege' => 0,
+            'occur_way' => '余额支付',
+            'typekey' => 'pay_mitigation_hour',
+            'client_ip' => 'crontab'
         ];
 
         Response::transactBegin('用户扣费、写入扣费日志');
         Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
-        $result = User::transact(function() use ($uid, $feelog_data, $duration) {
-            $fee_amount = $feelog_data['amount'];
-            Response::note('#tab向用户扣除费用：%s...', $fee_amount);
-            $bool = User::pay_money($uid, $fee_amount);
-            Response::echoBool($bool);
-            if (!$bool) return false;
-
-            return Feelog::transact(function() use ($uid, $feelog_data, $duration) {
-                // 写入总计费用日志
-                Response::note('#tab写入云盾费用日志...');
-                $bool = !!Feelog::create($feelog_data);
-                Response::echoBool($bool);
-                if (!$bool) return false;
-
-                return $bool;
-            });
-        });
-
-        return Response::transactEnd($result);
-
+        User::expend($uid, $money, $feelog_data);
+        return Response::transactEnd(true);
     }
 }
 DDoSHistory::init();

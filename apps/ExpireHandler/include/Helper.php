@@ -3,53 +3,44 @@ use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Response;
 
 function renew_transact($uid, $instance, $instance_update, $feelog_data, $callbacks = array()) {
-    $result = User::transact(function() use ($uid, $instance, $instance_update, $feelog_data, $callbacks) {
-        //用户扣费
-        Response::note('#tab实例扣费...');
-        $bool = User::pay_money($uid, $feelog_data['amount']);
+
+    $result = Instance::transact(function() use ($uid, $instance, $instance_update, $feelog_data, $callbacks) {
+        // 更新实例
+        Response::note('#tab更新实例新有效期...');
+        if (Instance::update($instance_update, ['id' => $instance['id']])) {
+            Response::echoSuccess(date('Y-m-d H:i:s', $instance_update['expire']));
+        } else {
+            Response::echoBool(false);
+            return false;
+        }
+
+        Response::note('#tab反挂起实例...');
+        $bool = Instance::unsuspend($instance);
+        Response::echoBool($bool);
+        if (!$bool) return false;
+
+        Notify::user($uid, 'HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW', [
+            'instance_name' => $instance['hostname'],
+            'old_expire'    => date('Y-m-d H:i:s', $instance['expire']),
+            'new_expire'    => date('Y-m-d H:i:s', $instance_update['expire']),
+            'renew_money'   => $feelog_data['amount'],
+        ]);
+
+        Response::note('#tab对用户扣费并写入账单日志...');
+        $fee = $feelog_data['amount'];
+        $bool = User::expend($uid, $fee, $feelog);
         if ($bool) {
-            Response::echoSuccess('成功扣费 %s', $feelog_data['amount']);
+            Response::echoSuccess('成功扣费 %s', $fee);
         } else {
             Response::bool(false);
             return false;
         }
 
-        return Instance::transact(function() use ($uid, $instance, $instance_update, $feelog_data, $callbacks) {
-            // 实例扣费日志
-            Response::note('#tab写入实例扣费日志...');
-            $bool = Feelog::create($feelog_data);
-            Response::echoBool($bool);
-            if ( !$bool ) return false;
+        if ($callbacks) {
+            foreach ($callbacks as $callback) $callback()
+        }
 
-            // 更新实例
-            Response::note('#tab更新实例新有效期...');
-            if (Instance::update($instance_update, ['id' => $instance['id']])) {
-                Response::echoSuccess(date('Y-m-d H:i:s', $instance_update['expire']));
-            } else {
-                Response::echoBool(false);
-                return false;
-            }
-
-            Response::note('#tab反挂起实例...');
-            $bool = Instance::unsuspend($instance);
-            Response::echoBool($bool);
-            if (!$bool) return false;
-
-            Notify::user($uid, 'HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW', [
-                'instance_name' => $instance['hostname'],
-                'old_expire'    => date('Y-m-d H:i:s', $instance['expire']),
-                'new_expire'    => date('Y-m-d H:i:s', $instance_update['expire']),
-                'renew_money'   => $feelog_data['amount'],
-            ]);
-
-            if ($callbacks) {
-                foreach ($callbacks as $callback) {
-                    if (!$callback())  return false;
-                }
-            }
-
-            return true;
-        });
+        return true;
     });
 
     return Response::transactEnd($result);

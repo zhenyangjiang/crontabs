@@ -12,6 +12,14 @@ class Instance extends StaticRepository {
     protected static $datatable = 'ulan_instances';
     protected static $DAO;
 
+
+    private static $repoInstance;
+
+    public function init() {
+        self::$repoInstance = repository('instance');
+        parent::init();
+    }
+
     /**
      * 由实例确定其所在数据中心
      * @param  array    $instance   实例
@@ -81,19 +89,20 @@ class Instance extends StaticRepository {
      * @return booean
      */
     public static function unsuspend($xinstance) {
-        $instance = self::info($xinstance);
+        return self::$repoInstance->unsuspend($xinstance);
+        // $instance = self::info($xinstance);
 
-        if ($instance['status'] === 'SUSPENDED') {
-            $ret = Virt::unsuspend($instance['vpsid']);
-            if  ( $ret['done'] ) {
-                Instance::changeStatus($instance, 'toNormal', true);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
+        // if ($instance['status'] === 'SUSPENDED') {
+        //     $ret = Virt::unsuspend($instance['vpsid']);
+        //     if  ( $ret['done'] ) {
+        //         Instance::changeStatus($instance, 'toNormal', true);
+        //         return true;
+        //     } else {
+        //         return false;
+        //     }
+        // } else {
+        //     return true;
+        // }
     }
 
     /**

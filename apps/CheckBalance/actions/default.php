@@ -16,7 +16,7 @@ foreach ($mits as $mit) {
     }
 }
 
-$userBalance = User::balance();
+$balances = repository('user')->allBalances();
 $config = Config::get('check_balance');
 $hour = $config['calc_hour'];
 Response::note("Hour:{$hour}");
@@ -28,8 +28,8 @@ foreach ($users as $uid => $mits) {
         Response::note("\t\t{$mit['ability']}:\t{$mit['price']}");
     }
     $total_price *= $hour;
-    Response::note("[{$uid}]:{$total_price}/{$userBalance[$uid]}");
-    if ($total_price > $userBalance[$uid]) {
+    Response::note("[{$uid}]:{$total_price}/{$balances[$uid]}");
+    if ($total_price > $balances[$uid]) {
         Response::note("[{$uid}]:余额不足");
         Notify::user($uid, 'CHECKBALANCE-NOTENOUGH', [
             'hour' => $hour

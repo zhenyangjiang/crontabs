@@ -64,12 +64,10 @@ class DataCenter extends StaticRepository {
      */
     public static function findByIp($ip) {
         //由ip确定实例记录
-        if (!$instance = Instance::findByIp($ip)) return NULL;
+        $instance = Instance::findByIp($ip);
 
         //由实例记录确数据中心
-        if (!$datacenter = self::find($instance['datacenter_id'])) return NULL;
-
-        return $datacenter;
+        return self::find($instance['datacenter_id']);
     }
 
     /**
@@ -103,12 +101,16 @@ class DataCenter extends StaticRepository {
      * @param  array   $datacenter     数据中心数据
      * @return [type]     [description]
      */
-    public static function blockDuration($datacenter) {
+    public static function blockDuration($ip) {
+        //由IP确定数据中心
+        $datacenter = self::findByIp($ip);
+
         //读取数据中心全部套餐的牵引时长
         $block_duration = $datacenter['block_duration'];
 
         if (!$block_duration) {
-            $ret = 4; $msg = 'IP:%s所在的数据中心%s的牵引时长未定义，暂且返回值为：%s';
+            $ret = 4;
+            $msg = 'IP:%s所在的数据中心%s的牵引时长未定义，暂且返回值为：%s';
             $msg = sprintf($msg, $ip, $datacenter['name'], $ret);
             //Notify::developer('未定义牵引时长', $msg);
             return $ret;

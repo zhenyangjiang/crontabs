@@ -25,16 +25,14 @@ foreach ($instances as $instance) {
     response_instance_detail($instance);
 
     // dp(System::isDoneToday($instance['id']));
-
     if ( System::isDoneToday($instance['id']) ) {
         Response::note('此实例今天 (%s) 已通知提醒过。', date('Y-m-d'));
         continue;
     }
 
-
     //确定实例所属用户
     $uid = $instance['uid'];
-    $user = User::get($uid);
+    $user = User::find($uid);
     $user_moeny = $user['money'];
     response_user_detail($user);
 

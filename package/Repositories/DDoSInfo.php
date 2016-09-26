@@ -11,6 +11,11 @@ class DDoSInfo extends StaticRepository {
     protected static $dt_parter = ['type' => 'datetime', 'mode' => 'ymd'];
     // protected static $dt_parter = 'special';
 
+    private static $repo;
+    public static function init() {
+        self::$repo = repository('dDoSInfo');
+    }
+
     public static function filteBlocked($pack) {
         if (!$pack) return array();
 
@@ -63,41 +68,13 @@ class DDoSInfo extends StaticRepository {
         return $ret;
     }
 
-
     /**
      * 取得某IP在某段时间内的峰值
      * @param  [type] $in_hours [description]
      * @return [type]           [description]
      */
     public static function peak($dest_ip, $begin, $end) {
-        $awhere = ['dest' => $dest_ip, "created_at between $begin and $end"];
-
-        $list = self::lists([
-            'unions' => [$begin, $end],
-            'awhere' => $awhere,
-        ]);
-        if ( !$list ) return NULL;
-
-        $list = Arr::sort($list, 'bps0');
-        $first = $list[0];
-        $info_bps = [
-            'time'  => date('Y-m-d H:i:s', $first['created_at']),
-            'value' => $first['bps0']
-        ];
-
-        $list = Arr::sort($list, 'pps0');
-        $first = $list[0];
-        $info_pps = [
-            'time'  => date('Y-m-d H:i:s', $first['created_at']),
-            'value' => $first['pps0']
-        ];
-
-        return [
-            'begin' => date('Y-m-d H:i:s', $begin),
-            'end'   => date('Y-m-d H:i:s', $end),
-            'mbps'  => $info_bps,
-            'pps'   => $info_pps
-        ];
+        return self::$repo->peakInfo($dest_ip, $begin, $end);
     }
 
     /**

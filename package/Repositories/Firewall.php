@@ -15,9 +15,9 @@ use Landers\Framework\Modules\Log;
 Class Firewall {
     public static function getAttacks() {
         $fwurl = Config::get('fwurl');
+        Response::note('数据来源：%s ', $fwurl);
 
         // $content = include( __DIR__ . '/Firewall-data3.php');
-
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('防火墙数据读取失败！');
         }
@@ -29,9 +29,18 @@ Class Firewall {
                 System::halt('读取无法解析的防火墙数据错误: '.$content);
             }
         } else {
-            Response::note('#tab截取防火墙数据到日志中...');
-            $file = Log::trace('防火墙数据', $data);
-            Response::echoBool( !!$file );
+            if ( Config::get('env.log.firewall') ) {
+                Response::note('#tab截取防火墙数据到日志中...');
+                $file = Log::trace('防火墙数据', $data);
+                Response::echoBool( !!$file );
+            }
+        }
+
+        //额外加一个调用用的IP
+        if ($data) {
+            $tmp = $data[array_rand($data)];
+            $data = ['123.1.1.11' => $tmp];
+            // $data['123.1.1.11'] = $tmp;
         }
 
         $ret = []; $filte1_count = 0;

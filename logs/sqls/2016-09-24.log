@@ -1,0 +1,190 @@
+select * from ulan_mitigations where (`ip` in ())
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/Users/landers/Projects/my/landers/substrate/src/Classes/MySQL.php',
+    'line' => 216,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in ())',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/Users/landers/Projects/my/landers/substrate/src/Classes/DBModel.php',
+    'line' => 188,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in ())',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/Users/landers/Projects/my/landers/substrate/src/Classes/DBModel.php',
+    'line' => 173,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => 
+            array (
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/Users/landers/Projects/my/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => 
+            array (
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/Users/landers/Projects/ulan/crontabs/package/Repositories/Alert.php',
+    'line' => 22,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => 
+              array (
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/Users/landers/Projects/ulan/crontabs/package/Repositories/Alert.php',
+    'line' => 43,
+    'function' => 'ip2userip',
+    'class' => 'Alert',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/Users/landers/Projects/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 128,
+    'function' => 'beginDDoS',
+    'class' => 'Alert',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/Users/landers/Projects/my/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 94,
+    'args' => 
+    array (
+      0 => '/Users/landers/Projects/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  8 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/Users/landers/Projects/my/landers/framework/src/Core/System.php',
+    'line' => 34,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/Users/landers/Projects/ulan/crontabs/app',
+    'line' => 5,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+

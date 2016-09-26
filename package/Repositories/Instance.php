@@ -15,7 +15,7 @@ class Instance extends StaticRepository {
 
     private static $repoInstance;
 
-    public function init() {
+    public static function init() {
         self::$repoInstance = repository('instance');
         parent::init();
     }

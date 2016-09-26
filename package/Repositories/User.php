@@ -11,8 +11,10 @@ use Landers\Substrate\Utils\Arr;
 
 class User {
     private static $repoUser;
+    private static $repoMoney;
     public static function init() {
         self::$repoUser = repository('user');
+        self::$repoMoney = repository('money');
     }
 
     /**
@@ -35,7 +37,7 @@ class User {
      * @return [type]         [description]
      */
     public static function expend($uid, $money, $feelog) {
-        return self::$repoUser->lockAndExpend($uid, $money, $feelog);
+        return self::$repoMoney->lockAndExpend($uid, $money, $feelog);
     }
 
     /**

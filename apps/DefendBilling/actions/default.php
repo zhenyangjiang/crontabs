@@ -11,7 +11,7 @@ Response::note(['【按月防护，按需防护、计费】（'.System::app('nam
 // StartUp::check();
 
 Response::note('正在对牵引过期的IP作解除牵引：');
-BlackHole::unblock(); //解除牵引
+BlackHole::release(); //释放牵引
 Response::note('#line');
 
 Response::note('正在从防火墙上获取了攻击信息...');
@@ -82,7 +82,7 @@ if ($attaching_ips) {
                     $price_rules = DataCenter::priceRules($datacenter, 'hour');
 
                     //由IP确定攻击历史记录
-                    $DDoSHistory = DDoSHistory::findByAttacking($ip);
+                    $DDoSHistory = DDoSHistory::findByAttackingIp($ip);
                     if ($DDoSHistory) {
                         Response::note('对此云盾IP进行结算费用：');
                         if ( Mitigation::isTrial($mitigation) ) {
@@ -280,7 +280,7 @@ foreach ($pack_attack as $dc_id => $group) {
                     Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
 
                     Response::note('由IP确定攻击历史记录：');
-                    $DDoSHistory = DDoSHistory::findByAttacking($dest_ip);
+                    $DDoSHistory = DDoSHistory::findByAttackingIp($dest_ip);
 
                     if (!$DDoSHistory) {
                         if ( $total_mbps >= $max_mbps ) {
@@ -373,10 +373,12 @@ foreach ($pack_attack as $dc_id => $group) {
                             } else {
                                 //超过?否
                                 //模拟本次攻击总计，检查余额是否足以支付
-                                $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules);
+                                $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules, $peak_info, $duration);
 
+
+                                Response::note('持续时间：%s小时，模拟总计费用：￥%s', $duration, $fee);
                                 if ( $fee > $user['money'] ) {
-                                    Response::note('模拟总计费用：￥%s，已超出用户余额：%s，需立即处理：', $fee, $user['money']);
+                                    Response::note('已超出用户余额：%s，需立即处理：', $fee, $user['money']);
 
                                     //产生的总费用超过用户余额，作牵引处理
                                     BlackHole::block($dest_ip, $item['mbps'], false);
@@ -392,7 +394,7 @@ foreach ($pack_attack as $dc_id => $group) {
                                         DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                                     }
                                 } else {
-                                    Response::note('模拟总计费用：￥%s，当前余额：￥%s 足以支付，继续清洗中...', $fee, $user['money']);
+                                    Response::note('当前余额：￥%s 足以支付，继续清洗中...', $user['money']);
                                 }
                             }
                         }

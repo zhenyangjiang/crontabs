@@ -101,7 +101,7 @@ function suspend_transact($instance, $user, $some_days, $callback) {
 
 function destroy_instance($instance, $some_days) {
     Response::note('#tab实例已过期%s天，超过系统允许值%s天，执行销毁实例', $some_days['expire'], $some_days['allow']);
-    if ( ENV_debug === true ) {
+    if ( Config::get('debug') ) {
         Response::note('调试开启：执行虚拟销毁');
     } else {
         $bool = Instance::destroy($instance);

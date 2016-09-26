@@ -78,7 +78,7 @@ function response_instance_detail(array $instance){
 function response_user_detail(array $user) {
     $user_name = $user['name'] or $user_name = $user['username'];
     Response::note('实例所属用户详情如下：');
-    Response::note('#tabID=%s，名称=%s，余额=%s元', $user['id'], $user_name, $user['money']);
+    Response::note('#tabUID=%s，名称=%s，余额=%s元', $user['id'], $user_name, $user['money']);
     Response::note('#tab手机=%s，邮箱=%s', $user['mobile'], $user['email']);
     Response::note('#blank');
 }

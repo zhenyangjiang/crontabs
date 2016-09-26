@@ -7,6 +7,12 @@ class Mitigation extends StaticRepository {
     protected static $datatable = 'ulan_mitigations';
     protected static $DAO;
 
+    private static $repo;
+    public static function init() {
+        self::$repo = repository('mitigation');
+        parent::init();
+    }
+
     public static function attachs($mitigation) {
         if ($mitigation && is_array($mitigation)){
             $mitigation['ability_mbps'] = self::Gbps_to_Mbps($mitigation['ability']);

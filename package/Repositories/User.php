@@ -4,11 +4,6 @@ use Landers\Framework\Core\StaticRepository;
 use ULan\Repository\Crypt;
 use Landers\Substrate\Utils\Arr;
 
-// class User extends StaticRepository {
-    // protected static $connection = 'oauth';
-    // protected static $datatable = 'ulan_users';
-    // protected static $DAO;
-
 class User {
     private static $repoUser;
     private static $repoMoney;

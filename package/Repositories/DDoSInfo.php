@@ -14,6 +14,7 @@ class DDoSInfo extends StaticRepository {
     private static $repo;
     public static function init() {
         self::$repo = repository('dDoSInfo');
+        parent::init();
     }
 
     public static function filteBlocked($pack) {

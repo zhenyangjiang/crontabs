@@ -95,39 +95,6 @@ class DataCenter extends StaticRepository {
             'price'     => pos($ret)
         ];
     }
-
-    /**
-     * 取得IP牵引的牵引时长
-     * @param  array   $datacenter     数据中心数据
-     * @return [type]     [description]
-     */
-    public static function blockDuration($ip) {
-        //由IP确定数据中心
-        $datacenter = self::findByIp($ip);
-
-        //读取数据中心全部套餐的牵引时长
-        $block_duration = $datacenter['block_duration'];
-
-        if (!$block_duration) {
-            $ret = 4;
-            $msg = 'IP:%s所在的数据中心%s的牵引时长未定义，暂且返回值为：%s';
-            $msg = sprintf($msg, $ip, $datacenter['name'], $ret);
-            //Notify::developer('未定义牵引时长', $msg);
-            return $ret;
-        }
-
-        //读取当前IP所购买的防护能力值
-        $ability = Mitigation::findByIp($ip, 'ability');
-        if ( !$ability ) {
-            //此IP为免费防护，未找到云盾记录，采用最低护规格的所对应的值
-            ksort($block_duration);
-            $ability = key($block_duration);
-        }
-
-        //返回结果
-        $ret = $block_duration[$ability];
-        return $ret;
-    }
 }
 DataCenter::init();
 ?>

@@ -1,6 +1,7 @@
 <?php
 use Landers\Framework\Core\Response;
 use Landers\Framework\Core\Queue;
+use Landers\Substrate\Utils\Arr;
 
 Class BlackHole {
     private static $repo, $repoMitigation;
@@ -28,6 +29,7 @@ Class BlackHole {
      * @return [type]           [description]
      */
     public static function block($ip, $bps, $blockway ) {
+        Response::note('正在牵引IP：%s...', $ip);
         return self::$repoMitigation->blockByIp($ip, $bps, ENV_appkey, $blockway);
     }
 
@@ -42,6 +44,7 @@ Class BlackHole {
      * @return array                被成功解除牵引的ips
      */
     public static function unblock($ip){
+        Response::note('正在解除牵引IP：%s...', $ip);
         return self::$repoMitigation->unblockByIp($ip);
     }
 
@@ -62,36 +65,13 @@ Class BlackHole {
             return [];
         }
 
-        $ips = [];
-
         // 解除牵引更新“标志值为已解除”、实例状态更新为“正常”;
-        Response::transactBegin();
-        $result = Mitigation::transact(function() use (&$lists, &$ips){
-            //解除牵引动作入队列
-            Response::note('#tab执行解除牵引动作...');
-            foreach ($lists as $item) {
-                list($bool, $message) = self::doUnblock($item['ip']);
-                if ( !$bool) continue;
-                $ips[] = $item['ip'];
-            }
-            if (!count($ips)) {
-                Response::echoBool(false);
-                return false;
-            }
-            Response::echoSuccess('%s 请求入队成功', count($ips));
-
-            //将牵引过期的ips所在的云盾的状态改为正常
-            Response::note('#tab更新云盾IP为“正常”...');
-            $bool = Mitigation::setStatus($ips, 'NORMAL');
+        $ips = Arr::pick($lists, 'ip');
+        foreach ($ips as $ip) {
+            $bool = self::unblock($ip);
             Response::echoBool($bool);
-            if (!$bool) return false;
-
-            //最终返回true
-            return true;
-        });
-        Response::transactEnd($result);
-
-        if ($result) Alert::ipUnblock($ips);
+        }
+        Alert::ipUnblock($ips);
 
         return $ips;
     }

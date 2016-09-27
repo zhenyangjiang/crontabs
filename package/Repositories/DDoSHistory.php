@@ -72,7 +72,7 @@ class DDoSHistory extends StaticRepository {
                 if (!$bool) return false;
 
                 Response::note('#tab更新“实列表为被攻击中”...');
-                $ips = Arr::clone_inner($data, 'ip');
+                $ips = Arr::pick($data, 'ip');
                 $bool = Mitigation::setStatus($ips, 'ATTACK', true);
                 Response::echoBool($bool);
                 if (!$bool) return false;
@@ -216,7 +216,7 @@ class DDoSHistory extends StaticRepository {
         if ( $use_bps ) {
             $begin_time = $history['begin_time'];
             $end_time = time();
-            Response::note('根据指定值bps：%sMbps, 构造峰值信息', $use_bps);
+            Response::noteColor('根据指定值bps：%sMbps, 构造峰值信息', $use_bps, 'cyan');
             $peak_info = DDoSInfo::genealPeakByMBps($use_bps, $begin_time, $end_time);
         } else {
             $peak_info = array();

@@ -122,29 +122,7 @@ class Mitigation extends StaticRepository {
      * @return Boolean 是否【更新成功且有记录被更新】
      **/
     public static function setStatus($ips, $status = NULL, $is_force = NULL) {
-        $ips = (array)$ips;
-        $status = (string)$status;
-        $updata = ['status' => $status];
-        $awhere = ['ip' => $ips];
-
-        $statuses = [
-            'ATTACK' => ['NORMAL'],
-            'BLOCK' => ['ATTACK'],
-            'NORMAL' => ['ATTACK', 'BLOCK']
-        ];
-        if (!$is_force) {
-            $awhere['status'] = $statuses[$status];
-        }
-
-        if ( $status == 'BLOCK' ) {
-            //确定牵引时长，并更新牵引过期时间
-            $block_duration_hours = DataCenter::blockDuration($ip);
-            $updata['block_expire'] = strtotime("+$block_duration_hours hours");
-        } else {
-            $updata['block_expire'] = NULL;
-        }
-
-        return self::update($updata, $awhere);
+        return self::$repo->setStatus($ips, $status, $is_force);
     }
 
     /**

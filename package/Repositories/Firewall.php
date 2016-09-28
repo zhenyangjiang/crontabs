@@ -15,18 +15,18 @@ use Landers\Framework\Modules\Log;
 Class Firewall {
     public static function getAttacks() {
         $fwurl = Config::get('fwurl');
-        Response::note('数据来源：%s ', $fwurl);
+        Response::note('#tab数据来源：%s ', $fwurl);
 
         // $content = include( __DIR__ . '/Firewall-data3.php');
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
-            System::halt('防火墙数据读取失败！');
+            System::halt('#tab防火墙数据读取失败！');
         }
 
         if (!$data = json_decode($content, true)) {
             if (is_array($data)) {
-                Response::warn('获取到空数据');
+                Response::warn('#tab获取到空数据');
             } else {
-                System::halt('读取无法解析的防火墙数据错误: '.$content);
+                System::halt('#tab读取无法解析的防火墙数据错误: '.$content);
             }
         } else {
             if ( Config::get('env.log.firewall') ) {
@@ -37,10 +37,19 @@ Class Firewall {
         }
 
         //额外加一个调用用的IP
-        if ($data) {
+        if ($data && Config::get('env.debug')) {
             $tmp = $data[array_rand($data)];
-            $data = ['123.1.1.11' => $tmp];
+            $data = [ '123.1.1.11' => $tmp ];
             // $data['123.1.1.11'] = $tmp;
+            if ( $xip = System::argv(3)) {
+                $xbps = System::argv(4);
+                if ($xbps === 'NONE') {
+                    unset($data[$xip]);
+                } else {
+                    $data[$xip]['bps'][0] = $xbps;
+                    $data[$xip]['pps'][0] = 19000000;
+                }
+            }
         }
 
         $ret = []; $filte1_count = 0;

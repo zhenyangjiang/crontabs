@@ -33,9 +33,9 @@ class DDoSInfo extends StaticRepository {
 
             //已被牵引的IP还存在防火墙被攻击列表中
             if ($filte_ips) {
-                Response::note('#tab以下IP还处于牵引中，却还在流量，已被过滤掉：%s', implode(', ', $filte_ips));
+                Response::relay('#tab已过滤掉“处于牵引中，却还存在流量”的IP：%s', implode(', ', $filte_ips));
             } else {
-                Response::note('#tab没有IP处于被牵引中，无需过滤');
+                Response::relay('#tab没有IP处于被牵引中，无需过滤');
             }
         } else {
             Response::note('#tab没有IP存在于牵引中，无需过滤');
@@ -63,7 +63,7 @@ class DDoSInfo extends StaticRepository {
                 }
             }
         } else {
-            Response::warn(colorize('空数据包，无需导入', 'yellow'));
+            Response::warn('#tab'.colorize('空数据包，无需导入', 'yellow'));
         }
 
         return $ret;

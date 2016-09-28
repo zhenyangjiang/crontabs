@@ -98,11 +98,16 @@ if ($attaching_ips) {
             }
 
             //写入攻击自然结束
-            Response::note('写入自然攻击结束...');
-            DDoSHistory::saveAttackEnd($diff_ip, 'STOP');
+            Response::note(['#blank', '写入自然攻击结束...']);
+            $bool = DDoSHistory::saveAttackEnd($diff_ip, 'STOP');
+            Response::echoBool($bool);
 
-            //更新实例网络状态为正常
-            Mitigation::setStatus($diff_ip, 'NORMAL');
+
+            //更新云盾状态为正常
+            Response::note(['#blank', '更新云盾状态为正常...']);
+            $bool = Mitigation::setStatus($diff_ip, 'NORMAL');
+            Response::echoBool($bool);
+
         }
     } else {
         Response::note('#tab攻击历史中的IP全部存在于当前被攻击IP中，没有IP需要作攻击结束');
@@ -113,6 +118,7 @@ if ($attaching_ips) {
 
 //空数据包时，任务提前结束
 if (!$all_ips) {
+    Response::note('#line');
     if (!$ori_pack_attack) {
         System::halt('空数据包时，本次任务提前结束');
     } else {
@@ -371,7 +377,7 @@ foreach ($pack_attack as $dc_id => $group) {
                                 $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules, $peak_info, $duration);
 
 
-                                Response::note('持续时间：%s小时，模拟总计费用：￥%s', $duration, $fee);
+                                Response::note('持续时间：%s分钟，模拟总计费用：￥%s', $duration, $fee);
                                 if ( $fee > $user['money'] ) {
                                     Response::note('已超出用户余额：%s，需立即处理：', $fee, $user['money']);
 

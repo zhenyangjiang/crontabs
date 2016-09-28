@@ -50,7 +50,7 @@ class DataCenter extends StaticRepository {
      * @return [type]         [description]
      */
     public static function find($id, $fields = NULL){
-        $ret = parent::find($id, $field);
+        $ret = parent::find($id, $fields);
         if ($ret && is_array($ret)) {
             $ret = self::parse($ret);
         }

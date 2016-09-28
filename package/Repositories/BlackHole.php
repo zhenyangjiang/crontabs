@@ -28,7 +28,7 @@ Class BlackHole {
      * @param  [type] $blockway [description]
      * @return [type]           [description]
      */
-    public static function block($ip, $bps, $blockway ) {
+    public static function block($ip, $bps, $blockway = '' ) {
         Response::note('正在牵引IP：%s...', $ip);
         return self::$repoMitigation->blockByIp($ip, $bps, ENV_appkey, $blockway);
     }
@@ -61,7 +61,7 @@ Class BlackHole {
         ]);
 
         if (!$lists) {
-            Response::note('#tab未找到牵引过期的IP');
+            Response::relay('#tab未找到牵引过期的IP', 'cyan');
             return [];
         }
 

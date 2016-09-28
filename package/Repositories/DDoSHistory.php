@@ -216,7 +216,7 @@ class DDoSHistory extends StaticRepository {
         if ( $use_bps ) {
             $begin_time = $history['begin_time'];
             $end_time = time();
-            Response::noteColor('根据指定值bps：%sMbps, 构造峰值信息', $use_bps, 'cyan');
+            Response::relay('根据指定值bps：%sMbps, 构造峰值信息', $use_bps);
             $peak_info = DDoSInfo::genealPeakByMBps($use_bps, $begin_time, $end_time);
         } else {
             $peak_info = array();

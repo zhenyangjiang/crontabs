@@ -121,7 +121,7 @@ class Mitigation extends StaticRepository {
      * @param  Boolean $is_force 是否强制修改
      * @return Boolean 是否【更新成功且有记录被更新】
      **/
-    public static function setStatus($ips, $status = NULL, $is_force = NULL) {
+    public static function setStatus($ips, $status, $is_force = NULL) {
         return self::$repo->setStatus($ips, $status, $is_force);
     }
 

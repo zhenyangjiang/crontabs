@@ -56,15 +56,15 @@
         },
         "ulan-virtsdk" : {
             "type": "vcs",
-            "url": "https://git.ulan.io/ULan/virtsdk.git"
+            "url": "https://git.ulan.io/packages/virtsdk.git"
         },
         "ulan-repository" : {
             "type": "vcs",
-            "url": "https://git.ulan.io/ULan/repository.git"
+            "url": "https://git.ulan.io/packages/repository.git"
         },
         "ulan-hprose": {
           "type": "vcs",
-          "url": "git@git.ulan.io:ULan/hprose.git"
+          "url": "git@git.ulan.io:packages/hprose.git"
         },
         "packagist": {
             "type": "composer",

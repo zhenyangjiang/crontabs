@@ -68,19 +68,8 @@ class Instance extends StaticRepository {
      * @param  array      $instance    实例
      * @return booean
      */
-    public static function suspend($xinstance) {
-        $instance = self::info($xinstance);
-        if ($instance['status'] !== 'SUSPENDED') {
-            $ret = Virt::suspend($instance['vpsid']);
-            if  ( $ret['done'] ) {
-                Instance::changeStatus($instance, 'toSuspend', true);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
+    public static function suspend($mix_instance) {
+        return self::$repoInstance->suspend($mix_instance);
     }
 
     /**
@@ -88,21 +77,8 @@ class Instance extends StaticRepository {
      * @param  array      $instance    实例
      * @return booean
      */
-    public static function unsuspend($xinstance) {
-        return self::$repoInstance->unsuspend($xinstance);
-        // $instance = self::info($xinstance);
-
-        // if ($instance['status'] === 'SUSPENDED') {
-        //     $ret = Virt::unsuspend($instance['vpsid']);
-        //     if  ( $ret['done'] ) {
-        //         Instance::changeStatus($instance, 'toNormal', true);
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // } else {
-        //     return true;
-        // }
+    public static function unsuspend($mix_instance) {
+        return self::$repoInstance->unsuspend($mix_instance);
     }
 
     /**
@@ -144,36 +120,36 @@ class Instance extends StaticRepository {
 
     /**
      * 执行改变状态动态
-     * @param  [type]       $xinstance      [description]
+     * @param  [type]       $mix_instance      [description]
      * @param  [type]       $action_key     [description]
      * @param  [type]       $callback       [description]
      * @param  boolean      $is_force       是否强制
      * @return boolean
      */
-    public static function changeStatus($xinstance, $action_key, $is_force = false, $callback = NULL) {
-        $id = self::info($xinstance, 'id');
+    public static function changeStatus($mix_instance, $action_key, $is_force = false, $callback = NULL) {
+        $id = self::info($mix_instance, 'id');
         $StatusCtrl = self::getStatusController();
         return $StatusCtrl->doaction($id, $action_key, $is_force, $callback);
     }
 
     /**
      * 取得实例状态
-     * @param  mix      $xinstance      [description]
+     * @param  mix      $mix_instance      [description]
      * @return mix
      */
-    public static function status($xinstance) {
-        $status_key = self::info($xinstance, 'status');
+    public static function status($mix_instance) {
+        $status_key = self::info($mix_instance, 'status');
         $StatusCtrl = self::getStatusController();
         return $StatusCtrl->status($status_key);
     }
 
     /**
      * 销毁实例
-     * @param  [type] $xinstance [description]
+     * @param  [type] $mix_instance [description]
      * @return [type]            [bool, message]
      */
-    public static function destroy($xinstance, &$error = NULL) {
-        return repository('instance')->destroy($xinstance);
+    public static function destroy($mix_instance, &$error = NULL) {
+        return repository('instance')->destroy($mix_instance);
     }
 }
 Instance::init();

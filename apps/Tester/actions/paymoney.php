@@ -25,7 +25,6 @@ User::expend($uid, $amount, [
     'privilege' => 0,
     'occur_way' => '余额支付',
     'typekey' => 'test_key',
-    'client_ip' => 'crontab'
 ]);
 
 $money = User::money($uid);

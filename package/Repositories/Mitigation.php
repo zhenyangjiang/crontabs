@@ -21,6 +21,14 @@ class Mitigation extends StaticRepository {
         return $mitigation;
     }
 
+    public static function billingText($billing_key) {
+        $a = [
+            'month' => '包年包月',
+            'hour' => '按费计费'
+        ];
+        return $a[$billing_key];
+    }
+
     /**
      * 取得IP的云盾配置
      * @param  String $ip IP

@@ -9,7 +9,7 @@ Response::note(['【实例到期后，挂起、待删除、自动续费后反挂
 
 //取得过期的实例列表
 $instances = Instance::lists([
-    'awhere' => ['expire<' . time()] //, "mainipaddress <> '123.1.1.11'"
+    'awhere' => ['expire<' . time(), 'mainipaddress' => '123.1.1.53'] //, "mainipaddress <> '123.1.1.11'"
 ]);
 
 if ($instances) {
@@ -78,6 +78,7 @@ foreach ($instances as $instance) {
     if ($mitigation_info) {
         $mitigation_price = $mitigation_info['price'];
         $mitigation_ability = $mitigation_info['ability'];
+        $mitigation_billing = $mitigation_info['billing'];
         $fee_renew_mitigation = $mitigation_price;
     } else {
         $msg = '实例到期自动续费发现无云盾记录';
@@ -129,8 +130,9 @@ foreach ($instances as $instance) {
                     'uid' => $uid,
                     'amount' => $fee_renew_total,
                     'description' => sprintf(
-                        '云主机:%s (%s) + 云盾:%sGbps，自动续费%s',
+                        '云主机:%s (%s) + 云盾:%sGbps(%s)，自动续费%s',
                         $instance['hostname'], $instance_ip, $mitigation_ability,
+                        Mitigation::billingText($mitigation_billing),
                         $valid_times['begin'].' ~ '.$valid_times['end']
                     ),
                 ];
@@ -189,13 +191,15 @@ foreach ($instances as $instance) {
             }
         }
 
-        if ( !$bool_transact ) {
-            if (!is_null($bool_transact )) {
-                if ($feelog_data) {
-                    $email_content = sprintf('扣费日志数据包：<br>%s', sprintf('<pre>%s</pre>', var_export($feelog_data, true)));
-                    Notify::developer(sprintf('事务【%s】处理失败', $transaction_name), $email_content);
-                } else {
-                    Notify::developer(sprintf('事务【%s】处理失败', $transaction_name));
+        if (isset($bool_transact)) {
+            if ( !$bool_transact ) {
+                if (!is_null($bool_transact )) {
+                    if ($feelog_data) {
+                        $email_content = sprintf('扣费日志数据包：<br>%s', sprintf('<pre>%s</pre>', var_export($feelog_data, true)));
+                        Notify::developer(sprintf('事务【%s】处理失败', $transaction_name), $email_content);
+                    } else {
+                        Notify::developer(sprintf('事务【%s】处理失败', $transaction_name));
+                    }
                 }
             }
         }

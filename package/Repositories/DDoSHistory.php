@@ -244,7 +244,6 @@ class DDoSHistory extends StaticRepository {
             'privilege' => 0,
             'occur_way' => '余额支付',
             'typekey' => 'pay_mitigation_hour',
-            'client_ip' => 'crontab'
         ];
 
         Response::transactBegin('用户扣费、写入扣费日志');

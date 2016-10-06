@@ -3,6 +3,7 @@ use Landers\Framework\Core\StaticRepository;
 
 use ULan\Repository\Crypt;
 use Landers\Substrate\Utils\Arr;
+use Landers\Framework\Core\System;
 
 class User {
     private static $repoUser;
@@ -32,6 +33,8 @@ class User {
      * @return [type]         [description]
      */
     public static function expend($uid, $money, $feelog) {
+        $feelog['client_ip'] = System::app('name');
+        $feelog['occur_way'] = '余额扣费';
         return self::$repoMoney->lockAndExpend($uid, $money, $feelog);
     }
 

@@ -106,9 +106,12 @@ function destroy_instance($instance, $some_days) {
     if ( Config::get('debug') ) {
         Response::note('调试开启：执行虚拟销毁');
     } else {
-        $bool = Instance::destroy($instance);
+        list($bool, $message) = Instance::destroy($instance);
         if (!$bool) {
-            Notify::developer('实例销毁失败', sprintf('<pre>%s</pre>', var_export($instance, true)));
+            Notify::developer(
+                sprintf('实例销毁失败:%s', $message),
+                sprintf('<pre>%s</pre>', var_export($instance, true))
+            );
         } else {
             Response::note('实例销毁成功');
         }

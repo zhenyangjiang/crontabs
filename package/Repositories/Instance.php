@@ -12,7 +12,6 @@ class Instance extends StaticRepository {
     protected static $datatable = 'ulan_instances';
     protected static $DAO;
 
-
     private static $repoInstance;
 
     public static function init() {

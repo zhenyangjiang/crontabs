@@ -64,7 +64,7 @@
         },
         "ulan-hprose": {
           "type": "vcs",
-          "url": "git@git.ulan.io:packages/hprose.git"
+          "url": "https://git.ulan.io/packages/hprose.git"
         },
         "packagist": {
             "type": "composer",

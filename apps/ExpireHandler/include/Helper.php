@@ -1,6 +1,8 @@
 <?php
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Response;
+use Landers\Framework\Core\Config;
+
 
 function renew_transact($uid, $instance, $instance_update, $feelog_data, $callbacks = array()) {
 
@@ -28,7 +30,7 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
 
         Response::note('#tab对用户扣费并写入账单日志...');
         $fee = $feelog_data['amount'];
-        $bool = User::expend($uid, $fee, $feelog);
+        $bool = User::expend($uid, $fee, $feelog_data);
         if ($bool) {
             Response::echoSuccess('成功扣费 %s', $fee);
         } else {
@@ -37,7 +39,7 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
         }
 
         if ($callbacks) {
-            foreach ($callbacks as $callback) $callback()
+            foreach ($callbacks as $callback) $callback();
         }
 
         return true;
@@ -107,6 +109,8 @@ function destroy_instance($instance, $some_days) {
         $bool = Instance::destroy($instance);
         if (!$bool) {
             Notify::developer('实例销毁失败', sprintf('<pre>%s</pre>', var_export($instance, true)));
+        } else {
+            Response::note('实例销毁成功');
         }
     }
 }

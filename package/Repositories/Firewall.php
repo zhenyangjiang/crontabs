@@ -37,20 +37,20 @@ Class Firewall {
         }
 
         //额外加一个调用用的IP
-        if ($data && Config::get('env.debug')) {
-            $tmp = $data[array_rand($data)];
-            $data = [ '123.1.1.11' => $tmp ];
-            // $data['123.1.1.11'] = $tmp;
-            if ( $xip = System::argv(3)) {
-                $xbps = System::argv(4);
-                if ($xbps === 'NONE') {
-                    unset($data[$xip]);
-                } else {
-                    $data[$xip]['bps'][0] = $xbps;
-                    $data[$xip]['pps'][0] = 19000000;
-                }
-            }
-        }
+        // if ($data && Config::get('env.debug')) {
+        //     $tmp = $data[array_rand($data)];
+        //     $data = [ '123.1.1.11' => $tmp ];
+        //     // $data['123.1.1.11'] = $tmp;
+        //     if ( $xip = System::argv(3)) {
+        //         $xbps = System::argv(4);
+        //         if ($xbps === 'NONE') {
+        //             unset($data[$xip]);
+        //         } else {
+        //             $data[$xip]['bps'][0] = $xbps;
+        //             $data[$xip]['pps'][0] = 19000000;
+        //         }
+        //     }
+        // }
 
         $ret = []; $filte1_count = 0;
         foreach ($data as $dest_ip => &$item) {

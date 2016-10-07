@@ -90,4 +90,16 @@ function response_user_detail(array $user) {
 function app($key) {
     return \Services\HproseApplication::singletonBy($key);
 }
+
+function config($key) {
+    return \Landers\Framework\Core\Config::get($key);
+}
+
+function env($key, $default = NULL) {
+    $a = @include(__DIR__ . '/../.env');
+    if ( !$a ) $a = array();
+    $ret = \Landers\Substrate\Utils\Arr::get($a, $key);
+    $ret or $ret = $default;
+    return $ret;
+}
 ?>

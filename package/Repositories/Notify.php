@@ -53,7 +53,7 @@ class Notify {
     }
 
     public static function user($uid, $event, $data) {
-        if (!Config::get('env.debug') && System::isDoneToday($event, $uid)) {
+        if (!env('debug') && System::isDoneToday($event, $uid)) {
             Response::note('#tab今天（%s）已经通知过了', date('Y-m-d'));
             return false;
         }

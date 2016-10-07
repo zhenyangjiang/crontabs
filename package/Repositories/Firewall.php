@@ -29,7 +29,7 @@ Class Firewall {
                 System::halt('#tab读取无法解析的防火墙数据错误: '.$content);
             }
         } else {
-            if ( Config::get('env.log.firewall') ) {
+            if ( env('log.firewall') ) {
                 Response::note('#tab截取防火墙数据到日志中...');
                 $file = Log::trace('防火墙数据', $data);
                 Response::echoBool( !!$file );
@@ -37,7 +37,7 @@ Class Firewall {
         }
 
         //额外加一个调用用的IP
-        // if ($data && Config::get('env.debug')) {
+        // if ($data && env('debug')) {
         //     $tmp = $data[array_rand($data)];
         //     $data = [ '123.1.1.11' => $tmp ];
         //     // $data['123.1.1.11'] = $tmp;

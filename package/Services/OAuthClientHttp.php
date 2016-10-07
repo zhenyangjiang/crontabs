@@ -4,7 +4,6 @@ namespace Services;
 use Landers\Substrate\Utils\Http;
 use Landers\Framework\Services\OAuthHttp;
 use Landers\Substrate\Traits\MakeInstance;
-use Landers\Framework\Core\Config;
 use Landers\Substrate\Classes\ApiResult;
 
 Class OAuthClientHttp {
@@ -12,7 +11,7 @@ Class OAuthClientHttp {
     private static $oauthHttp;
 
     public static function init() {
-        $config = Config::get('oauth');
+        $config = config('oauth');
         $apiurl = $config['apiurl'];
         $client_id = $config['client_id'];
         $client_secret = $config['client_secret'];

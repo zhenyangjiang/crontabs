@@ -20,7 +20,7 @@ class Notify {
         $title_bak = $title;
         Response::note($title.'，需电邮开发者');
         if (!$is_sended) {
-            $developers = Config::get('developer'); $contents = [];
+            $developers = config('developer'); $contents = [];
             $contents[] = Response::export();
             if ($content) $contents[] = $content;
             if ($context) {
@@ -62,9 +62,7 @@ class Notify {
         $uinfo = User::find($uid, 'username, mobile, email');
         $data = array_merge($uinfo, $data);
 
-        // $host = Config::get('hosts', 'api');
-        // $apiurl = $host . '/intranet/alert/send';
-        $contents = Config::get('notify-contents', $event);
+        $contents = config('notify-contents.' . $event);
         foreach ($contents as $key => &$item) {
             $content = $item['content'];
             $content = is_array($content) ? implode('<br/>', $content) : $content;
@@ -94,7 +92,7 @@ class Notify {
      * @return [type]            [description]
      */
     public static function sendSms($mobile, $content, $is_queue = true) {
-        $config = Config::get('notify');
+        $config = config('notify');
         $sign = Arr::get($config, 'sms.sign');
         $content = $sign . $content;
         if ( $is_queue ) {
@@ -122,7 +120,7 @@ class Notify {
      */
     public static function sendEmail($driver = 'phpemail', array $opts = array(), &$retdat = NULL) {
         //读取配置
-        $configs = Config::get('notify');
+        $configs = config('notify');
         $config = $configs['email'][$driver];
 
         if ( $opts['subject'] ) {

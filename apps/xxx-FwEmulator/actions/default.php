@@ -1,10 +1,9 @@
 <?php
 use Landers\Substrate\Utils\Http;
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
 
-$fwurls = Config::get('fwurls');
+$fwurls = config('fwurls');
 $fw_counts = count($fwurls);
 $dat_counts = 8071;
 for ( $i = 1;  $i <= $dat_counts; $i++ ) {

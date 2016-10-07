@@ -3,7 +3,6 @@ use Landers\Framework\Core\StaticRepository;
 
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Response;
-use Landers\Framework\Core\Config;
 use Services\OAuthClientHttp;
 
 class Alert extends StaticRepository {

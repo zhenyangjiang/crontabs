@@ -1,11 +1,10 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
 
 $title = sprintf('【日常事务】（%s）开始工作', System::app('name'));
 Response::note([$title,'#dbline']);
-$config = Config::get('transaction');
+$config = config('transaction');
 $nowTime = time();
 
 // 删除用量历史数据

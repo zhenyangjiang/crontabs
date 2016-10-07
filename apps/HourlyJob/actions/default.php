@@ -1,12 +1,11 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
 use GuzzleHttp\Client as Http;
 
 $title = sprintf('【日常事务】（%s）开始工作', System::app('name'));
 Response::note([$title,'#dbline']);
-$config = Config::get('jdfirewall');
+$config = config('jdfirewall');
 $nowTime = time();
 
 $http = new Http([

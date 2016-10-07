@@ -1,6 +1,5 @@
 <?php
 use Landers\Framework\Core\System;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\Response;
 
 $title = sprintf('【日常事务】（%s）开始工作', System::app('name'));
@@ -17,7 +16,7 @@ foreach ($mits as $mit) {
 }
 
 $balances = repository('user')->allBalances();
-$config = Config::get('check_balance');
+$config = config('check_balance');
 $hour = $config['calc_hour'];
 Response::note("Hour:{$hour}");
 foreach ($users as $uid => $mits) {

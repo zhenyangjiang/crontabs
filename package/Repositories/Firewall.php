@@ -1,7 +1,6 @@
 <?php
 use Landers\Substrate\Utils\Arr;
 use Landers\Substrate\Utils\Http;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Modules\Log;
@@ -14,7 +13,7 @@ use Landers\Framework\Modules\Log;
 
 Class Firewall {
     public static function getAttacks() {
-        $fwurl = Config::get('fwurl');
+        $fwurl = config('fwurl');
         Response::note('#tab数据来源：%s ', $fwurl);
 
         // $content = include( __DIR__ . '/Firewall-data3.php');

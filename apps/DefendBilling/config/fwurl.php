@@ -1,4 +1,2 @@
 <?php
-use Landers\Framework\Core\Config;
-
-return Config::get('hosts', 'collecter').'/FW-API';
+return config('hosts.collecter').'/FW-API';

@@ -11,7 +11,7 @@ class HproseApplication  {
 
     public static function init() {
         self::singletonBy('ULan_HProse', function() {
-            $config = Config::get('hprose');
+            $config = config('hprose');
             return new Client($config['url'], $config['async']);
         });
 

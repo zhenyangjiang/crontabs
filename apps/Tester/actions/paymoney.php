@@ -1,7 +1,6 @@
 <?php
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Services\OAuthHttp;
 use ULan\Repository\Crypt;
 

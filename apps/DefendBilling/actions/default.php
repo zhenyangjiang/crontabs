@@ -144,9 +144,6 @@ foreach ($pack_attack as $dc_id => $group) {
     if ( (!$dc_id) || (!$datacenter = DataCenter::find($dc_id)) ) {
         $threshold = Settings::get('defendbilling_unalloc_ip_block_threshold');
         $threshold or $threshold = 1000;
-        // $tmp = sprintf('以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold);
-        // $tmp = colorize($tmp, 'yellow');
-        // Response::note($tmp);
 
         Response::noteColor('以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold, 'yellow');
 

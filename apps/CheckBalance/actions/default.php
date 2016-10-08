@@ -2,8 +2,8 @@
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 
-$title = sprintf('【日常事务】（%s）开始工作', System::app('name'));
-Response::note([$title, '#dbline']);
+Response::note([sprintf('【日常事务】（%s）开始工作', System::app('name')), '#dbline']);
+StartUp::check();
 
 $mits = Mitigation::hourMits();
 $users = [];

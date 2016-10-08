@@ -4,6 +4,7 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 
 Response::note(['【实例即将到期提醒】（'.System::app('name').'）开始工作','#dbline']);
+StartUp::check();
 
 $before_days = Settings::get('instance_expire_before_days');
 

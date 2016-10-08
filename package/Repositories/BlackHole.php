@@ -30,14 +30,15 @@ Class BlackHole {
      */
     public static function block($ip, $bps, $blockway = '' ) {
         Response::note('正在牵引IP：%s...', $ip);
-        // try {
+        try {
             $bool = self::$repoMitigation->blockByIp($ip, $bps, config('app.key'), $blockway);
             Response::echoBool($bool);
             require $bool;
-        // } catch (\Exception $e) {
-        //     dp($e->getMessage());
-        //     $bool = false;
-        // }
+        } catch (\Exception $e) {
+            $e = parse_general_exception($e);
+            Response::echoBool(false, $e->message.'，牵引%s');
+            return true;
+        }
     }
 
 

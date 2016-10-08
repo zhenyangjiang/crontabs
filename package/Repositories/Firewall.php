@@ -1,7 +1,6 @@
 <?php
 use Landers\Substrate\Utils\Arr;
 use Landers\Substrate\Utils\Http;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Modules\Log;
@@ -13,26 +12,44 @@ use Landers\Framework\Modules\Log;
 
 
 Class Firewall {
-    public static function get_attack() {
-        $fwurl = Config::get('fwurl');
+    public static function getAttacks() {
+        $fwurl = config('fwurl');
+        Response::note('#tab数据来源：%s ', $fwurl);
 
         // $content = include( __DIR__ . '/Firewall-data3.php');
-
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
-            System::halt('防火墙数据读取失败！');
+            System::halt('#tab防火墙数据读取失败！');
         }
 
         if (!$data = json_decode($content, true)) {
             if (is_array($data)) {
-                Response::warn('获取到空数据');
+                Response::warn('#tab获取到空数据');
             } else {
-                System::halt('读取无法解析的防火墙数据错误: '.$content);
+                System::halt('#tab读取无法解析的防火墙数据错误: '.$content);
             }
         } else {
-            Response::note('#tab截取防火墙数据到日志中...');
-            $file = Log::trace('防火墙数据', $data);
-            Response::echoBool( !!$file );
+            if ( env('log.firewall') ) {
+                Response::note('#tab截取防火墙数据到日志中...');
+                $file = Log::trace('防火墙数据', $data);
+                Response::echoBool( !!$file );
+            }
         }
+
+        //额外加一个调用用的IP
+        // if ($data && env('debug')) {
+        //     $tmp = $data[array_rand($data)];
+        //     $data = [ '123.1.1.11' => $tmp ];
+        //     // $data['123.1.1.11'] = $tmp;
+        //     if ( $xip = System::argv(3)) {
+        //         $xbps = System::argv(4);
+        //         if ($xbps === 'NONE') {
+        //             unset($data[$xip]);
+        //         } else {
+        //             $data[$xip]['bps'][0] = $xbps;
+        //             $data[$xip]['pps'][0] = 19000000;
+        //         }
+        //     }
+        // }
 
         $ret = []; $filte1_count = 0;
         foreach ($data as $dest_ip => &$item) {
@@ -98,7 +115,7 @@ Class Firewall {
         return $ret;
     }
 
-    public static function make_attacks($data){
+    public static function makeAttacks($data){
         $ips = [
             ['ip' => '123.1.1.2', 'bps' => 3024.66],
             ['ip' => '123.1.1.254', 'bps' => 3024.66],

@@ -16,7 +16,10 @@
         "landers/framework": "dev-master",
         "landers/laravel": "dev-master",
         "landers/ulan": "dev-master",
-        "ulan/virtsdk" : "dev-master"
+        "guzzlehttp/guzzle": "dev-master",
+        "ulan/virtsdk" : "dev-master",
+        "ulan/repository" : "dev-master",
+        "ulan/hprose": "dev-master"
     },
     "autoload":{
         "classmap": [
@@ -28,7 +31,7 @@
         },
         "files": [
             "vendor/landers/framework/src/Adapters/Helpers/LcliHelpers.php",
-            "vendor/landers/ulan/src/Crontabs/helpers.php"
+            "package/helpers.php"
         ]
     },
    "repositories": [
@@ -53,7 +56,15 @@
         },
         "ulan-virtsdk" : {
             "type": "vcs",
-            "url": "https://git.ulan.io/ULan/virtsdk.git"
+            "url": "https://git.ulan.io/packages/virtsdk.git"
+        },
+        "ulan-repository" : {
+            "type": "vcs",
+            "url": "https://git.ulan.io/packages/repository.git"
+        },
+        "ulan-hprose": {
+          "type": "vcs",
+          "url": "https://git.ulan.io/packages/hprose.git"
         },
         "packagist": {
             "type": "composer",

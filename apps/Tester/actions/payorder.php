@@ -1,7 +1,6 @@
 <?php
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Services\OAuthHttp;
 include 'inc-headline.php';
 
@@ -11,7 +10,7 @@ if ( !$order_id = System::argv(3) ) {
     System::halt('未指定订单ID');
 }
 
-$config = Config::get('oauth');
+$config = config('oauth');
 $oauthHttp = new OAuthHttp($config['apiurl'], 'password', $config['client_id'], $config['client_secret'], [
     'username' => '13566680502',
     'password' => '123456'

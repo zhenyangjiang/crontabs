@@ -1,5 +1,4 @@
 <?php
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 
@@ -15,7 +14,7 @@ class StartUp {
             'name' => System::app('name'),
             'uuid' => $uuid
         ]);
-        $socket_config = Config::get('socket-verify');
+        $socket_config = config('socket-verify');
         $host    = $socket_config['host'];
         $port    = $socket_config['port'] ;
         // Response::note('Message To server :'.$message);

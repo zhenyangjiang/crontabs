@@ -1,42 +1,16 @@
 <?php
 use Landers\Framework\Core\StaticRepository;
 
-class User extends StaticRepository {
-    protected static $connection = 'oauth';
-    protected static $datatable = 'ulan_users';
-    protected static $DAO;
+use ULan\Repository\Crypt;
+use Landers\Substrate\Utils\Arr;
+use Landers\Framework\Core\System;
 
-    /**
-     * 取得用户余额
-     * @param  int      $uid        用户ID
-     * @return float                余额
-     */
-    public static function get_money($uid) {
-        return self::find($uid, 'money');
-    }
-
-    /**
-     * 设置用户余额
-     * @param int       $uid        用户ID
-     * @param [type]   $money     [description]
-     * @param boolean
-     */
-    public static function set_money($uid, $money) {
-        return self::update(
-            ['money' => $money], ['id' => $uid]
-        );
-    }
-
-    /**
-     * 支付
-     * @param  [type] $uid    [description]
-     * @param  [type] $amount [description]
-     * @return [type]         [description]
-     */
-    public static function pay_money($uid, $amount) {
-        return self::update(
-            ['money' => "`money`-$amount"], ['id' => $uid]
-        );
+class User {
+    private static $repoUser;
+    private static $repoMoney;
+    public static function init() {
+        self::$repoUser = repository('user');
+        self::$repoMoney = repository('money');
     }
 
     /**
@@ -44,13 +18,36 @@ class User extends StaticRepository {
      * @param  [type] $uid [description]
      * @return [type]      [description]
      */
-    public static function get($uid, $fields = NULL) {
-        $info = self::find($uid, $fields);
-        $name = $info['realname'] or $name = $info['username'];
-        $info['user_name'] = $name;
-        return $info;
+    public static function find($uid, $fields = NULL) {
+        return self::$repoUser->closure(function($q) use ($uid, $fields){
+            $user = $q->find($uid)->toArray();
+            return Arr::slice($user, $fields);
+        });
     }
 
+    /**
+     * 用户支出
+     * @param  [type] $uid    [description]
+     * @param  [type] $money  [description]
+     * @param  [type] $feelog [description]
+     * @return [type]         [description]
+     */
+    public static function expend($uid, $money, $feelog) {
+        $feelog['client_ip'] = System::app('name');
+        $feelog['occur_way'] = '余额扣费';
+        return self::$repoMoney->lockAndExpend($uid, $money, $feelog);
+    }
+
+    /**
+     * 取得用户可用余额
+     * @param  [type] $uid [description]
+     * @return [type]      [description]
+     */
+    public static function money($uid) {
+        return self::$repoUser->closure(function($q) use ($uid){
+            return $q->find($uid)->money;
+        });
+    }
 }
 User::init();
 ?>

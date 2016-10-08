@@ -26,19 +26,5 @@ class Feelog extends StaticRepository {
         $data = array_merge($default, $data);
         return parent::create($data);
     }
-
-    /**
-     * 指定时间段的攻击
-     * @param  [type]  $begin [description]
-     * @param  [type]  $end   [description]
-     * @return boolean        [description]
-     */
-    // public static function has_pay_hour($ip, $begin, $end) {
-    //     return !!self::count([
-    //         'service_ip' => $ip,
-    //         'typekey'  => 'pay_mitigation',
-    //         "time between $begin and $end"
-    //     ]);
-    // }
 }
 Feelog::init();

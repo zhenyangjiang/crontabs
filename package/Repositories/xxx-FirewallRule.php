@@ -9,7 +9,7 @@ class FirewallRule extends StaticRepository {
     protected static $DAO;
 
     public static function apiurl( $path ) {
-        return Config::get('hosts', 'api') . '/intranet/firewallrule' . $path;
+        return config('hosts.api') . '/intranet/firewallrule' . $path;
     }
 
     public static function delete($awhere) {

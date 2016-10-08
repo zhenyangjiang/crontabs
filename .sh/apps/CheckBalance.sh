@@ -1,0 +1,1 @@
+while true; do php app CheckBalance; sleep 1; done;

@@ -11,10 +11,16 @@ class DDoSInfo extends StaticRepository {
     protected static $dt_parter = ['type' => 'datetime', 'mode' => 'ymd'];
     // protected static $dt_parter = 'special';
 
-    public static function filte_blocked($pack) {
+    private static $repo;
+    public static function init() {
+        self::$repo = repository('dDoSInfo');
+        parent::init();
+    }
+
+    public static function filteBlocked($pack) {
         if (!$pack) return array();
 
-        $blocked_ips = Mitigation::get_ips_by_status('BLOCK');
+        $blocked_ips = Mitigation::getIpsByStatus('BLOCK');
 
         if ($blocked_ips) {
             $filte_ips = [];
@@ -27,9 +33,9 @@ class DDoSInfo extends StaticRepository {
 
             //已被牵引的IP还存在防火墙被攻击列表中
             if ($filte_ips) {
-                Response::note('#tab以下IP还处于牵引中，却还在流量，已被过滤掉：%s', implode(', ', $filte_ips));
+                Response::relay('#tab已过滤掉“处于牵引中，却还存在流量”的IP：%s', implode(', ', $filte_ips));
             } else {
-                Response::note('#tab没有IP处于被牵引中，无需过滤');
+                Response::relay('#tab没有IP处于被牵引中，无需过滤');
             }
         } else {
             Response::note('#tab没有IP存在于牵引中，无需过滤');
@@ -57,12 +63,11 @@ class DDoSInfo extends StaticRepository {
                 }
             }
         } else {
-            Response::warn(colorize('空数据包，无需导入', 'yellow'));
+            Response::warn('#tab'.colorize('空数据包，无需导入', 'yellow'));
         }
 
         return $ret;
     }
-
 
     /**
      * 取得某IP在某段时间内的峰值
@@ -70,34 +75,7 @@ class DDoSInfo extends StaticRepository {
      * @return [type]           [description]
      */
     public static function peak($dest_ip, $begin, $end) {
-        $awhere = ['dest' => $dest_ip, "created_at between $begin and $end"];
-
-        $list = self::lists([
-            'unions' => [$begin, $end],
-            'awhere' => $awhere,
-        ]);
-        if ( !$list ) return NULL;
-
-        $list = Arr::sort($list, 'bps0');
-        $first = $list[0];
-        $info_bps = [
-            'time'  => date('Y-m-d H:i:s', $first['created_at']),
-            'value' => $first['bps0']
-        ];
-
-        $list = Arr::sort($list, 'pps0');
-        $first = $list[0];
-        $info_pps = [
-            'time'  => date('Y-m-d H:i:s', $first['created_at']),
-            'value' => $first['pps0']
-        ];
-
-        return [
-            'begin' => date('Y-m-d H:i:s', $begin),
-            'end'   => date('Y-m-d H:i:s', $end),
-            'mbps'  => $info_bps,
-            'pps'   => $info_pps
-        ];
+        return self::$repo->peakInfo($dest_ip, $begin, $end);
     }
 
     /**

@@ -7,6 +7,12 @@ class Mitigation extends StaticRepository {
     protected static $datatable = 'ulan_mitigations';
     protected static $DAO;
 
+    private static $repo;
+    public static function init() {
+        self::$repo = repository('mitigation');
+        parent::init();
+    }
+
     public static function attachs($mitigation) {
         if ($mitigation && is_array($mitigation)){
             $mitigation['ability_mbps'] = self::Gbps_to_Mbps($mitigation['ability']);
@@ -15,13 +21,21 @@ class Mitigation extends StaticRepository {
         return $mitigation;
     }
 
+    public static function billingText($billing_key) {
+        $a = [
+            'month' => '包年包月',
+            'hour' => '按费计费'
+        ];
+        return $a[$billing_key];
+    }
+
     /**
      * 取得IP的云盾配置
      * @param  String $ip IP
      * @return String $fields 字段列表
      * @return Mixed
      */
-    public static function find_ip($ip, $fields = NULL) {
+    public static function findByIp($ip, $fields = NULL) {
         $ret = self::find([
             'awhere' => ['ip' => $ip],
             'fields' => $fields
@@ -66,11 +80,11 @@ class Mitigation extends StaticRepository {
      * @param  [type] $instance [description]
      * @return [type]           [description]
      */
-    public static function down_grade($instance) {
+    public static function downgrade($instance) {
         //找出最低级别的云盾方案
         $datacenter = DataCenter::find($instance['datacenter']);
-        $case = DataCenter::lowest_price_case($datacenter, 'month');
-        $info = self::find_ip($instance['mainipaddress']);
+        $case = DataCenter::lowestPriceCase($datacenter, 'month');
+        $info = self::findByIp($instance['mainipaddress']);
         $case['ability'] = self::Mbps_to_Gbps($case['ability']);
         if (!$info) { //找不到云盾记录
             return self::create([
@@ -98,7 +112,7 @@ class Mitigation extends StaticRepository {
      * @param  String $status
      * @return Array 被攻中的或被牵引中（攻击未结束）的ip集合
      */
-    public static function get_ips_by_status($status) {
+    public static function getIpsByStatus($status) {
         $ret = parent::lists([
             'fields' => 'ip',
             'awhere' => ['status' => $status]
@@ -115,30 +129,8 @@ class Mitigation extends StaticRepository {
      * @param  Boolean $is_force 是否强制修改
      * @return Boolean 是否【更新成功且有记录被更新】
      **/
-    public static function setStatus($ips, $status = NULL, $is_force = NULL) {
-        $ips = (array)$ips;
-        $status = (string)$status;
-        $updata = ['status' => $status];
-        $awhere = ['ip' => $ips];
-
-        $statuses = [
-            'ATTACK' => ['NORMAL'],
-            'BLOCK' => ['ATTACK'],
-            'NORMAL' => ['ATTACK', 'BLOCK']
-        ];
-        if (!$is_force) {
-            $awhere['status'] = $statuses[$status];
-        }
-
-        if ( $status == 'BLOCK' ) {
-            //确定牵引时长，并更新牵引过期时间
-            $block_duration_hours = DataCenter::blockDuration(DataCenter::find_ip($ip));
-            $updata['block_expire'] = strtotime("+$block_duration_hours hours");
-        } else {
-            $updata['block_expire'] = NULL;
-        }
-
-        return self::update($updata, $awhere);
+    public static function setStatus($ips, $status, $is_force = NULL) {
+        return self::$repo->setStatus($ips, $status, $is_force);
     }
 
     /**
@@ -170,6 +162,25 @@ class Mitigation extends StaticRepository {
     //     }
     //     return $lists;
     // }
+
+    public static function hourMits()
+    {
+        $sql = "
+            SELECT
+                m.uid,
+                m.ip,
+                m.ability,
+                d.price_rules
+            FROM
+                ulan_mitigations AS m
+            LEFT JOIN ulan_datacenter AS d ON d.id = m.datacenter_id
+            LEFT JOIN ulan_instances AS i ON i.mainipaddress = m.ip
+            WHERE
+                billing = 'hour'
+            AND i.expire >
+        " . time();
+        return self::query($sql);
+    }
 }
 Mitigation::init();
 ?>

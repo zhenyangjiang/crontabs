@@ -4,7 +4,7 @@ return [
 
     'localhost' => [
         'scheme'   => 'tcp',
-        'host'     => '127.0.0.1',
+        'host'     => '172.31.66.131',
         'port'     => 6379,
         'database' => 15
     ]

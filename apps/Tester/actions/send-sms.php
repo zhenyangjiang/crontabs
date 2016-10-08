@@ -1,12 +1,11 @@
 <?php
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
-use Landers\Framework\Core\Config;
 include 'inc-headline.php';
 
 Response::note('测试短信发送...');
 
-$config = Config::get('notify-contents');
+$config = config('notify-contents');
 unset($config['REMIND-ENOUGH-BALANCE-FOR-MANUAL-RENEW']);
 unset($config['REMIND-NOT-ENOUGH-BALANCE-FOR-AUTO-RENEW']);
 unset($config['REMIND-NOT-ENOUGH-BALANCE-FOR-MANUAL-RENEW']);
@@ -23,7 +22,7 @@ foreach ($config as $key => $contents) {
     }
 }
 
-$bool = Notify::clientApi(1, 'HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW', [
+$bool = Notify::user(1, 'HANDLE-EXPIRE-ALERT-FOR-MANUAL-RENEW', [
     'instance_name' => 'HOSTNAME',
     'instance_ip' => '127.127.127.127',
     'days' => 10,

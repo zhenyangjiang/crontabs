@@ -1,0 +1,1 @@
+while true; do php app ExpireRemind; sleep 1; done;

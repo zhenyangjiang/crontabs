@@ -1,0 +1,1 @@
+while true; do php app DefendBilling; sleep 1; done;

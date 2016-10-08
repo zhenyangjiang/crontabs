@@ -1,7 +1,6 @@
 <?php
 use Landers\Substrate\Utils\Arr;
 use Landers\Substrate\Utils\Str;
-use Landers\Framework\Core\Config;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;

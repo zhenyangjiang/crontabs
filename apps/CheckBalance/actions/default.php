@@ -34,7 +34,6 @@ foreach ($users as $uid => $mits) {
             'hour' => $hour
         ]);
     }
-    Response::note("#line");
 }
 
 

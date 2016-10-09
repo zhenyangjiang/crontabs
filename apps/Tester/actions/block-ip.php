@@ -9,6 +9,5 @@ if ( !$ip = System::argv(3) ) {
     System::halt('未指定牵引IP');
 }
 $bool = BlackHole::block($ip, 6000, 'force');
-Response::echoBool($bool);
 Response::note('#line');
 System::complete();

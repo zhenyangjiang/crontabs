@@ -373,7 +373,6 @@ foreach ($pack_attack as $dc_id => $group) {
                                 //模拟本次攻击总计，检查余额是否足以支付
                                 $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules, $peak_info, $duration);
 
-
                                 Response::note('持续时间：%s分钟，模拟总计费用：￥%s', $duration, $fee);
                                 if ( $fee > $user['money'] ) {
                                     Response::note('已超出用户余额：%s，需立即处理：', $fee, $user['money']);

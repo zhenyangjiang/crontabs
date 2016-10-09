@@ -17,6 +17,12 @@ class DDoSInfo extends StaticRepository {
         parent::init();
     }
 
+
+    /**
+     * 过滤掉已被牵引的IP
+     * @param  [type] $pack [description]
+     * @return [type]       [description]
+     */
     public static function filteBlocked($pack) {
         if (!$pack) return array();
 

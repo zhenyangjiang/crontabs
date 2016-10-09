@@ -69,7 +69,7 @@ Class BlackHole {
         ]);
 
         if (!$lists) {
-            Response::relay('#tab未找到牵引过期的IP', 'cyan');
+            Response::relay('#tab未找到牵引过期的IP');
             return [];
         }
 

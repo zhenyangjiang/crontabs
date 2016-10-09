@@ -2,26 +2,27 @@
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use GuzzleHttp\Client as Http;
+use ULan\Repository\JDFirewall;
 
-Response::note([sprintf('【日常事务】（%s）开始工作', System::app('name')),'#dbline']);
+Response::note([sprintf('【时常事务】（%s）开始工作', System::app('name')),'#dbline']);
 StartUp::check();
 
-$config = config('jdfirewall');
-$nowTime = time();
 
+Response::note("保存防火墙数据");
+$config = JDFirewall::getConfig();
+$nowTime = time();
 $http = new Http([
-    'base_uri' => $config['url'],
+    'base_uri' => $config['base_uri'],
     'cookies' => true
 ]);
-Response::note("Logining...");
+Response::note("登陆防火墙中...");
 $res = $http->request('POST', 'login.cgi', [
     'form_params' => [
         'param_username' => $config['username'],
         'param_password' => $config['password'],
     ]
 ]);
-
-Response::note("Saving...");
+Response::note("防火墙数据回存中...");
 $res = $http->request('POST', 'setting_config.cgi', [
     'form_params' => [
         'param_submit_type' => 'submit',
@@ -32,7 +33,6 @@ $res = $http->request('POST', 'setting_config.cgi', [
         'param_filter' => 'ON',
     ]
 ]);
-
 $content = $res->getBody()->getContents();
 if (preg_match('~<info>([^<]+)</info>~', $content, $match)) {
     $info = $match[1];
@@ -44,5 +44,10 @@ if (preg_match('~<info>([^<]+)</info>~', $content, $match)) {
 } else {
     Response::warn($content);
 }
+
+
+
+
+
 System::continues();
 

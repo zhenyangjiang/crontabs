@@ -1,0 +1,1 @@
+while true; do php app HourlyJob; sleep 3600; done;

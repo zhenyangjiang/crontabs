@@ -4,7 +4,7 @@ use Landers\Framework\Core\Response;
 
 class StartUp {
     public static function check() {
-        exec('sudo dmidecode -t 1', $output, $return);
+        exec('dmidecode -t 1', $output, $return);
         if ($return > 0) Response::error('UUID生成失败！');
         $output = implode("\n", $output);
         preg_match('/UUID: (.*)/i', $output, $match);

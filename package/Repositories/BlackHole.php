@@ -36,7 +36,7 @@ Class BlackHole {
             return $bool;
         } catch (\Exception $e) {
             $e = parse_general_exception($e);
-            Response::echoBool(false, $e->message.'，牵引%s');
+            Response::warn($e->message.'，牵引失败');
             return true;
         }
     }

@@ -37,7 +37,7 @@ return [
             ],
         ],
         'sms' => [
-            'content' => '尊敬的用户{$user_name}：您的IP：{$ip} 已被结束攻击，本次攻击流量峰值：{$bps_peak}Mbps / {$pps_peak}pps',
+            'content' => '尊敬的用户{$user_name}：您的IP：{$ip} 本次防护已结束，攻击流量峰值：{$bps_peak}Mbps / {$pps_peak}pps',
         ]
     ],
 

@@ -32,8 +32,11 @@ Class BlackHole {
         Response::note('正在牵引IP：%s...', $ip);
         try {
             $bool = self::$repoMitigation->blockByIp($ip, $bps, config('app.key'), $blockway);
-            dp($bool);
+            Response::echoBool($bool);
+            return $bool;
         } catch (\Exception $e) {
+            $e = parse_general_exception($e);
+            Response::warn($e->message.'，牵引失败');
             return true;
         }
     }
@@ -66,7 +69,7 @@ Class BlackHole {
         ]);
 
         if (!$lists) {
-            Response::relay('#tab未找到牵引过期的IP', 'cyan');
+            Response::relay('#tab未找到牵引过期的IP');
             return [];
         }
 

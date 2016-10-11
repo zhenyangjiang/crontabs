@@ -134,6 +134,14 @@ class Mitigation extends StaticRepository {
     }
 
     /**
+     * IP对应的服务状态是否正常
+     * @return [type] [description]
+     */
+    public static function checkServiceStatus($ip) {
+        return self::$repo->checkServiceStatusByIp($ip);
+    }
+
+    /**
      * 是否处于试用期
      * @param  [type]  $mitigation [description]
      * @return boolean             [description]

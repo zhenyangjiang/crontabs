@@ -213,6 +213,10 @@ class DDoSHistory extends StaticRepository {
     public static function billing($uid, $history, $price_rules, $use_bps = NULL) {
         $ip = $history['ip'];
 
+        if (!Mitigation::checkServiceStatus($ip)) {
+            Response::relay('IP:%s所对应的服务处于非正常状态，免计费！');
+        }
+
         if ( $use_bps ) {
             $begin_time = $history['begin_time'];
             $end_time = time();

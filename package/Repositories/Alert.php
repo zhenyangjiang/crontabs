@@ -62,7 +62,8 @@ class Alert extends StaticRepository {
         $mitigation = Mitigation::findByIp($ip);
         $uid = $mitigation['uid'];
 
-        Notify::user($uid, $event, ['ip' => $ip]);
+        $data = array_merge($data, ['ip' => $ip]);
+        Notify::user($uid, $event, $data);
     }
 
     /**

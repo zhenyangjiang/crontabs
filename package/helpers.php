@@ -102,4 +102,14 @@ function env($key, $default = NULL) {
     $ret or $ret = $default;
     return $ret;
 }
+
+function parse_general_exception($e) {
+    $message = $e->getMessage();
+    $dat = json_decode($message);
+    return (object)[
+        'message' => $dat->message,
+        'file' => $dat->debug->file,
+        'line' => $dat->debug->line
+    ];
+}
 ?>

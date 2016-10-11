@@ -8,7 +8,7 @@ use Landers\Framework\Core\Queue;
 echo PHP_EOL;
 Response::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
-// StartUp::check();
+StartUp::check();
 
 Response::note('正在对牵引过期的IP作解除牵引：');
 BlackHole::release(); //释放牵引
@@ -372,7 +372,6 @@ foreach ($pack_attack as $dc_id => $group) {
                                 //超过?否
                                 //模拟本次攻击总计，检查余额是否足以支付
                                 $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules, $peak_info, $duration);
-
 
                                 Response::note('持续时间：%s分钟，模拟总计费用：￥%s', $duration, $fee);
                                 if ( $fee > $user['money'] ) {

@@ -6,6 +6,7 @@ use Landers\Framework\Core\Response;
 require __DIR__.'/../include/Helper.php';
 
 Response::note(['【实例到期后，挂起、待删除、自动续费后反挂起】（'.System::app('name').'）开始工作','#dbline']);
+StartUp::check();
 
 //取得过期的实例列表
 $instances = Instance::lists([

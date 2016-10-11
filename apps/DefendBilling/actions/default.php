@@ -44,7 +44,7 @@ if ($attaching_ips) {
     // $diff_ips = ['172.31.52.244'];
 
     if ($diff_ips) {
-        Response::note(['#blank', '#blank', '---------------- 逐一对以上IP作攻击自然结束：----------------']);
+        Response::note(['#blank', '#blank', '--------------------- 逐一对以上IP作攻击自然结束：--------------------']);
 
         // 一次性取得所有需要自然结束的IP的云盾
         $mitigations = Mitigation::lists([
@@ -98,9 +98,9 @@ if ($attaching_ips) {
             }
 
             //写入攻击自然结束
-            Response::note(['#blank', '写入自然攻击结束...']);
+            Response::note(['#blank', '写入自然攻击结束:']);
             $bool = DDoSHistory::saveAttackEnd($diff_ip, 'STOP');
-            Response::echoBool($bool);
+            if (!$bool) Response::bool($bool, '自然攻击结束执行%s');
 
 
             //更新云盾状态为正常
@@ -127,7 +127,7 @@ if (!$all_ips) {
 }
 
 //记录开始攻击
-Response::note('#line');
+Response::note(['#blank', '#blank', '----------------------------- 记录DDoS攻击 -----------------------------']);
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
 $start_attack_ips = DDoSHistory::saveAttackStart($all_ips);
 Alert::beginDDoS($start_attack_ips);

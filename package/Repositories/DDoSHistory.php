@@ -109,7 +109,6 @@ class DDoSHistory extends StaticRepository {
                 // 自然结束时才告警
                 if ($on_event == 'STOP') Alert::endDDoS($ip, $data);
             }
-            Response::echoBool(true);
         }
         return $bool;
     }

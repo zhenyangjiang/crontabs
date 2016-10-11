@@ -1,1 +1,0 @@
-while true; do php app DailyJob; sleep 10; done;

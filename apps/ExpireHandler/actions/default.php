@@ -143,6 +143,7 @@ foreach ($instances as $instance) {
             Response::note('#blank');
             Response::note('执行事务处理：%s：', $transaction_name);
             $bool_transact = renew_transact($uid, $instance, $instance_update, $feelog_data);
+
         } elseif ( $user['money'] - $fee_renew_insntance > 0 ) {
             // 仅够续费 云主机 ：强制降级云盾
             Response::note('#tab当前余额仅够自动续费 云主机，云盾将强制降级为免费或最低方案');

@@ -112,4 +112,8 @@ function parse_general_exception($e) {
         'line' => $dat->debug->line
     ];
 }
+
+function run_log($event_key, $message, $context){
+
+}
 ?>

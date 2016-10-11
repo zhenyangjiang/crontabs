@@ -102,11 +102,11 @@ if ($attaching_ips) {
             $bool = DDoSHistory::saveAttackEnd($diff_ip, 'STOP');
             if (!$bool) Response::bool($bool, '自然攻击结束执行%s');
 
-
             //更新云盾状态为正常
             Response::note(['#blank', '更新云盾状态为正常...']);
             $bool = Mitigation::setStatus($diff_ip, 'NORMAL');
             Response::echoBool($bool);
+
 
         }
     } else {
@@ -262,12 +262,14 @@ foreach ($pack_attack as $dc_id => $group) {
                         if ($item['mbps'] >= $ability_mbps) {
                             Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps']);
-                            Alert::ipBlock($dest_ip, [
-                                'reason' => '攻击速率到达所购买防护阈值'
-                            ]);
+                            $reason = sprintf('攻击速率%s到达所购买防护阈值', $item['mbps']);
+                            run_log('MITIGATION', sprintf('%s, 执行牵引', $reason))
+                            Alert::ipBlock($dest_ip, compact('reason'));
                         } else if ($item['pps'] >= $ability_pps) {
                             Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps']);
+                            $reason = sprintf('攻击报文%s到达所购买防护阈值', $item['pps']);
+                            run_log('MITIGATION', sprintf('%s, 执行牵引', $reason))
                             Alert::ipBlock($dest_ip, [
                                 'reason' => '攻击报文数量到达所购买防护阈值'
                             ]);
@@ -332,8 +334,11 @@ foreach ($pack_attack as $dc_id => $group) {
                                 } else {
                                     //当前攻击是否超过用户购买的最高防护能力
                                     if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
+                                        $text = '当前攻击已超过用户购买防护阈值，按用户购买值计算';
+                                        Response::note($text);
                                         DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
                                     } else {
+                                        $text = '当前攻击未超过用户购买防护阈值，按实际峰值计算';
                                         DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                                     }
                                 }

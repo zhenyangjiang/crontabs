@@ -15,10 +15,19 @@ function renew_transact($uid, $instance, $instance_update, $feelog_data, $callba
             return false;
         }
 
+        run_log('INSTANCE', sprintf('自动续费时，更新了实例%s有效期', $instance['mainipaddress']), [
+            'uid' => $uid,
+            'instance_ip' => $instance['mainipaddress'],
+        ]);
+
         Response::note('#tab反挂起实例...');
         $bool = Instance::unsuspend($instance);
         Response::echoBool($bool);
         if (!$bool) return false;
+        run_log('INSTANCE', '自动续费时，对实例时行反挂起操作', [
+            'uid' => $uid,
+            'instance_id' => $instance['id'],
+        ]);
 
         Notify::user($uid, 'HANDLE-EXPIRE-SUCCESS-FOR-AUTO-RENEW', [
             'instance_name' => $instance['hostname'],
@@ -105,7 +114,7 @@ function destroy_instance($instance, $some_days) {
     if ( env('debug') ) {
         Response::note('调试开启：执行虚拟销毁');
     } else {
-        list($bool, $message) = Instance::destroy($instance);
+        list($bool, $message) = Instance::destroy($instance['id']);
         if (!$bool) {
             Notify::developer(
                 sprintf('实例销毁失败:%s', $message),

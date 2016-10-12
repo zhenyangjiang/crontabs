@@ -32,10 +32,10 @@ class User {
      * @param  [type] $feelog [description]
      * @return [type]         [description]
      */
-    public static function expend($uid, $money, $feelog) {
+    public static function expend($uid, $money, $feelog,$arrears=NULL) {
         $feelog['client_ip'] = System::app('name');
         $feelog['occur_way'] = '余额扣费';
-        return self::$repoMoney->lockAndExpend($uid, $money, $feelog);
+        return self::$repoMoney->lockAndExpend($uid, $money, $feelog,$arrears);
     }
 
     /**

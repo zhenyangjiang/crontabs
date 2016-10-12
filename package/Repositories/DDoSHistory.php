@@ -4,7 +4,8 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\StaticRepository;
 use Landers\Framework\Core\Response;
 
-class DDoSHistory extends StaticRepository {
+class DDoSHistory extends StaticRepository
+{
     protected static $connection = 'mitigation';
     protected static $datatable = 'ddoshistory';
     protected static $DAO;
@@ -13,18 +14,22 @@ class DDoSHistory extends StaticRepository {
     // protected static $dt_parter = ['type' => 'datetime', 'mode' => 'ym'];
 
     private static $repo;
-    public static function init() {
+
+    public static function init()
+    {
         self::$repo = repository('dDoSHistory');
         parent::init();
     }
 
     /**
      * 插入ip攻击开始时间
-     * @param  string   $ip     ip
+     * @param  string $ip ip
      * @return array            新增的记录集合
      */
-    public static function saveAttackStart($ips) {
-        $ips = (array)$ips; if (!$ips) return false;
+    public static function saveAttackStart($ips)
+    {
+        $ips = (array)$ips;
+        if (!$ips) return false;
 
         //获取实例表中：1)在ips范围内的IP， 2)标为“正常”的IP
         $mitigations = Mitigation::lists([
@@ -37,7 +42,7 @@ class DDoSHistory extends StaticRepository {
             $ips = Arr::pick($mitigations, 'ip');
             $transacter = '写入攻击开始、更新实列状态为被攻击中';
             Response::transactBegin($transacter);
-            $result = self::transact(function() use ($ips) {
+            $result = self::transact(function () use ($ips) {
                 //准备导入history表
                 $data = [];
 
@@ -55,7 +60,7 @@ class DDoSHistory extends StaticRepository {
                     Response::note('#tab' . implode(',', $ips));
                     Response::note('#tab对以上IP进行过滤，方可对剩下的IP写入攻击开始');
                     $ips = Arr::remove($ips, $his_ips);
-                    if ( !$ips ) {
+                    if (!$ips) {
                         System::halt('#tab数据已过滤为空数据包，本次任务提前结束');
                     }
                 }
@@ -96,12 +101,13 @@ class DDoSHistory extends StaticRepository {
 
     /**
      * 更新ip攻击结束时间
-     * @param  array|string   $ips      ip
+     * @param  array|string $ips ip
      * @return bool                     数据更新成功否
      */
-    public static function saveAttackEnd($ip, $on_event) {
+    public static function saveAttackEnd($ip, $on_event)
+    {
         list($bool, $data, $warn) = self::$repo->saveAttackEnd($ip, $on_event);
-        if ( !$bool ) {
+        if (!$bool) {
             $echo = Response::warn(sprintf('#tab%s', $message));
             Notify::developer($echo, $data);
         } else {
@@ -118,23 +124,25 @@ class DDoSHistory extends StaticRepository {
      * @param  [type] $ip [description]
      * @return [type]     [description]
      */
-    public static function findByAttackingIp($ip) {
+    public static function findByAttackingIp($ip)
+    {
         return self::find([
             'awhere' => ['end_time' => NULL, 'ip' => $ip],
-            'order'  => 'begin_time desc',
+            'order' => 'begin_time desc',
         ]);
     }
 
     /**
      * 确定每小时单价
-     * @param  string $ip          IP
-     * @param  array  $price_rules 价格规则
-     * @param  int    $begin_time  开始时间
-     * @param  int    $end_time    结束时间
-     * @param  array  &$peak_info  返回峰值信息
+     * @param  string $ip IP
+     * @param  array $price_rules 价格规则
+     * @param  int $begin_time 开始时间
+     * @param  int $end_time 结束时间
+     * @param  array &$peak_info 返回峰值信息
      * @return float
      */
-    private static function hourPrice($ip, $price_rules, &$peak_info = array()) {
+    private static function hourPrice($ip, $price_rules, &$peak_info = array())
+    {
         $begin_time = $peak_info['begin'];
         $end_time = $peak_info['end'];
 
@@ -146,7 +154,7 @@ class DDoSHistory extends StaticRepository {
         $ret_price = 0; //返回单价数据
         $price_keys = array_keys($price_rules);
         $price_key_bps = (int)array_search_less_that($price_keys, $peak_bps['value']);
-        $price_key_pps = (int)array_search_less_that($price_keys, $peak_pps['value'], function($item){
+        $price_key_pps = (int)array_search_less_that($price_keys, $peak_pps['value'], function ($item) {
             return mitigation::Gbps_to_pps($item);
         });
         $price_bps = $price_rules[$price_key_bps];
@@ -156,13 +164,13 @@ class DDoSHistory extends StaticRepository {
 
         if ($price_bps == $price_pps) {
             $ret_price = $price_bps;
-            if ( $ret_price ) {
+            if ($ret_price) {
                 Response::note('#tab在%s峰值%sMbps/%spps最接近规格%sGbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $peak_pps['value'], $price_key_bps, $ret_price);
             } else {
                 Response::note('#tab单价为0，免费防护规格');
             }
         } else {
-            if ( (int)$price_bps > (int)$price_pps ) {
+            if ((int)$price_bps > (int)$price_pps) {
                 $ret_price = $price_bps;
                 Response::note('#tab在%s峰值%sMbps最接近规格%sGbps的价格为：%s元/小时', $peak_bps['time'], $peak_bps['value'], $price_key_bps, $ret_price);
             } else {
@@ -182,13 +190,14 @@ class DDoSHistory extends StaticRepository {
      * @param  [type] $duration    返回时长（小时数）
      * @return [type]              [description]
      */
-    public static function calcFee($history, $price_rules, &$peak_info = array(), &$duration = 0) {
+    public static function calcFee($history, $price_rules, &$peak_info = array(), &$duration = 0)
+    {
         $ip = $history['ip'];
         $begin_time = $history['begin_time'];
         $end_time = time();
 
         $peak_info or $peak_info = DDoSInfo::peak($ip, $begin_time, $end_time);
-        if ( !$peak_info ) {
+        if (!$peak_info) {
             $echo = Response::warn('#tab未找到峰值或峰值为0');
             reportDevException($echo, compact('ip', 'price_rules', 'begin_time', 'end_time'));
             return 0;
@@ -209,14 +218,15 @@ class DDoSHistory extends StaticRepository {
      * 实际计费扣费
      * @return [type] [description]
      */
-    public static function billing($uid, $history, $price_rules, $use_bps = NULL) {
+    public static function billing($uid, $history, $price_rules, $use_bps = NULL)
+    {
         $ip = $history['ip'];
 
         if (!Mitigation::checkServiceStatus($ip)) {
             Response::relay('IP:%s所对应的服务处于非正常状态，免计费！');
         }
 
-        if ( $use_bps ) {
+        if ($use_bps) {
             $begin_time = $history['begin_time'];
             $end_time = time();
             Response::relay('根据指定值bps：%sMbps, 构造峰值信息', $use_bps);
@@ -227,7 +237,7 @@ class DDoSHistory extends StaticRepository {
 
         $fee = self::calcFee($history, $price_rules, $peak_info, $duration);
 
-        if ( !$duration ) {
+        if (!$duration) {
             Response::note('瞬间大流量攻击，时长过短，暂不计费');
             return true;
         }
@@ -251,9 +261,12 @@ class DDoSHistory extends StaticRepository {
 
         Response::transactBegin('用户扣费、写入扣费日志');
         Response::note('#tab本次攻击共持续：%s小时，费用：￥%s', $duration, $fee);
-        User::expend($uid, $fee, $feelog_data);
+        //允许欠费
+        $arrears = true;
+        User::expend($uid, $fee, $feelog_data, $arrears);
         return Response::transactEnd(true);
     }
 }
+
 DDoSHistory::init();
 ?>

@@ -5,7 +5,10 @@ use Landers\Framework\Core\Response;
 class StartUp {
     public static function check() {
         exec('dmidecode -t 1', $output, $return);
-        if ($return > 0) Response::error('UUID生成失败！');
+        if ($return > 0){
+            Response::error('UUID生成失败！');
+            System::complete();
+        }
         $output = implode("\n", $output);
         preg_match('/UUID: (.*)/i', $output, $match);
         $uuid = $match[1];

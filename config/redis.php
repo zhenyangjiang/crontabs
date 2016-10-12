@@ -4,7 +4,7 @@ return [
 
     'localhost' => [
         'scheme'   => 'tcp',
-        'host'     => '172.31.66.131',
+        'host'     => env('hosts.redis', '172.31.66.131'),
         'port'     => 6379,
         'database' => 15
     ]

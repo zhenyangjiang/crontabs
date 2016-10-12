@@ -113,7 +113,7 @@ function parse_general_exception($e) {
     ];
 }
 
-function run_log($event_key, $message, $context){
+function run_log($event_key, $message, $context = []){
 
 }
 ?>

@@ -14,9 +14,10 @@ class StartUp {
             'name' => System::app('name'),
             'uuid' => $uuid
         ]);
-        $socket_config = config('socket-verify');
-        $host    = $socket_config['host'];
-        $port    = $socket_config['port'] ;
+        $config = explode(':', config('socket-verify')['host']);
+        $host = $config[0];
+        $port = $config[1];
+
         // Response::note('Message To server :'.$message);
         // create socket
         $socket = socket_create(AF_INET, SOCK_STREAM, 0) or System::halt('Could not create socket');

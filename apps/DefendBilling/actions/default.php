@@ -263,13 +263,13 @@ foreach ($pack_attack as $dc_id => $group) {
                             Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps']);
                             $reason = sprintf('攻击速率%s到达所购买防护阈值', $item['mbps']);
-                            run_log('MITIGATION', sprintf('%s, 执行牵引', $reason))
+                            run_log('MITIGATION', sprintf('%s, 执行牵引', $reason));
                             Alert::ipBlock($dest_ip, compact('reason'));
                         } else if ($item['pps'] >= $ability_pps) {
                             Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
                             BlackHole::block($dest_ip, $item['mbps']);
                             $reason = sprintf('攻击报文%s到达所购买防护阈值', $item['pps']);
-                            run_log('MITIGATION', sprintf('%s, 执行牵引', $reason))
+                            run_log('MITIGATION', sprintf('%s, 执行牵引', $reason));
                             Alert::ipBlock($dest_ip, [
                                 'reason' => '攻击报文数量到达所购买防护阈值'
                             ]);

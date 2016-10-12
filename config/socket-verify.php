@@ -1,5 +1,4 @@
 <?php
 return [
-    'host' => '172.31.50.1',
-    'port' => '55555'
+    'host' => env('hosts.verify', 'xxx.xxx.xxx.xxx:xxxx'),
 ];

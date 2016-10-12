@@ -11,7 +11,7 @@ if ( !$instance_id = System::argv(3) ) {
     System::halt('未指定订单ID');
 }
 
-$config = Config::get('oauth');
+$config = config('oauth');
 $oauthHttp = new OAuthHttp($config['apiurl'], 'password', $config['client_id'], $config['client_secret'], [
     'username' => 'yingzhzh',
     'password' => 'qweasdzxc'

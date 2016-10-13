@@ -2,61 +2,61 @@
 return array(
     'mitigation' => array(
         'read'      => array(
-            'host'      => env('db.mitigation.read.host', 'xxx.xxx.xxx.xxx'),
+            'host'      => env('db.mitigation.read.host', '172.31.66.200'),
             'port'      => '3306',
             'dbname'    => 'ulan_mitigation',
-            'username'  => env('db.mitigation.read.username', 'xxxxxx'),
-            'password'  => env('db.mitigation.read.password', 'xxxxxx'),
+            'username'  => env('db.mitigation.read.username', 'root'),
+            'password'  => env('db.mitigation.read.password', 'ULan.io123'),
             'charset'   => 'utf8',
             'log-path'  => dirname(__DIR__).'/logs/'
         ),
         'write'      => array(
-            'host'      => env('db.mitigation.write.host', 'xxx.xxx.xxx.xxx'),
+            'host'      => env('db.mitigation.write.host', '172.31.66.200'),
             'port'      => '3306',
             'dbname'    => 'ulan_mitigation',
-            'username'  => env('db.mitigation.write.username', 'xxxxxx'),
-            'password'  => env('db.mitigation.write.password', 'xxxxxx'),
+            'username'  => env('db.mitigation.write.username', 'root'),
+            'password'  => env('db.mitigation.write.password', 'ULan.io123'),
             'charset'   => 'utf8',
             'log-path'  => dirname(__DIR__).'/logs/'
         )
     ),
 
     'main' => array(
-        'host'      => env('db.main.host', 'xxx.xxx.xxx.xxx'),
+        'host'      => env('db.main.host', '172.31.66.200'),
         'port'      => '3306',
         'dbname'    => 'ulan_main',
-        'username'  => env('db.main.username', 'xxxxxx'),
-        'password'  => env('db.main.password', 'xxxxxx'),
+        'username'  => env('db.main.username', 'root'),
+        'password'  => env('db.main.password', 'ULan.io123'),
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
 
     'oauth' => array(
-        'host'      => env('db.oauth.host', 'xxx.xxx.xxx.xxx'),
+        'host'      => env('db.oauth.host', '172.31.66.200'),
         'port'      => '3306',
         'dbname'    => 'ulan_oauth',
-        'username'  => env('db.oauth.username', 'xxxxxx'),
-        'password'  => env('db.oauth.password', 'xxxxxx'),
+        'username'  => env('db.oauth.username', 'root'),
+        'password'  => env('db.oauth.password', 'ULan.io123'),
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
 
     'collecter' => array(
-        'host'      => env('db.collecter.host', 'xxx.xxx.xxx.xxx'),
+        'host'      => env('db.collecter.host', '172.31.66.200'),
         'port'      => '3306',
         'dbname'    => 'ulan_collecter',
-        'username'  => env('db.collecter.username', 'xxxxxx'),
-        'password'  => env('db.collecter.password', 'xxxxxx'),
+        'username'  => env('db.collecter.username', 'root'),
+        'password'  => env('db.collecter.password', 'ULan.io123'),
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
 
     'blackhole' => array(
-        'host'      => env('db.blackhole.host', 'xxx.xxx.xxx.xxx'),
+        'host'      => env('db.blackhole.host', '172.31.66.200'),
         'port'      => '3306',
         'dbname'    => 'ulan_blackhole',
-        'username'  => env('db.blackhole.username', 'xxxxxx'),
-        'password'  => env('db.blackhole.password', 'xxxxxx'),
+        'username'  => env('db.blackhole.username', 'root'),
+        'password'  => env('db.blackhole.password', 'ULan.io123'),
         'charset'   => 'utf8',
         'log-path'  => dirname(__DIR__).'/logs/'
     )

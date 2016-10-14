@@ -12,7 +12,7 @@ while (true) {
     } catch (\Exception $e) {
         System::halt();
     }
-    sleep(1);
+    usleep(50000);
 }
 
 System::complete();

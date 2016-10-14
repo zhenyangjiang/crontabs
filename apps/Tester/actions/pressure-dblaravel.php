@@ -5,10 +5,10 @@ include 'inc-headline.php';
 
 
 while (true) {
-    Response::note('repository(\'tester\')->index() = ');
+    Response::note('从%s开始：repository(\'tester\')->dblaravel() = ', System::startTime(true));
     try {
-        $ret = repository('tester')->index();
-        Response::echoText($ret);
+        $ret = repository('tester')->dblaravel();
+        Response::echoText($ret['id']);
     } catch (\Exception $e) {
         System::halt();
     }

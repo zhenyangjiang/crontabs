@@ -13,11 +13,4 @@ return [
         'queue'     => 'Crontab.BlackHole',
         'ttr'       => 60,
     ],
-
-    'report-exception' => [
-        'name'      => '异常上报',
-        'host'      => env('hosts.queue', '172.31.66.132'),
-        'queue'     => 'Crontab.ReportException',
-        'ttr'       => 60,
-    ],
 ];

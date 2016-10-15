@@ -127,7 +127,7 @@ if (!$all_ips) {
 }
 
 //记录开始攻击
-Response::note(['#blank', '#blank', '----------------------------- 记录DDoS攻击 -----------------------------']);
+Response::note(['#blank', '#blank', '---------------------------- 记录DDoS攻击 ----------------------------']);
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
 $start_attack_ips = DDoSHistory::saveAttackStart($all_ips);
 Alert::beginDDoS($start_attack_ips);
@@ -377,6 +377,8 @@ foreach ($pack_attack as $dc_id => $group) {
             //读取云盾表中该ip的云盾配置
             $mitigation = $item['mitigation'];
 
+            $uid = $mitigation['uid'];
+
             //当前IP的云盾配额
             $ability_mbps = $mitigation['ability_mbps'];
             $ability_pps = $mitigation['ability_pps'];
@@ -399,14 +401,14 @@ foreach ($pack_attack as $dc_id => $group) {
                         Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
                         BlackHole::block($dest_ip, $item['mbps']);
                         $reason = sprintf('攻击速率%s到达所购买防护阈值', $item['mbps']);
-                        run_log('MITIGATION', sprintf('%s, 执行牵引', $reason));
+                        run_log($uid, 'MITIGATION', sprintf('%s, 执行牵引', $reason));
                         Alert::ipBlock($dest_ip, compact('reason'));
 
                     } else if ($item['pps'] >= $ability_pps) {
                         Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
                         BlackHole::block($dest_ip, $item['mbps']);
                         $reason = sprintf('攻击报文%s到达所购买防护阈值', $item['pps']);
-                        run_log('MITIGATION', sprintf('%s, 执行牵引', $reason));
+                        run_log($uid, 'MITIGATION', sprintf('%s, 执行牵引', $reason));
                         Alert::ipBlock($dest_ip, [
                             'reason' => '攻击报文数量到达所购买防护阈值'
                         ]);

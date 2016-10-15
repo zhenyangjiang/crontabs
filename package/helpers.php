@@ -4,9 +4,9 @@ use Landers\Framework\Core\Response;
 function reportException($message, $type, $extra_data = array()){
     $message = colorize($message, 'pink');
     Response::note('#tab日志上报任务【'.$message.'】加入队列...');
-    $task = new \Tasks\ReportException($message, $type, $extra_data);
-    $temp_ququeId = \Landers\Framework\Core\Queue::singleton('report-exception')->push($task );
-    Response::echoBool(!!$temp_ququeId);
+    // $task = new \Tasks\ReportException($message, $type, $extra_data);
+    // $temp_ququeId = \Landers\Framework\Core\Queue::singleton('report-exception')->push($task );
+    // Response::echoBool(!!$temp_ququeId);
 }
 function reportDevException($message, $context = array(), $level = NULL){
     $extra_data = array();
@@ -30,26 +30,6 @@ function array_search_less_that(&$a, $val, $callback = NULL) {
         rsort($a); reset($a);
         return pos($a);
     }
-}
-
-function during_prev_hours($hours) {
-    $end = strtotime(date('Y-m-d H:0:0'));
-    $begin = strtotime('-1 hours', $end); $end--;
-    //$begin = strtotime('2015-09-12 10:00:00');
-    //$end = strtotime('2015-09-12 10:59:59');
-    return array(
-        'begin'         => $begin,
-        'end'           => $end,
-        'begin_text'    => date('Y-m-d H:i:s', $begin),
-        'end_text'      => date('Y-m-d H:i:s', $end)
-    );
-}
-
-function generateUUID(){
-    $currentTime = (string)microtime(true);
-    $randNumber = (string)rand(10000, 1000000);
-    $shuffledString = str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-    return md5($currentTime . $randNumber . $shuffledString);
 }
 
 /**

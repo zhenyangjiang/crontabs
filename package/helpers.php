@@ -116,4 +116,9 @@ function parse_general_exception($e) {
 function run_log($event_key, $message, $context = []){
 
 }
+
+function halt_by_exception($e) {
+    System::halt($e->getMessage());
+    throw $e;
+}
 ?>

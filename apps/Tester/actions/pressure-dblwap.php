@@ -10,7 +10,7 @@ while (true) {
         $ret = repository('tester')->dblwap();
         Response::echoText($ret);
     } catch (\Exception $e) {
-        System::halt();
+        halt_by_exception($e);
     }
     // usleep(50000);
 }

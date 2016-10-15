@@ -10,9 +10,9 @@ while (true) {
         $ret = repository('tester')->value();
         Response::echoText($ret);
     } catch (\Exception $e) {
-        System::halt();
+        halt_by_exception($e);
     }
-    usleep(50000);
+    // usleep(50000);
 }
 
 System::complete();

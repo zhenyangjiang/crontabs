@@ -42,7 +42,7 @@ return array(
     ),
 
     'collecter' => array(
-        'host'      => env('db.collecter.host', '172.31.66.200'),
+        'host'      => env('db.collecter.host', '172.31.66.134'),
         'port'      => '3306',
         'dbname'    => 'ulan_collecter',
         'username'  => env('db.collecter.username', 'root'),

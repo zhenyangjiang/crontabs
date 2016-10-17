@@ -154,10 +154,10 @@ foreach ($pack_attack as $dc_id => $group) {
             );
             Response::note('#line');
             if ($item['mbps'] >= $threshold) {
-                Response::note('IP：%s，当前攻击值：%sMbps / %spps，正在牵引...',  $dest_ip, $item['mbps'], $item['pps']);
+                Response::note('IP：%s，当前攻击值：%sMbps / %spps，需要牵引',  $dest_ip, $item['mbps'], $item['pps']);
                 BlackHole::block($dest_ip, $item['mbps']);
             } else {
-                Response::note('IP：%s，当前攻击值：%sMbps / %spps，忽略之...',  $dest_ip, $item['mbps'], $item['pps']);
+                Response::note('IP：%s，当前攻击值：%sMbps / %spps，忽略之',  $dest_ip, $item['mbps'], $item['pps']);
             }
         }
     } else {

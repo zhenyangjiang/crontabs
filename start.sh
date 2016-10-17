@@ -1,4 +1,6 @@
-screen "./CheckBalance.sh";
-screen "./DefendBilling.sh";
-screen "./ExpireHandler.sh";
-screen "./ExpireRemind.sh";
+screen -R DefendBilling "./01-DefendBilling.sh"
+screen -R ExpireHandler "./02-ExpireHandler.sh"
+screen -R HourlyJob "./03-HourlyJob.sh"
+screen -R DailyJob "./04-DailyJob.sh"
+screen -R ExpireRemind "./05-ExpireRemind.sh"
+screen -R CheckBalance "./06-CheckBalance.sh"

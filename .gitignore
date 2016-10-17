@@ -4,5 +4,6 @@
 /composer.lock
 /storage/logs
 /apps/ExpireRemind/logs
+/apps/TestUnit/logs
 /.idea
 /.env

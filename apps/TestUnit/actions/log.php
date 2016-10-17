@@ -3,6 +3,9 @@ use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 include 'inc-headline.php';
 
+
+throw new Exception("Error Processing Request", 1);
+
 Response::note('测试写日志...');
 $file = AppLog::info('kkkkkkkk', [
     'aaaa' => '111111111',

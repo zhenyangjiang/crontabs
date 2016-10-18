@@ -25,12 +25,12 @@ class StartUp {
         // create socket
         $socket = socket_create(AF_INET, SOCK_STREAM, 0) or System::halt('Could not create socket');
         // connect to server
-        $result = socket_connect($socket, $host, $port) or System::halt('Could not connect to server');
+        $result = socket_connect($socket, $host, $port) or System::halt('无法连接到高可用服务端');
         // send string to server
-        socket_write($socket, $message, strlen($message)) or System::halt('Could not send data to server');
+        socket_write($socket, $message, strlen($message)) or System::halt('无法发送请求到高可用服务端');
         // get server response
         $result = (string)socket_read ($socket, 1024);
-        if (strlen($result) == 0) System::halt('Could not read server response');
+        if (strlen($result) == 0) System::halt('高可用服务端无响应');
         socket_close($socket);
 
         if (!(int)$result) {

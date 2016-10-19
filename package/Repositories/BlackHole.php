@@ -35,8 +35,10 @@ Class BlackHole {
             Response::echoBool($bool);
             return $bool;
         } catch (\Exception $e) {
+            $message = $e->getMessage();
             $e = parse_general_exception($e);
-            Response::warn($e->message.'，牵引失败');
+            if ($e->message) $message = $e->message;
+            Response::warn($message.'，牵引失败');
             return true;
         }
     }

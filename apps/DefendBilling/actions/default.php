@@ -145,7 +145,7 @@ foreach ($pack_attack as $dc_id => $group) {
         $threshold = Settings::get('defendbilling_unalloc_ip_block_threshold');
         $threshold or $threshold = 1000;
 
-        Response::noteColor('以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold, 'yellow');
+        Response::noteColor('yellow', '以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold);
 
         foreach ($group as $dest_ip => $item) {
             $item = array(
@@ -172,9 +172,7 @@ foreach ($pack_attack as $dc_id => $group) {
         //本数据中心最高防护值
         $max_mbps = $datacenter['max_mbps'];
 
-        $tmp = sprintf('当前数据中心【%s】遭受总攻击：%sMbps, 最高防护值：%sMbps', $datacenter['name'], $total_mbps, $max_mbps);
-        $tmp = colorize($tmp, 'pink');
-        Response::note($tmp);
+        Response::noteColor('pink', '当前数据中心【%s】遭受总攻击：%sMbps, 最高防护值：%sMbps', $datacenter['name'], $total_mbps, $max_mbps);
 
         //对数据包重新整理
         foreach ($group as $dest_ip => &$item) {
@@ -186,13 +184,11 @@ foreach ($pack_attack as $dc_id => $group) {
         }; unset($item);
 
         // 本组（数据中心）存在大网威胁，优先牵引"包月免费"
-        if ( $total_mbps >= $max_mbps ) {
-            Response::note('#blank');
-
-            $text = sprintf('总流量%s >= 本组最大防护%s，大网遭受威胁，需对 “包月且免费” 优先牵引....', $total_mbps, $max_mbps);
-            Response::note(colorize($text, 'yellow',  'flash'));
+        if ( $total_mbps >= $max_mbps) {
+            Response::noteColor('yellow', '总流量%s >= 本组最大防护%s，大网遭受威胁，需对 “包月且免费” 优先牵引....', $total_mbps, $max_mbps);
 
             $month_free_ips = [];
+            if (!$group) dp($group);
             foreach ($group as $dest_ip => $item) {
                 //读取云盾表中该ip的云盾配置
                 $mitigation = $item['mitigation'];
@@ -228,13 +224,12 @@ foreach ($pack_attack as $dc_id => $group) {
                     }
                 }
             }
-            $text = sprintf('共计 %s 个“包月且免费IP” 牵引完成', count($month_free_ips));
-            Response::note(['#line', colorize($text, 'green',  'flash')]);
+            Response::note('#line');
+            Response::noteColor('green', '共计 %s 个“包月且免费IP” 牵引完成', count($month_free_ips));
         }
 
         // 对“按需计费”进行遍历操作
         foreach ($group as $dest_ip => $item) {
-            Response::note('#line');
 
             //读取云盾表中该ip的云盾配置
             $mitigation = $item['mitigation'];
@@ -244,6 +239,7 @@ foreach ($pack_attack as $dc_id => $group) {
             $ability_pps = $mitigation['ability_pps'];
 
             if ($mitigation['billing'] == 'hour') {
+                Response::note('#line');
 
                 //按需计费：先防护后计前1小时的费用，单价采用所属数据中心中的价格，按需无免费
                 Response::note('IP：%s，计费方案：按需计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
@@ -372,7 +368,6 @@ foreach ($pack_attack as $dc_id => $group) {
 
         // 对“包年包月”进行遍历操作
         foreach ($group as $dest_ip => $item) {
-            Response::note('#line');
 
             //读取云盾表中该ip的云盾配置
             $mitigation = $item['mitigation'];
@@ -384,6 +379,8 @@ foreach ($pack_attack as $dc_id => $group) {
             $ability_pps = $mitigation['ability_pps'];
 
             if ($mitigation['billing'] == 'month') {
+                Response::note('#line');
+
                 //按月计费：仅防护，由ExpireHandler进行到期扣取次月
                 $text1 = sprintf('IP：%s，计费方案：按月计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
                 $text2 = sprintf('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']) ;

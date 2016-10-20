@@ -223,7 +223,7 @@ class DDoSHistory extends StaticRepository
         $ip = $history['ip'];
 
         if (!Mitigation::checkServiceStatus($ip)) {
-            Response::relay('IP:%s所对应的服务处于非正常状态，免计费！');
+            Response::relay('IP:%s所对应的服务处于非正常状态，免计费！', $ip);
         }
 
         if ($use_bps) {

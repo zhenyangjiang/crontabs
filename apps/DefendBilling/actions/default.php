@@ -8,8 +8,9 @@ use Landers\Framework\Core\Queue;
 echo PHP_EOL;
 Response::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
-StartUp::check();
-print_r('have bug');
+
+//StartUp::check();
+
 Response::note('正在对牵引过期的IP作解除牵引：');
 BlackHole::release(); //释放牵引
 Response::note('#line');

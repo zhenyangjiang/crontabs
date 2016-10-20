@@ -3,6 +3,7 @@
 /xxx-sftp-config.json
 /composer.lock
 /storage/logs
+/apps/DefendBilling/logs
 /apps/ExpireRemind/logs
 /apps/TestUnit/logs
 /.idea

@@ -4,13 +4,7 @@ use Landers\Substrate\Utils\Http;
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Framework\Modules\Log;
-
-
         //$content = '[{"123.1.1.6": {"src": ["110.61.224.49", "242.204.209.124", "65.186.42.191"], "types": ["SYN", "ACK"], "syn": {"bps": [7034.32, 0 ], "pps": [7374170, 0 ] }, "ack": {"bps": [5387.41, 0.56 ], "pps": [5565760, 835 ] }, "udp": {"bps": [0, 0 ], "pps": [0, 0 ] }, "icmp": {"bps": [0, 0 ], "pps": [0, 0 ] }, "frag": {"bps": [0, 0 ], "pps": [0, 0 ] }, "other": {"bps": [0, 0 ], "pps": [0, 0 ] }, "dns": {"bps": [0, 0 ], "pps": [0, 0 ] }, "bps": [12421.74, 0.56 ], "pps": [12939931, 835 ], "links": [34496, 0 ], "tcplinks": [34496, 0 ], "udplinks": [0, 0 ], "time": 1464401143 } } ]';
-
-
-
-
 Class Firewall {
     public static function getAttacks() {
         $fwurl = config('fwurl');
@@ -20,7 +14,6 @@ Class Firewall {
         if ( (!isset($content)) && (!$content = Http::get($fwurl)) ) {
             System::halt('#tab防火墙数据读取失败！');
         }
-
         if (!$data = json_decode($content, true)) {
             if (is_array($data)) {
                 Response::warn('#tab获取到空数据');
@@ -94,19 +87,18 @@ Class Firewall {
             'awhere' => ['ip' => array_keys($data)],
             'askey' => 'ip'
         ]);
-
         //分组并附上mitigation
         foreach ($data as $dest_ip => $item) {
             $mitigation = $mitigations[$dest_ip];
             if ( $mitigation ) {
                 $dc_id = $mitigation['datacenter_id'];
+
                 $mitigation = Arr::remove_keys($mitigation, 'created_at, updated_at, fw_sets');
                 $mitigation = Mitigation::attachs($mitigation);
                 $dc_ids[] = $dc_id;
             } else {
                 $dc_id = 0;
             }
-
             $ret[$dc_id] or $ret[$dc_id] = [];
             $item['mitigation'] = $mitigation;
             $ret[$dc_id][$dest_ip] = $item;

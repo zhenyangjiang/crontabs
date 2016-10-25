@@ -15,6 +15,25 @@ class IPBase extends StaticRepository {
         parent::init();
     }
 
+    public static function findByIp($ip) {
+        return parent::find([
+            'awhere' => ['ip' => $ip]
+        ]);
+    }
+
+    /**
+     * [getMitigations description]
+     * @return [type] [description]
+     */
+    public static function getMitigations($ipbases) {
+        $mit_ids = Arr::pick($ipbases, 'mit_id');
+        $mit_ids = array_unique($mit_ids);
+        return Mitigation::lists([
+            'awhere' => ['id' => $mit_ids],
+            'askey' => 'id'
+        ]);
+    }
+
     /**
      * 给攻击数据分组，并给每个被攻ip附上mitigation数据
      * @param  [type] $data        [description]
@@ -37,7 +56,6 @@ class IPBase extends StaticRepository {
             $mit_ids = array_unique($mit_ids);
             $mitigations = Mitigation::lists([
                 'awhere' => ['id' => $mit_ids],
-                'askey' => 'id',
             ]);
             foreach ($mitigations as $item) {
                 $relates[$item['id']] = $item['datacenter_id'];

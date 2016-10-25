@@ -11,7 +11,7 @@ Class BlackHole {
     }
 
     public static function exists($ip) {
-        return Mitigation::count(['ip' => $ip, 'status' => 'BLOCK']);
+        return IPBase::count(['ip' => $ip, 'status' => 'BLOCK']);
     }
 
     public static function block($ip, $bps, $is_force) {

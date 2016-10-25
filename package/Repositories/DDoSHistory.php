@@ -55,7 +55,7 @@ class DDoSHistory extends StaticRepository
                 if ($his_ips) {
                     $message = sprintf('以下IP在攻击历史中为被攻击中，却在IP库中标记为正常');
                     reportDevException($message, compact('his_ips'));
-                    Response::note('#tab' . implode(',', $ips));
+                    Response::note('#tab' . implode(',', $his_ips));
                     Response::note('#tab对以上IP进行过滤，方可对剩下的IP写入攻击开始');
                     $ips = Arr::remove($ips, $his_ips);
                     if (!$ips) {

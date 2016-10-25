@@ -52,22 +52,27 @@ $attaching_ips = IPBase::getByStatus('ATTACK');
 if ($attaching_ips) {
     Response::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
     $diff_ips = array_diff($attaching_ips, $all_ips);
-    // $diff_ips = ['172.31.52.244'];
+    // $diff_ips = ['123.1.1.17', '123.1.1.27'];
 
     if ($diff_ips) {
-        Response::note(['#blank', '#blank', '--------------------- 逐一对以上IP作攻击自然结束：--------------------']);
+        Response::note('#tab其中有%sIP已停止攻击：', colorize(count($diff_ips), 'yellow', 1));
+        Response::note('#tab%s', implode('，', $diff_ips));
+        Response::note(['#blank', '#blank', '--------------------- 逐一对结束攻击的IP作攻击自然结束：--------------------']);
 
         // 一次性取得所有需要自然结束的IP的云盾
-        $mitigations = Mitigation::lists([
+        $ipbases = IPBase::lists([
             'awhere' => ['ip' => $diff_ips],
             'askey' => 'ip'
         ]);
+        $mitigations = IPBase::getMitigations($ipbases);
 
-        foreach ($diff_ips as $diff_ip) {
-            Response::note('#line');
+        foreach ($ipbases as $item) {
+            $dest_ip = $item['ip'];
+            $mit_id = $item['mit_id'];
+            Response::note('IP：%s，所属云盾：%s', $dest_ip, $mit_id);
 
             //云盾
-            $mitigation = $mitigations[$diff_ip];
+            $mitigation = $mitigations[$mit_id];
             $mitigation = Mitigation::attachs($mitigation);
 
             //确定用户
@@ -77,12 +82,12 @@ if ($attaching_ips) {
             switch ($mitigation['billing']) {
                 case 'month' :
                     //按月计费
-                    Response::note( 'IP：%s，计费方案：按月计费，无需计费', $diff_ip );
+                    Response::note( '计费方案：按月计费，无需计费', $dest_ip );
 
                     break;
 
                 case 'hour' :
-                    Response::note('IP：%s，计费方案：按需计费，防护阈值：%sMbps / %spps', $diff_ip, $mitigation['ability_mbps'], $mitigation['ability_pps']);
+                    Response::note('计费方案：按需计费，防护阈值：%sMbps / %spps', $mitigation['ability_mbps'], $mitigation['ability_pps']);
                     response_user_detail($user);
 
                     //数据中心
@@ -92,7 +97,7 @@ if ($attaching_ips) {
                     $price_rules = DataCenter::priceRules($datacenter, 'hour');
 
                     //由IP确定攻击历史记录
-                    $DDoSHistory = DDoSHistory::findByAttackingIp($diff_ip);
+                    $DDoSHistory = DDoSHistory::findByAttackingIp($dest_ip);
                     if ($DDoSHistory) {
                         Response::note('对此云盾IP进行结算费用：');
                         if ( Mitigation::isTrial($mitigation) ) {
@@ -109,15 +114,16 @@ if ($attaching_ips) {
             }
 
             //写入攻击自然结束
-            Response::note(['#blank', '写入自然攻击结束:']);
-            $bool = DDoSHistory::saveAttackEnd($diff_ip, 'STOP');
+            Response::note('写入自然攻击结束:');
+            $bool = DDoSHistory::saveAttackEnd($dest_ip, 'STOP');
             if (!$bool) Response::bool($bool, '自然攻击结束执行%s');
 
             //更新云盾状态为正常
-            Response::note(['#blank', '更新云盾状态为正常...']);
-            $bool = IPBase::setStatus($diff_ip, 'NORMAL');
+            Response::note('更新云盾状态为正常...');
+            $bool = IPBase::setStatus($dest_ip, 'NORMAL', true);
             Response::echoBool($bool);
 
+            Response::note('#line');
 
         }
     } else {
@@ -144,9 +150,10 @@ $start_attack_ips = DDoSHistory::saveAttackStart($all_ips);
 Alert::beginDDoS($start_attack_ips);
 Response::note('#line');
 
-
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击的数据中心的被攻击IP操作 ------------']);
+
+
 
 foreach ($pack_attack2 as $dc_id => $mitigations) {
     Response::note('#blank');

@@ -24,9 +24,44 @@ class Mitigation extends StaticRepository {
     public static function billingText($billing_key) {
         $a = [
             'month' => '包年包月',
-            'hour' => '按费计费'
+            'hour' => '按需计费'
         ];
         return $a[$billing_key];
+    }
+
+
+    private static $allMitigations = [];
+    public static function seekByIp($ip) {
+        $all = &self::$allMitigations;
+        $all = parent::lists();
+        $ip = ip2long($ip);
+        foreach ($all as $item) {
+            if ($ip >= $item['ip1'] && $ip <= $item['ip2'] ) {
+                $item = Arr::remove_keys($item, 'created_at, updated_at, fw_sets');
+                $item = Mitigation::attachs($item);
+                return $item;
+            }
+        }
+
+        return NULL;
+    }
+
+    public static function listsByIp($ips, $opts = []) {
+        $ips or $ips = [];
+        $owhere = [];
+        foreach ($ips as $ip) {
+            $ip = ip2long($ip);
+            $owhere[] = "($ip between ip1 and ip2)";
+        }
+        $owhere = implode(' or ', $owhere);
+
+
+        if (!array_key_exists('awhere', $opts)) {
+            $opts['awhere'] = [];
+        }
+        $opts['awhere'][] = $owhere;
+
+        return Mitigation::lists($opts);
     }
 
     /**
@@ -36,8 +71,10 @@ class Mitigation extends StaticRepository {
      * @return Mixed
      */
     public static function findByIp($ip, $fields = NULL) {
+        $ip = ip2long($ip);
+        // self::debug();
         $ret = self::find([
-            'awhere' => ['ip' => $ip],
+            'awhere' => ["$ip between ip1 and ip2"],
             'fields' => $fields
         ]);
         if ($ret && is_array($ret)){
@@ -107,31 +144,7 @@ class Mitigation extends StaticRepository {
         }
     }
 
-    /**
-     * 取得指定状态的ips
-     * @param  String $status
-     * @return Array 被攻中的或被牵引中（攻击未结束）的ip集合
-     */
-    public static function getIpsByStatus($status) {
-        $ret = parent::lists([
-            'fields' => 'ip',
-            'awhere' => ['status' => $status]
-        ]);
-        if ($ret) $ret = Arr::flat($ret);
 
-        return $ret;
-    }
-
-    /**
-     * 设定云盾状态
-     * @param  String / Array   $ips 要修改的IP集合或单IP
-     * @param  String $status
-     * @param  Boolean $is_force 是否强制修改
-     * @return Boolean 是否【更新成功且有记录被更新】
-     **/
-    public static function setStatus($ips, $status, $is_force = NULL) {
-        return self::$repo->setStatus($ips, $status, $is_force);
-    }
 
     /**
      * IP对应的服务状态是否正常
@@ -148,6 +161,24 @@ class Mitigation extends StaticRepository {
      */
     public static function isTrial($mitigation) {
         return $mitigation['trial_expire'] > time();
+    }
+
+    /**
+     * 牵引云盾中所有IP
+     * @param  [type] &$mitWithDDoSInfos [description]
+     * @param  [type] $reason            [description]
+     * @param  [type] $onBlockSuccess    [description]
+     * @return [type]                    [description]
+     */
+    public static function block(&$mitWithDDoSInfos, $reason, $onBlockSuccess) {
+        $mit = &$mitWithDDoSInfos;
+        foreach ($mit['ddosinfos'] as $item) {
+            $dest_ip = $item['dest'];
+            if (IPBase::block($dest_ip, $item['mbps'], 'force')) {
+                $onBlockSuccess && $onBlockSuccess($item);
+                Alert::ipBlock($dest_ip, compact('reason'));
+            }
+        }
     }
 
     /**
@@ -171,6 +202,11 @@ class Mitigation extends StaticRepository {
     //     return $lists;
     // }
 
+
+    /**
+     * 取得按需计费的云盾
+     * @return [type] [description]
+     */
     public static function hourMits()
     {
         $sql = "
@@ -185,8 +221,7 @@ class Mitigation extends StaticRepository {
             LEFT JOIN ulan_instances AS i ON i.mainipaddress = m.ip
             WHERE
                 billing = 'hour'
-            AND i.expire >
-        " . time();
+            AND i.expire > " . time();
         return self::query($sql);
     }
 }

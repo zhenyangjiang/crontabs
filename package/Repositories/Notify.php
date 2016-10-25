@@ -122,7 +122,7 @@ class Notify {
         $configs = config('notify');
         $config = $configs['email'][$driver];
 
-        if ( $opts['subject'] ) {
+        if ( $opts['subject'] && strpos(ENV_system_name, $opts['subject']) ) {
             $opts['subject'] .= ' - ' . ENV_system_name;
         }
 
@@ -139,18 +139,18 @@ class Notify {
         $job = new SendEmailNotify($mailer);
 
         //入队
-        try {
+        // try {
             $retdat = Queue::singleton('notify')->push($job);
             return true;
-        } catch (\Exception $e) {
-            $uniq_key = md5(serialize($opts));
-            $retry = self::retry($uniq_key);
-            $reties = $config['retries'];
-            if ( $retry <= $reties) {
-                Response::warn('入队失败，第%s次重试中...', $retry);
-                sleep(1);
-                self::sendEmail($driver, $optsm, $retdat);
-            }
-        }
+        // } catch (\Exception $e) {
+        //     $uniq_key = md5(serialize($opts));
+        //     $retry = self::retry($uniq_key);
+        //     $reties = $config['retries'];
+        //     if ( $retry <= $reties) {
+        //         Response::warn('入队失败，第%s次重试中...', $retry);
+        //         sleep(1);
+        //         self::sendEmail($driver, $opts, $retdat);
+        //     }
+        // }
     }
 }

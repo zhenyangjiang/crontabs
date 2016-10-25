@@ -62,6 +62,32 @@ function response_user_detail(array $user) {
     Response::note('#blank');
 }
 
+function response_mitigation_detail(array $mitWithDDoSInfos) {
+    $mit = &$mitWithDDoSInfos;
+
+    Response::note(
+        '云盾ID：%s，绑定服务：%s (%s)',
+        $mit['id'],
+        $mit['service'], $mit['service_id']
+    );
+    Response::note(
+        '计费方案：%s，防护阈值：%sMbps / %spps',
+        Mitigation::billingText($mit['billing']),
+        $mit['ability_mbps'], $mit['ability_pps']
+    );
+    $ips = Landers\Substrate\Utils\Arr::pick($mit['ddosinfos'], 'dest');
+
+    Response::note(
+        '当前被攻击IP：%s，共 %s 个',
+        implode('，', $ips), count($ips)
+    );
+    Response::note(
+        '被攻击总速率：%sMbps，被攻击总报文：%spps',
+        $mit['sum_mbps'], $mit['sum_pps']
+    );
+    unset($mit);
+}
+
 /**
  * [app description]
  * @param  [type] $class [description]

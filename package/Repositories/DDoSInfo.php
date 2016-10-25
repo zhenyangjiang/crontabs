@@ -27,7 +27,7 @@ class DDoSInfo extends StaticRepository {
         if (!$pack) return array();
 
         $blocked_ips = Mitigation::getIpsByStatus('BLOCK');
-
+    
         if ($blocked_ips) {
             $filte_ips = [];
             foreach ($blocked_ips as $ip) {

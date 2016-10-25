@@ -41,10 +41,8 @@ if ($attaching_ips) {
     Response::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
     $diff_ips = array_diff($attaching_ips, $all_ips);
     // $diff_ips = ['172.31.52.244'];
-
     if ($diff_ips) {
         Response::note(['#blank', '#blank', '--------------------- 逐一对以上IP作攻击自然结束：--------------------']);
-
         // 一次性取得所有需要自然结束的IP的云盾
         $mitigations = Mitigation::lists([
             'awhere' => ['ip' => $diff_ips],
@@ -103,7 +101,7 @@ if ($attaching_ips) {
 
             //更新云盾状态为正常
             Response::note(['#blank', '更新云盾状态为正常...']);
-            $bool = Mitigation::setStatus($diff_ip, 'NORMAL');
+            // $bool = Mitigation::setStatus($diff_ip, 'NORMAL');
             Response::echoBool($bool);
 
 
@@ -184,47 +182,8 @@ foreach ($pack_attack as $dc_id => $group) {
 
         // 本组（数据中心）存在大网威胁，优先牵引"包月免费"
         if ( $total_mbps >= $max_mbps) {
-            Response::noteColor('yellow', '总流量%s >= 本组最大防护%s，大网遭受威胁，需对 “包月且免费” 优先牵引....', $total_mbps, $max_mbps);
+            $free = new free($group,$total_mbps,$max_mbps);
 
-            $month_free_ips = [];
-            if (!$group) dp($group);
-            foreach ($group as $dest_ip => $item) {
-                //读取云盾表中该ip的云盾配置
-                $mitigation = $item['mitigation'];
-
-                //是否免费版云盾
-                $is_free = (float)$mitigation['price'] == 0;
-
-                //是否包月
-                $is_month = $mitigation['billing'] == 'month';
-
-                //包月且免费，立即牵引
-                if ( $is_month && $is_free ) {
-                    Response::note('#line');
-
-                    $month_free_ips[] = $dest_ip;
-
-                    //按月计费：仅防护，由ExpireHandler进行到期扣取次月
-                    Response::note(
-                        'IP：%s，计费方案：按月计费，防护阈值：%sMbps / %spps',
-                        $dest_ip, $mitigation['ability_mbps'], $mitigation['ability_pps']
-                    );
-
-                    Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
-
-                    if (BlackHole::block($dest_ip, $item['mbps'], 'force')) {
-                        Alert::ipBlock($dest_ip, [
-                            'reason' => '超大网安全'
-                        ]);
-
-                        //从总攻击量中减掉此项，并把此ip从该组移除
-                        $total_mbps -= $item['mbps'];
-                        unset($group[$dest_ip]);
-                    }
-                }
-            }
-            Response::note('#line');
-            Response::noteColor('green', '共计 %s 个“包月且免费IP” 牵引完成', count($month_free_ips));
         }
 
         // 对“按需计费”进行遍历操作

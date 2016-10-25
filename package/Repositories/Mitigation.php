@@ -113,11 +113,13 @@ class Mitigation extends StaticRepository {
      * @return Array 被攻中的或被牵引中（攻击未结束）的ip集合
      */
     public static function getIpsByStatus($status) {
+
         $ret = parent::lists([
             'fields' => 'ip',
             'awhere' => ['status' => $status]
         ]);
         if ($ret) $ret = Arr::flat($ret);
+        print_r($ret);
 
         return $ret;
     }
@@ -130,6 +132,7 @@ class Mitigation extends StaticRepository {
      * @return Boolean 是否【更新成功且有记录被更新】
      **/
     public static function setStatus($ips, $status, $is_force = NULL) {
+
         return self::$repo->setStatus($ips, $status, $is_force);
     }
 

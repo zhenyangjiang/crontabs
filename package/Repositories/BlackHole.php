@@ -63,6 +63,7 @@ Class BlackHole {
      * @return [type] [description]
      */
     public static function release() {
+
         //找出未解除，且牵引过期的ids
         $lists = Mitigation::lists([
             'awhere' => ['status' => 'BLOCK', "block_expire<=".time()],
@@ -70,13 +71,14 @@ Class BlackHole {
             'order'  => 'block_expire asc'
         ]);
 
+
         if (!$lists) {
             Response::relay('#tab未找到牵引过期的IP');
             return [];
         }
-
         // 解除牵引更新“标志值为已解除”、实例状态更新为“正常”;
         $ips = Arr::pick($lists, 'ip');
+        
         foreach ($ips as $ip) {
             $bool = self::unblock($ip);
             Response::echoBool($bool);

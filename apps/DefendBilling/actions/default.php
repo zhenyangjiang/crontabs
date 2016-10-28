@@ -5,6 +5,9 @@ use Landers\Substrate\Utils\Datetime;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Queue;
 
+// IPBase::update(['status' => 'ATTACK'], 77);
+
+
 echo PHP_EOL;
 Response::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
 
@@ -39,20 +42,23 @@ if ($all_ips = DDoSInfo::save($pack_attack2)) {
 }
 Response::note('#line');
 
-if ( count($pack_attack1) != count($all_ips) ) {
-    $text = sprintf('pack_attack1的数量%s与pack_attack2的数量%s不一至！', count($pack_attack1), count($pack_attack2));
-    throw new Exception($text);
-}
-
+// if ( count($pack_attack1) != count($all_ips) ) {
+//     $text = sprintf('pack_attack1的数量%s与pack_attack2的数量%s不一至！', count($pack_attack1), count($all_ips));
+//     throw new Exception($text);
+// }
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
 Response::note('正在查询被攻击中、且本次未被攻击的IP作攻击自然结束：');
 $attaching_ips = IPBase::getByStatus('ATTACK');
 
+// if ($attaching_ips) {
+//     Response::warn('制造IP:%s攻击自然结束', $attaching_ips[0]);
+//     $all_ips = Arr::remove($all_ips, $attaching_ips[0]);
+// }
+
 if ($attaching_ips) {
     Response::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
     $diff_ips = array_diff($attaching_ips, $all_ips);
-    // $diff_ips = ['123.1.1.17', '123.1.1.27'];
 
     if ($diff_ips) {
         Response::note('#tab其中有%sIP已停止攻击：', colorize(count($diff_ips), 'yellow', 1));
@@ -119,7 +125,7 @@ if ($attaching_ips) {
             if (!$bool) Response::bool($bool, '自然攻击结束执行%s');
 
             //更新云盾状态为正常
-            Response::note('更新云盾状态为正常...');
+            Response::note('更新IP状态为正常...');
             $bool = IPBase::setStatus($dest_ip, 'NORMAL', true);
             Response::echoBool($bool);
 
@@ -143,6 +149,9 @@ if (!$all_ips) {
     }
 }
 
+
+// pause();
+
 //记录开始攻击
 Response::note(['#blank', '#blank', '---------------------------- 记录DDoS攻击 ----------------------------']);
 Response::note('当前所有被攻击IP中，给状态为正常的IP记录攻击开始：');
@@ -164,6 +173,7 @@ foreach ($pack_attack2 as $dc_id => $mitigations) {
         $threshold or $threshold = 1000;
 
         Response::noteColor('pink', '以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold);
+        continue;
 
         if ($mitigation = &$mitigations[0]) {
             $ddosinfos = &$mitigation['ddosinfos'];

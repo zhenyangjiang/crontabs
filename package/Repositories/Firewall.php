@@ -15,6 +15,7 @@ Class Firewall {
             System::halt('#tab防火墙数据读取失败！');
         }
         if (!$data = json_decode($content, true)) {
+            print_r($data);
             if (is_array($data)) {
                 Response::warn('#tab获取到空数据');
             } else {
@@ -29,20 +30,22 @@ Class Firewall {
         }
 
         //额外加一个调用用的IP
-        // if ($data && env('debug')) {
-        //     $tmp = $data[array_rand($data)];
-        //     $data = [ '123.1.1.11' => $tmp ];
-        //     // $data['123.1.1.11'] = $tmp;
-        //     if ( $xip = System::argv(3)) {
-        //         $xbps = System::argv(4);
-        //         if ($xbps === 'NONE') {
-        //             unset($data[$xip]);
-        //         } else {
-        //             $data[$xip]['bps'][0] = $xbps;
-        //             $data[$xip]['pps'][0] = 19000000;
-        //         }
-        //     }
-        // }
+//        if ($data && env('debug')) {
+//            $tmp = $data[array_rand($data)];
+//             $data = [ '123.1.1.11' => $tmp ];
+//            $data['123.1.1.16'] = $tmp;
+//            $tmp = $data[array_rand($data)];
+//            $data['123.1.1.15'] = $tmp;
+//            // if ( $xip = System::argv(3)) {
+//            //     $xbps = System::argv(4);
+//            //     if ($xbps === 'NONE') {
+//            //         unset($data[$xip]);
+//            //     } else {
+//            //         $data[$xip]['bps'][0] = $xbps;
+//            //         $data[$xip]['pps'][0] = 19000000;
+//            //     }
+//            // }
+//        }
 
         $ret = []; $filte1_count = 0;
         foreach ($data as $dest_ip => &$item) {
@@ -73,39 +76,7 @@ Class Firewall {
         return $data;
     }
 
-    /**
-     * 给攻击数据分组，并给每个被攻ip附上mitigation数据
-     * @param  [type] $data        [description]
-     * @param  [type] $mitigations [description]
-     * @return [type]              [description]
-     */
-    public static function groupBy($data) {
-        $ret = []; $dc_ids = [];
 
-        //一次性读取所有被攻击IP的云盾
-        $mitigations = Mitigation::lists([
-            'awhere' => ['ip' => array_keys($data)],
-            'askey' => 'ip'
-        ]);
-        //分组并附上mitigation
-        foreach ($data as $dest_ip => $item) {
-            $mitigation = $mitigations[$dest_ip];
-            if ( $mitigation ) {
-                $dc_id = $mitigation['datacenter_id'];
-
-                $mitigation = Arr::remove_keys($mitigation, 'created_at, updated_at, fw_sets');
-                $mitigation = Mitigation::attachs($mitigation);
-                $dc_ids[] = $dc_id;
-            } else {
-                $dc_id = 0;
-            }
-            $ret[$dc_id] or $ret[$dc_id] = [];
-            $item['mitigation'] = $mitigation;
-            $ret[$dc_id][$dest_ip] = $item;
-        }
-
-        return $ret;
-    }
 
     public static function makeAttacks($data){
         $ips = [

@@ -31,7 +31,7 @@ return array(
         'log-path'  => dirname(__DIR__).'/logs/'
     ),
 
-    'oauth' => array(
+    'oauth' => array(   
         'host'      => env('db.oauth.host', '172.31.66.200'),
         'port'      => '3306',
         'dbname'    => 'ulan_oauth',

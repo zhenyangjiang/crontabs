@@ -31,15 +31,15 @@ class DDoSHistory extends StaticRepository
         $ips = (array)$ips;
         if (!$ips) return false;
 
-        //获取实例表中：1)在ips范围内的IP， 2)标为“正常”的IP
-        $mitigations = Mitigation::lists([
+        //获取IP表中：1)在ips范围内的IP， 2)标为“正常”的IP
+        $ipbases = IPBase::lists([
             'fields' => 'ip',
             'awhere' => ['ip' => $ips, 'status' => 'NORMAL']
         ]);
 
         $ips = [];
-        if ($mitigations) {
-            $ips = Arr::pick($mitigations, 'ip');
+        if ($ipbases) {
+            $ips = Arr::pick($ipbases, 'ip');
             $transacter = '写入攻击开始、更新实列状态为被攻击中';
             Response::transactBegin($transacter);
             $result = self::transact(function () use ($ips) {
@@ -53,10 +53,8 @@ class DDoSHistory extends StaticRepository
                 ]);
                 $his_ips = Arr::pick($histories, 'ip');
                 if ($his_ips) {
-                    $message = sprintf('以下IP在攻击历史中为被攻击中，却在云盾中标记为正常');
-                    reportDevException($message, [
-                        'his_ips' => $his_ips
-                    ]);
+                    $message = sprintf('以下IP在攻击历史中为被攻击中，却在IP库中标记为正常');
+                    reportDevException($message, compact('his_ips'));
                     Response::note('#tab' . implode(',', $ips));
                     Response::note('#tab对以上IP进行过滤，方可对剩下的IP写入攻击开始');
                     $ips = Arr::remove($ips, $his_ips);
@@ -67,7 +65,10 @@ class DDoSHistory extends StaticRepository
 
                 //批量导入数据
                 foreach ($ips as $ip) {
-                    $data[] = ['ip' => $ip, 'begin_time' => System::startTime()];
+                    $data[] = [
+                        'ip' => $ip,
+                        'begin_time' => System::startTime()
+                    ];
                 }
                 Response::note('#tab即将对以下IP写入攻击历史：');
                 Response::echoText(implode('，', $ips));
@@ -76,9 +77,9 @@ class DDoSHistory extends StaticRepository
                 Response::echoBool($bool);
                 if (!$bool) return false;
 
-                Response::note('#tab更新“实列表为被攻击中”...');
+                Response::note('#tab更新“IP表为被攻击中”...');
                 $ips = Arr::pick($data, 'ip');
-                $bool = Mitigation::setStatus($ips, 'ATTACK', true);
+                $bool = IPBase::setStatus($ips, 'ATTACK', true);
                 Response::echoBool($bool);
                 if (!$bool) return false;
 
@@ -223,13 +224,13 @@ class DDoSHistory extends StaticRepository
         $ip = $history['ip'];
 
         if (!Mitigation::checkServiceStatus($ip)) {
-            Response::relay('IP:%s所对应的服务处于非正常状态，免计费！', $ip);
+            Response::reply('IP:%s所对应的服务处于非正常状态，免计费！', $ip);
         }
 
         if ($use_bps) {
             $begin_time = $history['begin_time'];
-            $end_time = time();
-            Response::relay('根据指定值bps：%sMbps, 构造峰值信息', $use_bps);
+            $end_time = time(); 
+            Response::reply('根据指定值bps：%sMbps, 构造峰值信息', $use_bps);
             $peak_info = DDoSInfo::genealPeakByMBps($use_bps, $begin_time, $end_time);
         } else {
             $peak_info = array();

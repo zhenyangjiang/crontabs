@@ -1,54 +1,81 @@
+
 <?php
 use Landers\Framework\Core\System;
 use Landers\Framework\Core\Response;
 use Landers\Substrate\Utils\Datetime;
 use Landers\Substrate\Utils\Arr;
 use Landers\Framework\Core\Queue;
-
+require 'free.php';
 echo PHP_EOL;
-// StartUp::check();
 
 Response::note(['【按月防护，按需防护、计费】（'.System::app('name').'）开始工作','#dbline']);
-Response::note('正在对牵引过期的IP作解除牵引：');
-BlackHole::release(); //释放牵引
-Response::note('#line');
+
+//StartUp::check();
+
+//
+//Response::note('正在对牵引过期的IP作解除牵引：');
+//IPBase::release(); //释放牵引
+//Response::note('#line');
 
 Response::note('正在从防火墙上获取了攻击信息...');
-$pack_attack = Firewall::getAttacks();
-Response::note('#line');
+$pack_attack1  = Firewall::getAttacks();
+print_r($pack_attack1);
+die();
 
+Response::note('#line');
+//
 Response::note('过滤掉已被牵引的IP...');
-$pack_attack = DDoSInfo::filteBlocked($pack_attack);
+$pack_attack1 = DDoSInfo::filteBlocked();
 Response::note('#line');
 
-if ( $pack_attack ) {
+if ( $pack_attack1 ) {
     Response::note('正在对攻击数据进行分组...');
-    $pack_attack = Firewall::groupBy($pack_attack);
-    Response::echoBool($pack_attack);
+    $pack_attack2 = IPBase::groupBy($pack_attack1);
+
+    Response::echoBool(!!$pack_attack2);
     Response::note('#line');
+} else {
+    $pack_attack2 = [];
+}
+//
+Response::note('保存攻击数据到DDoSInfo...');
+if ($all_ips = DDoSInfo::save($pack_attack2)) {
+
+    Response::echoSuccess('成功：%s', count($all_ips));
+} else {
+    Response::echoBool(false);
+}
+Response::note('#line');
+
+if ( count($pack_attack1) != count($all_ips) ) {
+    $text = sprintf('pack_attack1的数量%s与pack_attack2的数量%s不一至！', count($pack_attack1), count($pack_attack2));
+    throw new Exception($text);
 }
 
-Response::note('保存攻击数到DDoSInfo...');
-$all_ips = DDoSInfo::save($pack_attack);
-if ($all_ips) Response::echoSuccess('共计%s条数据', count($all_ips));
-Response::note('#line');
 
 //对【数据库中存在，但当前攻击不存在】的IP，作【攻击结束】IP筛选条件范围
 Response::note('正在查询被攻击中、且本次未被攻击的IP作攻击自然结束：');
-$attaching_ips = Mitigation::getIpsByStatus('ATTACK');
+$attaching_ips = IPBase::getByStatus('ATTACK');
+$diff_ips = array_diff($attaching_ips, $all_ips);
+
 
 if ($attaching_ips) {
     Response::note('#tab当前历史中有%sIP正在被攻击中', colorize(count($attaching_ips), 'yellow', 1));
     $diff_ips = array_diff($attaching_ips, $all_ips);
     // $diff_ips = ['172.31.52.244'];
+
     if ($diff_ips) {
         Response::note(['#blank', '#blank', '--------------------- 逐一对以上IP作攻击自然结束：--------------------']);
+
         // 一次性取得所有需要自然结束的IP的云盾
         $mitigations = Mitigation::lists([
             'awhere' => ['ip' => $diff_ips],
             'askey' => 'ip'
         ]);
+        //test
 
+        free::handles($mitigations,$total_mbps,$max_mbps);
+        //end test
         foreach ($diff_ips as $diff_ip) {
             Response::note('#line');
 
@@ -101,7 +128,7 @@ if ($attaching_ips) {
 
             //更新云盾状态为正常
             Response::note(['#blank', '更新云盾状态为正常...']);
-            // $bool = Mitigation::setStatus($diff_ip, 'NORMAL');
+            $bool = IPBase::setStatus($diff_ip, 'NORMAL');
             Response::echoBool($bool);
 
 
@@ -134,7 +161,7 @@ Response::note('#line');
 //攻击中的数据处理
 Response::note(['#blank', '#blank', '------------ 开始逐一对所有被攻击的数据中心的被攻击IP操作 ------------']);
 
-foreach ($pack_attack as $dc_id => $group) {
+foreach ($pack_attack2 as $dc_id => $mitigations) {
     Response::note('#blank');
 
     //未归属数据中心的组内的IP按后台设置处理牵引
@@ -142,193 +169,206 @@ foreach ($pack_attack as $dc_id => $group) {
         $threshold = Settings::get('defendbilling_unalloc_ip_block_threshold');
         $threshold or $threshold = 1000;
 
-        Response::noteColor('yellow', '以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold);
+        Response::noteColor('pink', '以下为未启用IP遭到的攻击，将对攻击量超出阈值%sMbps作牵引处理', $threshold);
 
-        foreach ($group as $dest_ip => $item) {
-            $item = array(
-                'mbps' => $item['bps0'],
-                'pps' => $item['pps0'],
-            );
-            Response::note('#line');
-            if ($item['mbps'] >= $threshold) {
-                Response::note('IP：%s，当前攻击值：%sMbps / %spps，需要牵引',  $dest_ip, $item['mbps'], $item['pps']);
-                BlackHole::block($dest_ip, $item['mbps']);
-            } else {
-                Response::note('IP：%s，当前攻击值：%sMbps / %spps，忽略之',  $dest_ip, $item['mbps'], $item['pps']);
+        if ($mitigation = &$mitigations[0]) {
+            $ddosinfos = &$mitigation['ddosinfos'];
+            foreach ($ddosinfos as $item) {
+                $dest_ip = $item['dest'];
+                $item = array(
+                    'mbps' => $item['bps0'],
+                    'pps' => $item['pps0'],
+                );
+                Response::note('#line');
+                if ($item['mbps'] >= $threshold) {
+                    Response::note('IP：%s，当前攻击值：%sMbps / %spps，需要牵引',  $dest_ip, $item['mbps'], $item['pps']);
+                    IPBase::block($dest_ip, $item['mbps']);
+                } else {
+                    Response::note('IP：%s，当前攻击值：%sMbps / %spps，忽略之',  $dest_ip, $item['mbps'], $item['pps']);
+                }
             }
         }
     } else {
+        // pause();
         //***********************开始正常流程**********************
+        //每个云盾的ddosinfos包中bps0改为名为mbps, pps0改名为pps, 计算所遭到的总攻击
+        foreach ($mitigations as &$mitigation) {
+            $mitigation = Mitigation::attachs($mitigation);
+            $sum_mbps = (float)0; $sum_pps = (float)0;
+            foreach ($mitigation['ddosinfos'] as &$item) {
+                $item = [
+                    'dest' => $item['dest'],
+                    'mbps' => $item['bps0'],
+                    'pps' => $item['pps0'],
+                ];
+                $sum_mbps += $item['mbps'];
+                $sum_pps += $item['pps'];
+            }; unset($item);
+            $mitigation['sum_mbps'] = (float)$sum_mbps;
+            $mitigation['sum_pps'] = (float)$sum_pps;
+        }; unset($mitigation);
 
         //对组数据排序，方便有大网安全问题时更精确处理
-        $group = Arr::sort($group, 'bps0');
+        $mitigations = Arr::sort($mitigations, 'sum_mbps');
 
         //本组总攻击量
-        $total_mbps = Arr::sum($group, 'bps0');
+        $total_mbps = Arr::sum($mitigations, 'sum_mbps');
 
         //本数据中心最高防护值
         $max_mbps = $datacenter['max_mbps'];
 
         Response::noteColor('pink', '当前数据中心【%s】遭受总攻击：%sMbps, 最高防护值：%sMbps', $datacenter['name'], $total_mbps, $max_mbps);
 
-        //对数据包重新整理
-        foreach ($group as $dest_ip => &$item) {
-            $item = array(
-                'mbps' => $item['bps0'],
-                'pps' => $item['pps0'],
-                'mitigation' => $item['mitigation']
-            );
-        }; unset($item);
-
-        // 本组（数据中心）存在大网威胁，优先牵引"包月免费"
+        // 本组（数据中心）存在大网威胁，优先牵引免费版"包年包月"
+        // $total_mbps = 300000.1;
         if ( $total_mbps >= $max_mbps) {
-            $free = new free($group,$total_mbps,$max_mbps);
 
+
+            $free = new free($mitigations,$total_mbps,$max_mbps);
+
+          
         }
 
         // 对“按需计费”进行遍历操作
-        foreach ($group as $dest_ip => $item) {
-
-            //读取云盾表中该ip的云盾配置
-            $mitigation = $item['mitigation'];
+        foreach ($mitigations as $index => $mitigation) {
+            if ($mitigation['billing'] != 'hour') continue;
+            Response::note('#line');
 
             //当前IP的云盾配额
             $ability_mbps = $mitigation['ability_mbps'];
             $ability_pps = $mitigation['ability_pps'];
 
-            if ($mitigation['billing'] == 'hour') {
-                Response::note('#line');
+            //获取当前ip所在的数据中心的价格规则(元/小时)的数组
+            $price_rules = DataCenter::priceRules($datacenter, 'hour');
 
-                //按需计费：先防护后计前1小时的费用，单价采用所属数据中心中的价格，按需无免费
-                Response::note('IP：%s，计费方案：按需计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
+            //显示云盾详情
+            response_mitigation_detail($mitigation);
 
-                Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
+            //由云盾->用户->余额
+            $uid = $mitigation['uid'];
+            $user = User::find($uid);
+            response_user_detail($user);
 
-                Response::note('由IP确定攻击历史记录：');
-                $DDoSHistory = DDoSHistory::findByAttackingIp($dest_ip);
+            $ddosinfos = $mitigation['ddosinfos'];
+            if (count($ddosinfos) >= 2) {
+                $echo = Response::warn('云盾ID:%s为按需计费，却存在2个以上的对应的IP', $mitigation['id']);
+                reportDevException($echo, compact('mitigation'));
+            }
+            $item = &$ddosinfos[0];
 
-                if (!$DDoSHistory) {
-                    if ( $total_mbps >= $max_mbps ) {
-                        $echo = Response::warn('有待考证#1');
-                        Notify::developer($echo);
-                    } else  {
-                        $msg = '未找到该IP正在被攻击中的历史记录';
-                        Notify::developer($msg);
+            $dest_ip = $item['dest'];
+
+            $DDoSHistory = DDoSHistory::findByAttackingIp($dest_ip);
+
+            if (!$DDoSHistory) {
+                if ( $total_mbps >= $max_mbps ) {
+                    $echo = Response::warn('有待考证#1');
+                    Notify::developer($echo);
+                } else  {
+                    $msg = '未找到该IP正在被攻击中的历史记录';
+                    Notify::developer($msg);
+                }
+            } else {
+                Response::note('当前攻击的所属历史记录ID：%s', $DDoSHistory['id']);
+
+                if ( $total_mbps >= $max_mbps ) {
+                    //经过不断对 $total_mbps 做减算，还是超过了最高防护，继续牵引
+                    $text = sprintf('当前总流量 %s >= 大网安全流量 %s，超大网安全，需立即强制牵引 >>>', $total_mbps, $max_mbps);
+                    Response::note(colorize($text, 'yellow',  'flash'));
+
+                    // 在本次牵引之前，此ip是否被牵引了
+                    $block_exists = BlackHole::exists($dest_ip);
+
+                    //强制牵引
+                    if (IPBase::block($dest_ip, $item['mbps'], 'force')) {
+                        $total_mbps -= $item['mbps'];
+                        Alert::ipBlock($dest_ip, [
+                            'reason' => '超大网安全且被攻击速率过高'
+                        ]);
+                    }
+
+                    //计费扣费
+                    Response::note('对此云盾IP进行结算费用：');
+                    if ( $block_exists ) {
+                        Response::reply(' 在本次牵引之前，此IP就已被牵引了，无需再计费...');
+                    } else {
+                        if ( Mitigation::isTrial($mitigation) ) {
+                            Response::echoWarn('试用期云盾免计费。');
+                        } else {
+                            //当前攻击是否超过用户购买的最高防护能力
+                            if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
+                                $text = '当前攻击已超过用户购买防护阈值，按用户购买值计算';
+                                Response::note($text);
+                                DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
+                            } else {
+                                $text = '当前攻击未超过用户购买防护阈值，按实际峰值计算';
+                                DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
+                            }
+                        }
                     }
                 } else {
-                    $DDoSHistory_id = $DDoSHistory['id'];
-                    Response::note('#tab当前攻击的所属历史记录ID：%s', $DDoSHistory_id);
-
-                    //获取当前ip所在的数据中心的价格规则(元/小时)的数组
-                    $price_rules = DataCenter::priceRules($datacenter, 'hour');
-
-                    //由云盾->用户->余额
-                    $uid = $mitigation['uid'];
-                    $user = User::find($uid);
-                    response_user_detail($user);
-
-                    if ( $total_mbps >= $max_mbps ) {
-                        //经过不断对 $total_mbps 做减算，还是超过了最高防护，继续牵引
-                        $text = sprintf('当前总流量 %s >= 大网安全流量 %s，超大网安全，需立即强制牵引 >>>', $total_mbps, $max_mbps);
-                        Response::note(colorize($text, 'yellow',  'flash'));
-
-                        // 在本次牵引之前，此ip是否被牵引了
-                        $block_exists = BlackHole::exists($dest_ip);
-
-                        //强制牵引
-                        if (BlackHole::block($dest_ip, $item['mbps'], 'force')) {
-                            $total_mbps -= $item['mbps'];
-                            Alert::ipBlock($dest_ip, [
-                                'reason' => '超大网安全且被攻击速率过高'
-                            ]);
+                    //当前攻击是否超过用户购买的最高防护能力
+                    if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
+                        //超过?是
+                        if ($item['mbps'] > $ability_mbps) {
+                            Response::note('到达用户最高承受支付能力防护值：%sMbps', $ability_mbps);
+                        } else {
+                            Response::note('到达用户最高承受支付能力防护值：%spps', $ability_pps);
                         }
 
-                        //计费扣费
-                        if ( $block_exists ) {
-                            Response::note(' 在本次牵引之前，此IP就已被牵引了，无需再计费...');
+                        //牵引
+                        if (BlackHole::exists($dest_ip)) {
+                            $echo = Response::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
+                            reportDevException($echo);
+                            //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
                         } else {
+                            Response::note('需要对IP：%s作牵引处理', $dest_ip);
+                            IPBase::block($dest_ip, $item['mbps'], 'force');
+                            Alert::ipBlock($dest_ip, [
+                                'reason' => '攻击速率到达所购买防护阈值'
+                            ]);
+
                             Response::note('对此云盾IP进行结算费用：');
                             if ( Mitigation::isTrial($mitigation) ) {
                                 Response::echoWarn('试用期云盾免计费。');
                             } else {
-                                //当前攻击是否超过用户购买的最高防护能力
-                                if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
-                                    $text = '当前攻击已超过用户购买防护阈值，按用户购买值计算';
-                                    Response::note($text);
-                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
-                                } else {
-                                    $text = '当前攻击未超过用户购买防护阈值，按实际峰值计算';
-                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
-                                }
+                                //计费扣费
+                                DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
                             }
                         }
                     } else {
-                        //当前攻击是否超过用户购买的最高防护能力
-                        if ($item['mbps'] > $ability_mbps || $item['pps'] > $ability_pps) {
-                            //超过?是
-                            if ($item['mbps'] > $ability_mbps) {
-                                Response::note('到达用户最高承受支付能力防护值：%sMbps', $ability_mbps);
-                            } else {
-                                Response::note('到达用户最高承受支付能力防护值：%spps', $ability_pps);
-                            }
+                        //超过?否
+                        //模拟本次攻击总计，检查余额是否足以支付
+                        $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules, $peak_info, $duration);
 
-                            //牵引
-                            if (BlackHole::exists($dest_ip)) {
-                                $echo = Response::warn('异常：IP：%s, 已经处于牵引中，无需操作，无需计费', $dest_ip);
-                                reportDevException($echo);
-                                //已经存在牵引中了，可能由于防火强还没处理牵引请求造成的延时
-                            } else {
-                                Response::note('需要对IP：%s作牵引处理', $dest_ip);
-                                BlackHole::block($dest_ip, $item['mbps'], 'force');
-                                Alert::ipBlock($dest_ip, [
-                                    'reason' => '攻击速率到达所购买防护阈值'
-                                ]);
+                        Response::note('持续时间：%s小时，模拟总计费用：￥%s', $duration, $fee);
+                        if ( $fee > $user['money'] ) {
+                            Response::note('已超出用户余额：%s，需立即处理：', $fee, $user['money']);
 
-                                Response::note('对此云盾IP进行结算费用：');
-                                if ( Mitigation::isTrial($mitigation) ) {
-                                    Response::echoWarn('试用期云盾免计费。');
-                                } else {
-                                    //计费扣费
-                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules, $ability_mbps);
-                                }
+                            //产生的总费用超过用户余额，作牵引处理
+                            IPBase::block($dest_ip, $item['mbps']);
+                            Alert::ipBlock($dest_ip, [
+                                'reason' => '您的余额不足，无法继续按需防护'
+                            ]);
+
+                            Response::note('对此云盾IP进行结算费用：');
+                            if ( Mitigation::isTrial($mitigation) ) {
+                                Response::echoWarn('试用期云盾免计费。');
+                            } else {
+                                //计费扣费
+                                DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
                             }
                         } else {
-                            //超过?否
-                            //模拟本次攻击总计，检查余额是否足以支付
-                            $fee = DDoSHistory::calcFee($DDoSHistory, $price_rules, $peak_info, $duration);
-
-                            Response::note('持续时间：%s分钟，模拟总计费用：￥%s', $duration, $fee);
-                            if ( $fee > $user['money'] ) {
-                                Response::note('已超出用户余额：%s，需立即处理：', $fee, $user['money']);
-
-                                //产生的总费用超过用户余额，作牵引处理
-                                BlackHole::block($dest_ip, $item['mbps']);
-                                Alert::ipBlock($dest_ip, [
-                                    'reason' => '您的余额不足，无法继续按需防护'
-                                ]);
-
-                                Response::note('对此云盾IP进行结算费用：');
-                                if ( Mitigation::isTrial($mitigation) ) {
-                                    Response::echoWarn('试用期云盾免计费。');
-                                } else {
-                                    //计费扣费
-                                    DDoSHistory::billing($uid, $DDoSHistory, $price_rules);
-                                }
-                            } else {
-                                Response::note('当前余额：￥%s 足以支付，继续清洗中...', $user['money']);
-                            }
+                            Response::note('当前余额：￥%s 足以支付，继续清洗中...', $user['money']);
                         }
                     }
                 }
-
             }
         }
 
         // 对“包年包月”进行遍历操作
-        foreach ($group as $dest_ip => $item) {
-
-            //读取云盾表中该ip的云盾配置
-            $mitigation = $item['mitigation'];
+        foreach ($mitigations as $index => $mitigation) {
+            if ($mitigation['billing'] != 'month') continue;
 
             $uid = $mitigation['uid'];
 
@@ -336,43 +376,38 @@ foreach ($pack_attack as $dc_id => $group) {
             $ability_mbps = $mitigation['ability_mbps'];
             $ability_pps = $mitigation['ability_pps'];
 
-            if ($mitigation['billing'] == 'month') {
-                Response::note('#line');
+            Response::note('#line');
+            response_mitigation_detail($mitigation);
 
-                //按月计费：仅防护，由ExpireHandler进行到期扣取次月
-                $text1 = sprintf('IP：%s，计费方案：按月计费，防护阈值：%sMbps / %spps', $dest_ip, $ability_mbps, $ability_pps);
-                $text2 = sprintf('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']) ;
-                Response::note([$text1, $text2]);
-
-                if ( $total_mbps >= $max_mbps ) {
-                    if (BlackHole::block($dest_ip, $item['mbps'], 'force')) {
+            if ( $total_mbps >= $max_mbps ) {
+                Mitigation::block(
+                    $mitigation, '超大网安全',
+                    function($item) use (&$total_mbps) {
                         $total_mbps -= $item['mbps'];
-                        Alert::ipBlock($dest_ip, [
-                            'reason' => '超大网安全'
-                        ]);
                     }
+                );
+            } else {
+                if ($mitigation['sum_mbps'] >= $ability_mbps) {
+                    Response::reply('当前攻击速率到达所购买防护阈值，需要牵引...');
+                    $reason = sprintf('攻击速率%s到达所购买防护阈值', $mitigation['sum_mbps']);
+                    Mitigation::block($mitigation, $reason, function(){
+
+                    });
+                    run_log($uid, 'MITIGATION', sprintf('%s, 执行牵引', $reason));
+
+                } else if ($mitigation['sum_pps'] >= $ability_pps) {
+                    Response::reply('当前攻击报文到达所购买防护阈值，需要牵引...');
+                    $reason = sprintf('攻击报文%s到达所购买防护阈值', $item['pps']);
+                    Mitigation::block($mitigation, $reason, function($item) use (&$total_mbps) {
+                        $total_mbps -= $item['mbps'];
+                    });
+                    run_log($uid, 'MITIGATION', sprintf('%s, 执行牵引', $reason));
+
                 } else {
-                    if ($item['mbps'] >= $ability_mbps) {
-                        Response::note('当前攻击速率到达所购买防护阈值，正在牵引...');
-                        BlackHole::block($dest_ip, $item['mbps']);
-                        $reason = sprintf('攻击速率%s到达所购买防护阈值', $item['mbps']);
-                        run_log($uid, 'MITIGATION', sprintf('%s, 执行牵引', $reason));
-                        Alert::ipBlock($dest_ip, compact('reason'));
-
-                    } else if ($item['pps'] >= $ability_pps) {
-                        Response::note('当前攻击报文到达所购买防护阈值，正在牵引...');
-                        BlackHole::block($dest_ip, $item['mbps']);
-                        $reason = sprintf('攻击报文%s到达所购买防护阈值', $item['pps']);
-                        run_log($uid, 'MITIGATION', sprintf('%s, 执行牵引', $reason));
-                        Alert::ipBlock($dest_ip, [
-                            'reason' => '攻击报文数量到达所购买防护阈值'
-                        ]);
-
-                    } else {
-                        Response::note('当前攻击值：%sMbps/%spps 未达到购买防护阈值，继续清洗...', $item['mbps'], $item['pps']);
-                    }
+                    Response::reply('未达到购买防护阈值，继续清洗...');
                 }
             }
+
         }
     }
 }

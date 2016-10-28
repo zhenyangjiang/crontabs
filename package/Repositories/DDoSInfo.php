@@ -26,8 +26,8 @@ class DDoSInfo extends StaticRepository {
     public static function filteBlocked($pack) {
         if (!$pack) return array();
 
-        $blocked_ips = Mitigation::getIpsByStatus('BLOCK');
-    
+        $blocked_ips = IPBase::getByStatus('BLOCK');
+
         if ($blocked_ips) {
             $filte_ips = [];
             foreach ($blocked_ips as $ip) {
@@ -39,9 +39,9 @@ class DDoSInfo extends StaticRepository {
 
             //已被牵引的IP还存在防火墙被攻击列表中
             if ($filte_ips) {
-                Response::relay('#tab已过滤掉“处于牵引中，却还存在流量”的IP：%s', implode(', ', $filte_ips));
+                Response::reply('#tab已过滤掉“处于牵引中，却还存在流量”的IP：%s', implode(', ', $filte_ips));
             } else {
-                Response::relay('#tab没有IP处于被牵引中，无需过滤');
+                Response::reply('#tab没有IP处于被牵引中，无需过滤');
             }
         } else {
             Response::note('#tab没有IP存在于牵引中，无需过滤');
@@ -52,27 +52,33 @@ class DDoSInfo extends StaticRepository {
 
     //保存来自防火墙的源数据
     public static function save($pack) {
-        $ret = []; //返回合所有组的包
+        $ret_ips = []; //返回合所有组的包
         if ($pack) { //确定是二维数组列表
-            foreach ($pack as $group) {
-                //存储数据
-                $data = Arr::pick($group, ['dest', 'bps0', 'bps1', 'pps0', 'pps1']);
-                $bool = self::import($data);
-                if (!$bool) {
-                    $message = '攻击数据导入到DDoS表时失败';
-                    reportDevException($message, array('context' => $group));
-                    Notify::developer($message);
-                    System::halt();
-                } else {
-                    $ips = array_keys($group);
-                    $ret = array_merge($ret, $ips);
+            foreach ($pack as $dc_id => $mitigations) {
+                foreach ($mitigations as $mit_id => $mitigation) {
+                    $data = &$mitigation['ddosinfos'];
+                    $data = Arr::pick($data, 'dest, bps0, bps1, pps0, pps1');
+                    $bool = self::import($data);
+
+                    //存储数据
+                    if (!$bool) {
+                        $message = '攻击数据导入到DDoS表时失败';
+                        reportDevException($message, array('context' => $data));
+                        Notify::developer($message);
+                        System::halt();
+                    } else {
+                        $ips = Arr::pick($data, 'dest');
+                        $ret_ips = array_merge($ret_ips, $ips);
+                    }
+
+                    unset($data);
                 }
             }
         } else {
             Response::warn('#tab'.colorize('空数据包，无需导入', 'yellow'));
         }
 
-        return $ret;
+        return $ret_ips;
     }
 
     /**

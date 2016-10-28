@@ -1,6 +1,6 @@
 <?php
 return [
-    'notify-developer'    => [
+    'notify'    => [
         'name'      => '通知开发者队列',
         'host'      => env('hosts.queue', '172.31.66.132'),
         'queue'     => 'Crontab.Notify',

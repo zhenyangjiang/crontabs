@@ -14,39 +14,16 @@ Class BlackHole {
         return Mitigation::count(['ip' => $ip, 'status' => 'BLOCK']);
     }
 
-    public static function doBlock($ip, $bps, $is_force) {
+    public static function block($ip, $bps, $is_force) {
         $from = 'Crontab';
         $blockway = $is_force ? 'force' : '';
         return self::$repo->block($ip, $bps, $from, $blockway);
     }
 
-
-    /**
-     * 牵引IP
-     * @param  [type] $ip       [description]
-     * @param  [type] $bps      [description]
-     * @param  [type] $blockway [description]
-     * @return [type]           [description]
-     */
-    public static function block($ip, $bps, $blockway = '' ) {
-        Response::note('正在牵引IP：%s...', $ip);
-        try {
-            $bool = self::$repoMitigation->blockByIp($ip, $bps, config('app.key'), $blockway);
-            Response::echoBool($bool);
-            return $bool;
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            $e = parse_general_exception($e);
-            if ($e->message) $message = $e->message;
-            Response::warn($message.'，牵引失败');
-            return true;
-        }
-    }
-
-
-    public static function doUnblock($ip) {
+    public static function unblock($ip) {
         return self::$repo->unblock($ip);
     }
+<<<<<<< HEAD
 
     /**
      * 解除牵引IP
@@ -87,6 +64,8 @@ Class BlackHole {
 
         return $ips;
     }
+=======
+>>>>>>> 8c5131ad763d2185ac443c1212910f853e2357bc
 }
 BlackHole::init();
 ?>

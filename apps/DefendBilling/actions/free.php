@@ -1,5 +1,5 @@
 <?php
-
+use Landers\Framework\Core\Response;
 /**
  * Created by PhpStorm.
  * User: gbf
@@ -8,65 +8,68 @@
  */
 class free
 {
-    public $group,$total_mbps,$max_mbps,$mitigation;
-    public $valid = array();
-    public $month_free_ips =array();
-    public function __construct($group,$total_mbps,$max_mbps)
+    public $mitigations,$total_mbps,$max_mbps,$mitigation;
+    public $valid          = array();
+    public $month_free_ips = array();
+    public $blocked_count  =  array();
+    public  static  function handles(&$mitigations,$total_mbps=3,$max_mbps=1)
     {
-        $this->group      = $group;
-        $this->total_mbps = $total_mbps;
-        $this->max_mbps   = $max_mbps;
+        $instance =new self;
+        $instance->blocked_count    = ['mitigation' => 0, 'ip' => 0];
+        $instance->mitigations      = $mitigations;
+        $instance->total_mbps       = $total_mbps;
+        $instance->max_mbps         = $max_mbps;
         Response::noteColor('yellow', '总流量%s >= 本组最大防护%s，大网遭受威胁，需对 “包月且免费” 优先牵引....', $total_mbps, $max_mbps);
-
+        $instance->handle();
     }
     public function handle()
     {
-        if (!$group) dp($group);
-        $group = &$this->group;
-        foreach ($group as $dest_ip => $item) {
-            //读取云盾表中该ip的云盾配置
-            $this->mitigation = $item['mitigation'];
+
+        $mitigations   = &$this->mitigations;
+
+        $blocked_count = &$this->blocked_count;
+
+        foreach ($mitigations as $index => $mitigation) {
             //是否免费版云盾
-            $this->vaild['is_free'] = (float)$mitigation['price'] == 0;
+            $this->valid['is_free'] = (float)$mitigation['price'] == 0;
+
             //是否包月
-            $this->vaild['is_month']  = $mitigation['billing'] == 'month';
+            $this->valid['month'] = $mitigation['billing'] == 'month';
 
-            $this->doBlock($group,$dest_ip,$item);
+            //包月且免费，立即牵引
+            $this->doBlock($mitigations,$mitigation,$blocked_count,$index);
+
         }
+
     }
-    private function  doBlock($group,$dest_ip,$item)
+    private function doBlock($mitigations,$mitigation,$blocked_count,$index)
     {
+
         //包月且免费，立即牵引
-        $total_mbps = $this->total_mbps;
-        $max_mbps = $this->max_mbps;
-        $is_month   = $this->vaild['is_month'];
-        $is_free    = $this->vaild['is_free'];
-        $mitigation = $this->mitigation;
-        if ( $is_month && $is_free ) {
+        if ( $this->valid['is_free'] && $this->valid['month'] ) {
             Response::note('#line');
-            $this->month_free_ips[] = $dest_ip;
-            //按月计费：仅防护，由ExpireHandler进行到期扣取次月
-            Response::note(
-                'IP：%s，计费方案：按月计费，防护阈值：%sMbps / %spps',
-                $dest_ip, $mitigation['ability_mbps'], $mitigation['ability_pps']
-            );
+            $blocked_count['mitigation']++;
+            //显示云盾及IP攻击详细
+            response_mitigation_detail($mitigation);
 
-            Response::note('当前攻击速率：%sMbps，攻击报文：%spps', $item['mbps'], $item['pps']);
-
-            if (BlackHole::block($dest_ip, $item['mbps'], 'force')) {
-                Alert::ipBlock($dest_ip, [
-                    'reason' => '超大网安全'
-                ]);
-
-                //从总攻击量中减掉此项，并把此ip从该组移除
+            Mitigation::block($mitigation, '超大网安全', function($item) use (&$blocked_count, &$total_mbps) {
+                $blocked_count['ip']++;
                 $total_mbps -= $item['mbps'];
-                unset($group[$dest_ip]);
-            }
+            });
+
+            //从总攻击量中减掉此项，并把此ip从该组移除
+            $this->total_mbps -= $mitigation['sum_mbps'];
+
+            //此云盾中的所有IP均被牵引了，将此云盾从数组中移除
+            unset($mitigations[$index]);
         }
     }
-    public function  __destruct()
+    private  function end()
     {
+
         Response::note('#line');
-        Response::noteColor('green', '共计 %s 个“包月且免费IP” 牵引完成', count($month_free_ips));
+        Response::reply('共计 %s 个云盾（含 %s 个“包月且免费IP”） 牵引完成', $blocked_count['mitigation'], $blocked_count['ip']);
+        Response::note('#blank');
     }
+
 }

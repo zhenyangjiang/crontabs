@@ -1,0 +1,3282 @@
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.1.35','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 70,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              1 => '123.1.1.35',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  6 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.1.35','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 70,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              1 => '123.1.1.35',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  6 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.1.35','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 70,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              1 => '123.1.1.35',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  7 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.1.35','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              1 => '123.1.1.35',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  6 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.1.35','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              1 => '123.1.1.35',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  7 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.1.35','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.1.35\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            1 => '123.1.1.35',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              1 => '123.1.1.35',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  8 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  6 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  7 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  8 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  9 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  10 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  12 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  11 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  12 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  13 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  12 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  13 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  14 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  12 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  13 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  14 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  15 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+
+select * from ulan_mitigations where (`ip` in ('123.1.1.26','123.1.0.16'))
+====================================================================================================
+array (
+  0 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/MySQL.php',
+    'line' => 278,
+    'function' => 'save_log',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+    ),
+  ),
+  1 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 191,
+    'function' => 'query',
+    'class' => 'Landers\\Substrate\\Classes\\MySQL',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 'select * from ulan_mitigations where (`ip` in (\'123.1.1.26\',\'123.1.0.16\'))',
+      1 => 1,
+      2 => false,
+    ),
+  ),
+  2 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  3 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  5 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  6 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  8 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  9 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 198,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  10 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/substrate/src/Classes/DBModel.php',
+    'line' => 175,
+    'function' => 'listall',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  11 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/StaticRepository.php',
+    'line' => 41,
+    'function' => 'lists',
+    'class' => 'Landers\\Substrate\\Classes\\DBModel',
+    'type' => '->',
+    'args' => 
+    array (
+      0 => 
+      array (
+        'awhere' => 
+        array (
+          'ip' => 
+          array (
+            0 => '123.1.1.26',
+            4 => '123.1.0.16',
+          ),
+        ),
+        'askey' => 'ip',
+      ),
+    ),
+  ),
+  12 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    'line' => 71,
+    'function' => '__callStatic',
+    'class' => 'Landers\\Framework\\Core\\StaticRepository',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'lists',
+      1 => 
+      array (
+        0 => 
+        array (
+          'awhere' => 
+          array (
+            'ip' => 
+            array (
+              0 => '123.1.1.26',
+              4 => '123.1.0.16',
+            ),
+          ),
+          'askey' => 'ip',
+        ),
+      ),
+    ),
+  ),
+  13 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Adapters/System/LcliSystem.php',
+    'line' => 113,
+    'args' => 
+    array (
+      0 => '/home/wwwroot/default/ulan/crontabs/apps/DefendBilling/actions/default.php',
+    ),
+    'function' => 'include',
+  ),
+  14 => 
+  array (
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Adapters\\System\\LcliSystem',
+    'type' => '::',
+    'args' => 
+    array (
+    ),
+  ),
+  15 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/vendor/landers/framework/src/Core/System.php',
+    'line' => 46,
+    'function' => 'call_user_func_array',
+    'args' => 
+    array (
+      0 => 
+      array (
+        0 => '\\Landers\\Framework\\Adapters\\System\\LcliSystem',
+        1 => 'init',
+      ),
+      1 => 
+      array (
+      ),
+    ),
+  ),
+  16 => 
+  array (
+    'file' => '/home/wwwroot/default/ulan/crontabs/app',
+    'line' => 13,
+    'function' => 'init',
+    'class' => 'Landers\\Framework\\Core\\System',
+    'type' => '::',
+    'args' => 
+    array (
+      0 => 'LCLI',
+    ),
+  ),
+)
+----------------------------------------------------------------------------------------------------
+
+
+
+

@@ -17,9 +17,7 @@ class Alert extends StaticRepository {
     }
 
     private static function ip2userip($ips) {
-        $mitigations = Mitigation::lists([
-            'awhere' => ['ip' => $ips]
-        ]);
+        $mitigations = Mitigation::listByIps($ips);
         $usersIp = Arr::groupBy($mitigations, 'uid');
         foreach ($usersIp as $uid => &$items) {
             $items = Arr::pick($items, 'ip');

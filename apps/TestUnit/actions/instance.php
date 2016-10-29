@@ -14,10 +14,11 @@ if (!$instance_id = (int)System::argv(4)) {
 Response::note('测试操作实例（云主机)...');
 Response::note('操作命令：%s %s', $action, $instance_id);
 
-list($bool, $error) = call_user_func_array(array('Instance', $action), [$instance_id]);
-if ($bool) {
-    Response::bool($bool, '操作%s');
-} else {
-    Response::bool($bool, $error);
+try {
+    call_user_func_array(array('Instance', $action), [$instance_id]);
+    Response::bool(true, '操作%s');
+} catch (\Exception $e) {
+    $e = parse_general_exception($e);
+    Response::bool(false, $e->message);
 }
 System::complete();

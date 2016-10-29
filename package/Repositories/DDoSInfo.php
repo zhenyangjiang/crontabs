@@ -55,10 +55,19 @@ class DDoSInfo extends StaticRepository {
         $ret_ips = []; //返回合所有组的包
         if ($pack) { //确定是二维数组列表
             foreach ($pack as $dc_id => $mitigations) {
+                if (!$dc_id) continue;
                 foreach ($mitigations as $mit_id => $mitigation) {
                     $data = &$mitigation['ddosinfos'];
-                    $data = Arr::pick($data, 'dest, bps0, bps1, pps0, pps1');
-                    $bool = self::import($data);
+                    if ($mit_id) {
+                        $data = Arr::pick($data, 'dest, bps0, bps1, pps0, pps1');
+                        foreach ($data as $i => &$item) {
+                            $item['mit_id'] = $mit_id;
+                        }; unset($item);
+
+                        $bool = self::import($data);
+                    } else {
+                        $bool = true;
+                    }
 
                     //存储数据
                     if (!$bool) {

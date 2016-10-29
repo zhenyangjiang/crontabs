@@ -5,10 +5,10 @@ use Landers\Substrate\Utils\Datetime;
 
 include 'inc-headline.php';
 
-$ret =runlog(1, 'MONEY', 'It is a message', [
-    'a' => 'aaa'
-]);
-dp($ret);
+// $ret =runlog(1, 'MONEY', 'It is a message', [
+//     'a' => 'aaa'
+// ]);
+// dp($ret);
 
 // $now = date('Y-m-d H:i:s');
 // $hours = 4;
@@ -19,6 +19,10 @@ dp($ret);
 
 
 // Response::note('%s 小时之前的时间段为：%s～%s', $hours, $ret['begin_text'], $ret['end_text']);
+
+
+$ret = repository('test')->landers();
+dp($ret);
 
 Response::note('#line');
 System::complete();

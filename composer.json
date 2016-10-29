@@ -23,7 +23,8 @@
     },
     "autoload":{
         "classmap": [
-            "package/Repositories"
+            "package/Repositories",
+            "apps/DefendBilling/actions"
         ],
         "psr-4": {
             "Tasks\\" : "package/Tasks/",
@@ -31,7 +32,8 @@
         },
         "files": [
             "vendor/landers/framework/src/Adapters/Helpers/LcliHelpers.php",
-            "package/helpers.php"
+            "package/helpers.php",
+            "apps/DefendBilling/actions/free.php"
         ]
     },
    "repositories": [

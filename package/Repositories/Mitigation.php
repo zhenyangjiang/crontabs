@@ -29,39 +29,13 @@ class Mitigation extends StaticRepository {
         return $a[$billing_key];
     }
 
+    public static function listByIps($ips) {
+        $ipbases = IPBase::lists([
+            'awhere' => ['ip' => $ips]
+        ]);
+        if (!$ipbases) return [];
 
-    private static $allMitigations = [];
-    public static function seekByIp($ip) {
-        $all = &self::$allMitigations;
-        $all = parent::lists();
-        $ip = ip2long($ip);
-        foreach ($all as $item) {
-            if ($ip >= $item['ip1'] && $ip <= $item['ip2'] ) {
-                $item = Arr::remove_keys($item, 'created_at, updated_at, fw_sets');
-                $item = Mitigation::attachs($item);
-                return $item;
-            }
-        }
-
-        return NULL;
-    }
-
-    public static function listsByIp($ips, $opts = []) {
-        $ips or $ips = [];
-        $owhere = [];
-        foreach ($ips as $ip) {
-            $ip = ip2long($ip);
-            $owhere[] = "($ip between ip1 and ip2)";
-        }
-        $owhere = implode(' or ', $owhere);
-
-
-        if (!array_key_exists('awhere', $opts)) {
-            $opts['awhere'] = [];
-        }
-        $opts['awhere'][] = $owhere;
-
-        return Mitigation::lists($opts);
+        return IPBase::getMitigations($ipbases);
     }
 
     /**
@@ -71,17 +45,15 @@ class Mitigation extends StaticRepository {
      * @return Mixed
      */
     public static function findByIp($ip, $fields = NULL) {
-        $ip = ip2long($ip);
-        // self::debug();
-        $ret = self::find([
-            'awhere' => ["$ip between ip1 and ip2"],
-            'fields' => $fields
-        ]);
-        if ($ret && is_array($ret)){
-            $ret = self::attachs($ret);
-        }
-        return $ret;
+        $ipbase = IPBase::findByIP($ip);
+        if (!$ipbase) throw new \Exception(sprintf('IP库中不存在%s'));
+
+        $mitigation = parent::find($ipbase['mit_id'], $fields);
+        if (!$mitigation) throw new \Exception(sprintf('未找到ID：%s的云盾记录', $ipbase['mit_id']) );
+
+        return $mitigation;
     }
+
 
     public static function Mbps_to_Gbps($Mbps) {
         if (is_array($Mbps)) {

@@ -33,7 +33,7 @@ class DDoSHistory extends StaticRepository
 
         //获取IP表中：1)在ips范围内的IP， 2)标为“正常”的IP
         $ipbases = IPBase::lists([
-            'fields' => 'ip',
+            'fields' => 'ip, mit_id',
             'awhere' => ['ip' => $ips, 'status' => 'NORMAL']
         ]);
 
@@ -42,7 +42,7 @@ class DDoSHistory extends StaticRepository
             $ips = Arr::pick($ipbases, 'ip');
             $transacter = '写入攻击开始、更新实列状态为被攻击中';
             Response::transactBegin($transacter);
-            $result = self::transact(function () use ($ips) {
+            $result = self::transact(function () use (&$ips, $ipbases) {
                 //准备导入history表
                 $data = [];
 
@@ -51,11 +51,11 @@ class DDoSHistory extends StaticRepository
                     'fields' => 'ip',
                     'awhere' => ['end_time' => NULL, 'ip' => $ips]
                 ]);
-                $his_ips = Arr::pick($histories, 'ip');
-                if ($his_ips) {
+                if ($histories) {
+                    $his_ips = Arr::pick($histories, 'ip');
                     $message = sprintf('以下IP在攻击历史中为被攻击中，却在IP库中标记为正常');
                     reportDevException($message, compact('his_ips'));
-                    Response::note('#tab' . implode(',', $ips));
+                    Response::note('#tab' . implode(',', $his_ips));
                     Response::note('#tab对以上IP进行过滤，方可对剩下的IP写入攻击开始');
                     $ips = Arr::remove($ips, $his_ips);
                     if (!$ips) {
@@ -64,9 +64,10 @@ class DDoSHistory extends StaticRepository
                 }
 
                 //批量导入数据
-                foreach ($ips as $ip) {
+                foreach ($ipbases as $item) {
                     $data[] = [
-                        'ip' => $ip,
+                        'ip' => $item['ip'],
+                        'mit_id' => $item['mit_id'],
                         'begin_time' => System::startTime()
                     ];
                 }
@@ -107,11 +108,14 @@ class DDoSHistory extends StaticRepository
      */
     public static function saveAttackEnd($ip, $on_event)
     {
-        list($bool, $data, $warn) = self::$repo->saveAttackEnd($ip, $on_event);
+        list($bool, $data, $message) = self::$repo->saveAttackEnd($ip, $on_event);
         if (!$bool) {
-            $echo = Response::warn(sprintf('#tab%s', $message));
-            Notify::developer($echo, $data);
+            Notify::developer($message, $data);
         } else {
+            Response::echoBool(true);
+            if ($message) {
+                Response::noteColor('yellow', $message);
+            }
             if ($data) {
                 // 自然结束时才告警
                 if ($on_event == 'STOP') Alert::endDDoS($ip, $data);

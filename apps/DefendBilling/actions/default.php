@@ -161,7 +161,6 @@ if (!$all_ips) {
         System::halt('过滤掉后成为空数据包，本次任务提前结束');
     }
 }
-print_r(DataCenter::lowestPriceCase(DataCenter::find(1),'month'));
 
 // pause();
 

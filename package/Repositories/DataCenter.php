@@ -7,16 +7,17 @@ class DataCenter extends StaticRepository {
     protected static $DAO;
 
     public static function parse(Array $dc) {
-        if ( is_string($dc['price_rules'] )) {
+        if ( is_string($dc['instance_config'] )) {
             //给此两字段json解码
-            $keys = ['price_rules', 'block_duration'];
+            $keys = ['instance_config', 'block_duration'];
             foreach ($keys as $key) $dc[$key] = json_decode($dc[$key], true);
 
             //从价格规则中找出最大
-            $price_rules = &$dc['price_rules'];
+
+            $instance_config = &$dc['instance_config'];
             $keys = ['month', 'hour'];
             foreach ($keys as $key) {
-                $rules = $price_rules["mitigation-$key"];
+                $rules = $instance_config["mitigation-$key"];
                 foreach ($rules as $Gbps => $price) {
                     $Mbps = Mitigation::Gbps_to_Mbps($Gbps);
                     $rules[$Mbps] = $price;
@@ -25,7 +26,7 @@ class DataCenter extends StaticRepository {
                 krsort($rules, SORT_NUMERIC);
                 $dc["$key-max-mbps"] = key($rules);
                 $dc["$key-max-pps"] = Mitigation::Mbps_to_pps($dc["$key-max-mbps"]);
-                $price_rules["mitigation-$key"] = $rules;
+                $instance_config["mitigation-$key"] = $rules;
             }
         }
         return $dc;

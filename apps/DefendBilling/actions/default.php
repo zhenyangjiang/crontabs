@@ -110,6 +110,7 @@ if ($attaching_ips) {
 
                     //数据中心
                     $datacenter = DataCenter::find($mitigation['datacenter_id']);
+                    print_r($datacenter);
 
                     //获取当前ip所在的数据中心的价格规则(元/小时)的数组
                     $price_rules = DataCenter::priceRules($datacenter, 'hour');
@@ -160,7 +161,7 @@ if (!$all_ips) {
         System::halt('过滤掉后成为空数据包，本次任务提前结束');
     }
 }
-
+print_r(DataCenter::lowestPriceCase(DataCenter::find(1),'month'));
 
 // pause();
 

@@ -7,13 +7,13 @@ class DataCenter extends StaticRepository {
     protected static $DAO;
 
     public static function parse(Array $dc) {
-        if ( is_string($dc['price_rules'] )) {
+        if ( is_string($dc['instance_config'] )) {
             //给此两字段json解码
-            $keys = ['price_rules', 'block_duration'];
+            $keys = ['instance_config', 'block_duration'];
             foreach ($keys as $key) $dc[$key] = json_decode($dc[$key], true);
 
             //从价格规则中找出最大
-            $price_rules = &$dc['price_rules'];
+            $price_rules = &$dc['instance_config'];
             $keys = ['month', 'hour'];
             foreach ($keys as $key) {
                 $rules = $price_rules["mitigation-$key"];
@@ -76,8 +76,12 @@ class DataCenter extends StaticRepository {
      * @return [type]                   description]
      */
     public static function priceRules($datacenter, $billing) {
-        $price_rules = $datacenter['price_rules'];
+        $price_rules = $datacenter['instance_config'];
+        if (is_string($datacenter)){
+            $price_rules = json_decode($price_rules,true);
+        }
         $ret = $price_rules["mitigation-$billing"];
+
         return $ret;
     }
 
@@ -87,7 +91,11 @@ class DataCenter extends StaticRepository {
      * @return [type]                   description]
      */
     public static function lowestPriceCase($datacenter, $billing) {
-        $price_rules = $datacenter['price_rules'];
+
+        $price_rules = $datacenter['instance_config'];
+        if (is_string($datacenter)){
+            $price_rules = json_decode($price_rules,true);
+        }
         $ret = $price_rules["mitigation-$billing"];
         ksort($ret);
         return [

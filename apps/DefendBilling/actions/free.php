@@ -44,7 +44,6 @@ class free
     }
     private static  function doBlock($mitigations,$mitigation,$blocked_count,$index)
     {
-
         //包月且免费，立即牵引
         if ( self::$valid['is_free'] && self::$valid['month'] ) {
             Response::note('#line');
